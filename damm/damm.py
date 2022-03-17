@@ -19,7 +19,7 @@ class ConcatDataset(torch.utils.data.Dataset):
   def __len__(self):
     return min(len(d) for d in self.datasets)
 
-class DAMM:
+class damm:
 
     def __init__(self, h5ad_dset, soMat=None, numOfCluster=15, incCellSize=None, initMethod='gmm', noiseModel='student', 
     spilloverRate=0, relaxRule=True, regularizer=10, batchSize=128, learnRate=1e-3, maxEpoch=150):

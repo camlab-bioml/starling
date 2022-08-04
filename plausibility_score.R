@@ -1,6 +1,13 @@
 rm(list=ls())
 library(ComplexHeatmap)
 
+neg_ps <- function(trY, x_name, y_name, cutoffs) {
+  sum((trY[,x_name] < cutoffs[x_name][1,1]) | (trY[,y_name] < cutoffs[y_name][1,1]))/dim(trY)[1]
+}
+
+pos_ps <- function(trY, x_name, y_name, cutoffs) {
+  sum((trY[,x_name] < cutoffs[x_name][1,1]) | (trY[,y_name] > cutoffs[y_name][1,1]))/dim(trY)[1]
+}
 
 ## original data
 trY <- read.csv(paste0("/home/campbell/yulee/DAMM/new/data/eddy/eddy_dc_samples.csv"))[,-c(1:7)]
@@ -17,15 +24,10 @@ row.names(neg_out) <- colnames(neg_out) <- row.names(pos_out) <- colnames(pos_ou
 
 for ( i in 1:dim(cutoffs)[2] ) {
   for ( j in 1:dim(cutoffs)[2] ) {
-  
     x_name <- names(cutoffs)[i]
     y_name <- names(cutoffs)[j]
-  
-    score1 = sum((trY[,x_name] < cutoffs[x_name][1,1]) | (trY[,y_name] < cutoffs[y_name][1,1]))/dim(trY)[1]
-    neg_out[x_name, y_name] <- score1
-  
-    score2 = sum((trY[,x_name] < cutoffs[x_name][1,1]) | (trY[,y_name] > cutoffs[y_name][1,1]))/dim(trY)[1]
-    pos_out[x_name, y_name] <- score2
+    neg_out[x_name, y_name] <- neg_ps(trY, x_name, y_name, cutoffs)
+    pos_out[x_name, y_name] <- pos_ps(trY, x_name, y_name, cutoffs)
   }
 }
 
@@ -59,12 +61,9 @@ for ( i in 1:dim(cutoffs)[2] ) {
     
     x_name <- names(cutoffs)[i]
     y_name <- names(cutoffs)[j]
+    neg_out[x_name, y_name] <- neg_ps(trYs, x_name, y_name, cutoffs)
+    pos_out[x_name, y_name] <- pos_ps(trYs, x_name, y_name, cutoffs)
     
-    score1 = sum((trYs[,x_name] < cutoffs[x_name][1,1]) | (trYs[,y_name] < cutoffs[y_name][1,1]))/dim(trYs)[1]
-    neg_out[x_name, y_name] <- score1
-    
-    score2 = sum((trYs[,x_name] < cutoffs[x_name][1,1]) | (trYs[,y_name] > cutoffs[y_name][1,1]))/dim(trYs)[1]
-    pos_out[x_name, y_name] <- score2
   }
 }
 
@@ -93,15 +92,10 @@ neg_out <- matrix(NA, nrow=dim(cutoffs)[2], ncol=dim(cutoffs)[2])
 row.names(neg_out) <- colnames(neg_out) <- row.names(pos_out) <- colnames(pos_out) <- names(cutoffs)
 for ( i in 1:dim(cutoffs)[2] ) {
   for ( j in 1:dim(cutoffs)[2] ) {
-    
     x_name <- names(cutoffs)[i]
     y_name <- names(cutoffs)[j]
-    
-    score1 = sum((trYss[,x_name] < cutoffs[x_name][1,1]) | (trYss[,y_name] < cutoffs[y_name][1,1]))/dim(trY)[1]
-    neg_out[x_name, y_name] <- score1
-    
-    score2 = sum((trYss[,x_name] < cutoffs[x_name][1,1]) | (trYss[,y_name] > cutoffs[y_name][1,1]))/dim(trY)[1]
-    pos_out[x_name, y_name] <- score2
+    neg_out[x_name, y_name] <- neg_ps(trYss, x_name, y_name, cutoffs)
+    pos_out[x_name, y_name] <- pos_ps(trYss, x_name, y_name, cutoffs)
   }
 }
 
@@ -178,3 +172,5 @@ png(paste0("~/cen_diff.png"))
 ht <- Heatmap(out[-24,], name = "Dif.", cluster_rows = FALSE)
 draw(ht)
 dev.off()
+
+

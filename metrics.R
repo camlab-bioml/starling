@@ -132,15 +132,60 @@ plausibility_score <- function(cohort) {
   as.data.frame(mat)
 }
 
+plausibility_score <- function(trY, po_pairs, ne_pairs) {
+
+  afns <- list.files(pattern = "damm_cen*")
+
+  pos_pairs <- do.call(rbind, po_pairs)
+  neg_pairs <- do.call(rbind, ne_pairs)
+  
+  mat <- NULL
+  for (i in 1:length(afns)) {
+    
+    print(i)
+    parsed_fn <- strsplit(afns[i], "_")[[1]][-(1:2)]
+    
+    bfn <- paste0("init_cen_", paste0(parsed_fn, collapse = "_"))
+    
+    if ( file.exists(bfn) == FALSE ) { next } 
+    
+    nc <- substr(parsed_fn[1],3,100)
+    ia <- substr(parsed_fn[2],3,100)
+    cf <- substr(parsed_fn[3],3,100)
+    nm <- substr(parsed_fn[4],3,100)
+    so <- substr(parsed_fn[5],3,100)
+    lv <- substr(parsed_fn[6],3,100)
+    rr <- substr(parsed_fn[7],3,100)
+    r <- substr(parsed_fn[8],2,2)
+    
+    if ( as.integer(cf) > 0 ) {
+      thresholds <- as.data.frame( sapply(asinh(trY / as.integer(cf)), function(x) quantile(x, c(0.25, 0.75))) )
+    } else {
+      thresholds <- as.data.frame(sapply(trY, function(x) quantile(x, c(0.25, 0.75))))  
+    }
+    
+    bmat <- read.csv(bfn)[,-1]
+    amat <- read.csv(afns[i])[,-1]
+    
+    bneg <- new_corr_metric(bmat, 1, neg_pairs, thresholds)
+    bpos <- new_corr_metric(bmat, 0, pos_pairs, thresholds)
+    
+    aneg <- new_corr_metric(amat, 1, neg_pairs, thresholds)
+    apos <- new_corr_metric(amat, 0, pos_pairs, thresholds)
+    
+    mat <- rbind(mat, cbind(nc, ia, cf, nm, so, lv, rr, r, before=rbind(bneg, bpos)[,-3], after=rbind(aneg, apos)[,2]))
+  }
+  as.data.frame(mat)
+}
+
 ####
 ####
 
-## Pinch Effect
-morphological_score <- function() {
+## Morphological score
+morphological_score <- function(init_algo) {
   
   fns <- list.files(pattern = "algo_label*")
-  init_algo <- c('PG', 'KM', 'GMM', 'FS')
-  
+
   mat <- NULL
   for (i in 1:length(fns)) {
     
@@ -149,7 +194,7 @@ morphological_score <- function() {
     label_mat <- read.csv(fns[i])
     
     tmp <- NULL
-    for (j in 1:4) {
+    for (j in 1:length(init_algo)) {
       
       singlet_set <- filter(label_mat, !!sym(paste0('damm_', init_algo[j], '_tr_label')) != 'doublets')
       doublet_set <- filter(label_mat, !!sym(paste0('damm_', init_algo[j], '_tr_label')) == 'doublets')
@@ -177,25 +222,53 @@ morphological_score <- function() {
   as.data.frame(mat)
 }
 
-###
-myargs = commandArgs(trailingOnly=TRUE)
-print(myargs[2])
+### R version
+library(yaml)
+library(argparse)
 
-cohort <- myargs[1]
-expNum <- myargs[2]
-ss <- myargs[3]
+parser <- ArgumentParser(description = "run STARLING metrics")
+parser$add_argument('--cohort', type = 'character', help = 'which cohort to use?')
+args <- parser$parse_args()
 
+cohort <- args$cohort
 print(cohort)
-setwd(paste0('/home/campbell/yulee/DAMM/new/res/', cohort, '/', ss, 'k/exp', expNum, '/'))
-  
+
+config <- read_yaml("/home/campbell/yulee/DAMM/new/code/pro/local/config.yml")
+
+working_dir <- paste0(config['res_path'], cohort, '/', config['sample_size'], 'k/exp', config['experiment_id'], '/')
+setwd(working_dir)
+
+## synthetic performances
 sp_res <- syth_perf()
-write.csv(sp_res, file = paste0('/home/campbell/yulee/DAMM/new/res/', cohort, '/', ss, 'k/exp', expNum, '/sp_res.csv')) 
+write.csv(sp_res, file = paste0(working_dir, 'sp_res.csv')) 
+
+## plausibility score
+trY <- read.csv(paste0(config['data_path'], cohort, "/", cohort, "_dc_samples.csv"))[,-c(1:7)]
+ps_res <- plausibility_score(trY, config$plausibility_markers[[cohort]]$positive, config$plausibility_markers[[cohort]]$negative)
+write.csv(ps_res, file = paste0(working_dir, 'ps_res.csv')) 
+
+## morphological score
+ms_res <- morphological_score(config$initial_algo)
+write.csv(ms_res, file = paste0(working_dir, 'ms_res.csv')) 
+
+#myargs = commandArgs(trailingOnly=TRUE)
+#print(myargs[2])
+
+#cohort <- myargs[1]
+#expNum <- myargs[2]
+#ss <- myargs[3]
+
+#print(cohort)
+#setwd(paste0('/home/campbell/yulee/DAMM/new/res/', cohort, '/', ss, 'k/exp', expNum, '/'))
   
-ps_res <- plausibility_score(cohort)
-write.csv(ps_res, file = paste0('/home/campbell/yulee/DAMM/new/res/', cohort, '/', ss, 'k/exp', expNum, '/ps_res.csv')) 
+#sp_res <- syth_perf()
+#write.csv(sp_res, file = paste0('/home/campbell/yulee/DAMM/new/res/', cohort, '/', ss, 'k/exp', expNum, '/sp_res.csv')) 
   
-ms_res <- morphological_score()
-write.csv(ms_res, file = paste0('/home/campbell/yulee/DAMM/new/res/', cohort, '/', ss, 'k/exp', expNum, '/ms_res.csv')) 
+#ps_res <- plausibility_score(cohort)
+#write.csv(ps_res, file = paste0('/home/campbell/yulee/DAMM/new/res/', cohort, '/', ss, 'k/exp', expNum, '/ps_res.csv')) 
+  
+#ms_res <- morphological_score()
+#write.csv(ms_res, file = paste0('/home/campbell/yulee/DAMM/new/res/', cohort, '/', ss, 'k/exp', expNum, '/ms_res.csv')) 
 
 ###Rscript metrics.R eddy 1 50 > eddy_exp1_50k
 

@@ -1,0 +1,16 @@
+all_channels: ['SMA', 'ECadherin', 'Cytokeratin', 'HLADR', 'Vimentin', 'CD28', 'CD15', 'CD45RA', 'CD66b', 
+        'CD20', 'CD68', 'CD4', 'CD8', 'CD11c', 'CD45RO', 'CD3', 'IFNg', 'TCF1', 'CD14', 'CD56',
+        'PD1', 'DNA1', 'DNA2', 'CD45', 'PNAd', 'CD31']
+
+selected_channels: ['SMA', 'ECadherin', 'Cytokeratin', 'HLADR', 'Vimentin', 'CD28', 'CD15', 'CD45RA', 'CD66b', 
+                    'CD20', 'CD68', 'CD4', 'CD8', 'CD11c', 'CD45RO', 'CD3', 'IFNg', 'TCF1', 'CD14', 'CD56',
+                    'PD1', 'CD45', 'PNAd', 'CD31']
+
+pretty_channels: ['SMA', 'ECadherin', 'Cytokeratin', 'HLADR', 'Vimentin', 'CD28', 'CD15', 'CD45RA', 'CD66b', 
+                    'CD20', 'CD68', 'CD4', 'CD8', 'CD11c', 'CD45RO', 'CD3', 'IFNg', 'TCF1', 'CD14', 'CD56',
+                    'PD1', 'CD45', 'PNAd', 'CD31'] # tonsil
+
+#channels = ['Stroma', 'PDL1', 'CD68', 'MHCII', 'CD28', 'RFP', 'ICOS', 'YAP', 'CD19', 'HA', 'GFP', 'CD4', 
+#            'CD8', 'IL7Ra', 'PD1', 'B220', 'FOXP3', 'GATA3', 'TBET', 'CD11c', 'Perforin', 'Ly6G', 'CD3', 
+#            'GranzymeB', 'CTLA4', 'CD73', 'iNOS', 'TCF1', 'CD49b', 'CCR7', 'CD11b', 'S100A8-9', 'DNA1', 
+#            'DNA3', 'CD45', 'PNAd', 'CD31', 'Epithelium']

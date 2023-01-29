@@ -1,0 +1,14 @@
+all_channels: ['totHH3', 'Xe126', 'I127', 'Xe131', 'Xe134', 'H3K27me3', 'Ce140', 'CK5', 'Fibronectin', 'CK19',
+        'CK8_18', 'Twist', 'CD68', 'CK14', 'SMA', 'Vimentin', 'cMyc', 'HER2', 'CD3', 'pHH3', 'ERK',
+        'Slug', 'ER', 'PR', 'p53', 'CD44', 'EpCAM', 'CD45', 'GATA3', 'CD20', 'BCatenin', 'CAIX',
+        'ECadherin', 'Ki67', 'EGFR', 'S6', 'Sox9', 'CD31', 'mTOR', 'CK7', 'panCK', 'cPARP-cCasp3',
+        'DNA1', 'DNA2', 'Hg202', 'Pb204', 'Pb206', 'Pb207', 'Pb208', 'ArAr80']
+
+selected_channels: ['totHH3', 'H3K27me3', 'CK5', 'Fibronectin', 'CK19', 'CK8_18', 'Twist', 'CD68', 'CK14', 'SMA', 
+'Vimentin', 'cMyc', 'HER2', 'CD3', 'pHH3', 'ERK', 'Slug', 'ER', 'PR', 'p53', 'CD44', 'EpCAM', 'CD45', 'GATA3', 'CD20', 
+'BCatenin', 'CAIX', 'ECadherin', 'Ki67', 'EGFR', 'S6', 'Sox9', 'CD31', 'mTOR', 'CK7', 'panCK', 'cPARP-cCasp3']
+
+pretty_channels: ['totHH3', 'H3K27me3', 'CK5', 'Fibronectin', 'CK19', 'CK8n18', 'Twist', 'CD68', 'CK14', 'SMA', 
+'Vimentin', 'cMyc', 'HER2', 'CD3', 'pHH3', 'ERK', 'Slug', 'ER', 'PR', 'p53', 'CD44', 'EpCAM', 'CD45', 'GATA3', 'CD20', 
+'BCatenin', 'CAIX', 'ECadherin', 'Ki67', 'EGFR', 'S6', 'Sox9', 'CD31', 'mTOR', 'CK7', 'pCK', 'cPARP'] ## metabric
+

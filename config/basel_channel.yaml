@@ -1,0 +1,14 @@
+all_channels: ['background1', 'RutheniumTetroxide1', 'RutheniumTetroxide2', 'RutheniumTetroxide3', 'RutheniumTetroxide4',
+ 'RutheniumTetroxide5', 'RutheniumTetroxide6', 'RutheniumTetroxide7', 'totHH3', 'background2', 'background3',
+ 'H3K27me3', 'CK5', 'Fibronectin', 'CK19', 'CK8_18', 'Twist', 'CD68', 'CK14', 'SMA', 'Vimentin', 'cMyc', 
+ 'Her2', 'CD3', 'pHH3', 'ERK', 'Slug', 'RabbitIgGHL', 'PR', 'p53', 'CD44', 'EpCAM', 'CD45', 'GATA3',
+ 'CD20', 'BCatenin', 'CAIX', 'ECadherin', 'Ki67', 'EGFR', 'S6', 'Sox9', 'CD31', 'mTOR', 'CK7', 'panCK',
+ 'cPARP-cCasp3', 'DNA1', 'DNA2', 'background4', 'background5', 'background6']
+
+selected_channels: ['totHH3', 'H3K27me3', 'CK5', 'Fibronectin', 'CK19', 'CK8_18', 'Twist', 'CD68', 'CK14', 'SMA', 'Vimentin', 'cMyc', 
+'Her2', 'CD3', 'pHH3', 'ERK', 'Slug', 'RabbitIgGHL', 'PR', 'p53', 'CD44', 'EpCAM', 'CD45', 'GATA3', 'CD20', 'BCatenin', 'CAIX', 
+'ECadherin', 'Ki67', 'EGFR', 'S6', 'Sox9', 'CD31', 'mTOR', 'CK7', 'panCK', 'cPARP-cCasp3']
+
+pretty_channels: ['totHH3', 'H3K27me3', 'CK5', 'Fibronectin', 'CK19', 'CK8n18', 'Twist', 'CD68', 'CK14', 'SMA', 'Vimentin', 'cMyc', 
+'HER2', 'CD3', 'pHH3', 'ERK', 'Slug', 'RabbitIgGHL', 'PR', 'p53', 'CD44', 'EpCAM', 'CD45', 'GATA3', 'CD20', 'BCatenin', 'CAIX', 
+'ECadherin', 'Ki67', 'EGFR', 'S6', 'Sox9', 'CD31', 'mTOR', 'CK7', 'pCK', 'cPARP'] ## basel

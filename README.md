@@ -7,12 +7,12 @@ While doublets have been extensively discussed in the context of single-cell RNA
 1. A sample input file (sample_input.h5ad) can be found.
 2. Run STARLING via _7script_train.py (sample file must be in the same directory).
 3. STARLING (ST) object (model.pt) is saved via torch.save.
-  a. st.init_X -- raw expression matrix
-  b. st.tr_adata.X -- tranformed expression matrix
-  c. st.init_e -- GMM clustering
-  d. st.init_l -- GMM cluster assignments
-  e. st.e -- ST clustering
-  f. st.label -- ST cluster assignments
-  g. st.singlet_prob -- cell imperfect segmentation probabilities
-  h. st.singlet_assig_prob -- cell cluster assignment probabilities
-Note: the information can be retrieved by running torch.load('model.pt')
+4. Note: the information can be retrieved by running torch.load('model.pt')
+   - st.init_X -- raw expression matrix
+   - st.tr_adata.X -- tranformed expression matrix
+   - st.init_e -- GMM clustering
+   - st.init_l -- GMM cluster assignments
+   - st.e -- ST clustering
+   - st.label -- ST cluster assignments
+   - st.singlet_prob -- cell imperfect segmentation probabilities
+   - st.singlet_assig_prob -- cell cluster assignment probabilities

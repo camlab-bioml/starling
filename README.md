@@ -4,10 +4,15 @@ Highly multiplexed imaging technologies such as Imaging Mass Cytometry (IMC) ena
 While doublets have been extensively discussed in the context of single-cell RNA-sequencing analysis, there is currently no method to cluster IMC data while accounting for such segmentation errors. Therefore, we introduce SegmentaTion AwaRe cLusterING (STARLING), a probabilistic method tailored for densely packed tissues profiled with IMC that clusters the cells explicitly allowing for doublets resulting from mis-segmentation. To benchmark STARLING against a range of existing clustering methods, we further develop a novel evaluation score that penalizes methods that return clusters with biologically-implausible marker co-expression combinations. Finally, we generate IMC data of the human tonsil -- a densely packed human secondary lymphoid organ -- and demonstrate cellular states captured by STARLING identify known cell types not visible with other methods and important for understanding the dynamics of immune response.
 
 # Quick start:  
-1. Example input files can be found in the example_input folder (unzip the file).
-2. STARLING's model parmeters are found in the config/config.yaml.
-2. Run STARLING via train.py (please change the code directory in train.py).
-3. Three files are generated for further analysis.
-  a. init_centroids.csv is starling's intialization centroids.
-  b. star_centroids.csv is starling's centroids after training.
-  c. star_labels.csv indicate each cell's assignment before and after training STARLING.
+1. A sample input file (sample_input.h5ad) can be found.
+2. Run STARLING via _7script_train.py (sample file must be in the same directory).
+3. STARLING (ST) object (model.pt) is saved via torch.save.
+  a. st.init_X -- raw expression matrix
+  b. st.tr_adata.X -- tranformed expression matrix
+  c. st.init_e -- GMM clustering
+  d. st.init_l -- GMM cluster assignments
+  e. st.e -- ST clustering
+  f. st.label -- ST cluster assignments
+  g. st.singlet_prob -- cell imperfect segmentation probabilities
+  h. st.singlet_assig_prob -- cell cluster assignment probabilities
+Note: the information can be retrieved by running torch.load('model.pt')

@@ -5,14 +5,14 @@ While doublets have been extensively discussed in the context of single-cell RNA
 
 # Quick start:  
 1. A sample input file (sample_input.h5ad) can be found.
-2. Run STARLING via _7script_train.py (sample file must be in the same directory).
-3. STARLING (ST) object (model.pt) is saved via torch.save.
-4. Note: the information can be retrieved by running torch.load('model.pt')
-   - st.init_X -- raw expression matrix
-   - st.tr_adata.X -- tranformed expression matrix
-   - st.init_e -- GMM clustering
-   - st.init_l -- GMM cluster assignments
-   - st.e -- ST clustering
-   - st.label -- ST cluster assignments
-   - st.singlet_prob -- cell imperfect segmentation probabilities
-   - st.singlet_assig_prob -- cell cluster assignment probabilities
+2. Run STARLING via starling.py (sample file must be in the same directory).
+3. Note: the information can be retrieved in annData object.
+   - st.adata.uns['init_exp_centroids'] -- initial expression cluster centroids (C x P matrix)
+   - st.adata.uns['st_exp_centroids'] -- STARLING expression cluster centroids (C x P matrix)
+   - st.adata.uns['init_cell_size_centroids'] & st.adata.uns['st_cell_size_centroids'] -- initial & STARLING cell size centroids if STARLING models cell size
+   - st.adata.uns['assignment_prob_matrix'] -- cell assignment distributions (N x P maxtrix)
+   - st.adata.obs['max_assign_prob'] -- max probility of assigning to a cluster
+   - st.adata.obs['init_label'] -- inital expression cluster assignments
+   - st.adata.obs['st_label'] -- STARLING expression cluster assignments
+   - st.adata.obs['doublet_prob'] -- doublet probabilities
+   - N: # of cells; C: # of clusters; P: # of proteins

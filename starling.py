@@ -24,12 +24,6 @@ class ST(pl.LightningModule):
         
         #self.save_hyperparameters()
         
-        #self.rf_e = None
-        #self.rf_v = None
-        #self.rf_l = None
-        #self.st_f1 = None
-        #self.rf_f1 = None
-        
         self.adata = adata        
         self.dist_option = dist_option
         self.model_cell_size = model_cell_size
@@ -40,11 +34,6 @@ class ST(pl.LightningModule):
         
         self.X = torch.tensor(self.adata.X)
         self.S = torch.tensor(self.adata.obs[self.cell_size_col_name]) if self.model_cell_size == 'Y' else None
-        
-        # add metrics
-        #self.train_acc = torchmetrics.Accuracy()
-        #self.train_f1 = torchmetrics.F1Score(number_classes = 2, average = "micro")
-        #self.train_auroc = torchmetrics.AUROC(number_classes = 2, average = "micro")
         
     def forward(self, batch):
         
@@ -62,17 +51,7 @@ class ST(pl.LightningModule):
         return model_nll, fake_loss, p_fake_singlet
         
     def training_step(self, batch, batch_idx):
-        
-        #indx = 4 if self.model_cell_size == 1 else 2
-        # accumulate and return metrics for logging
-        #self.train_acc(p_fake_singlet, batch[indx])
-        #self.train_auroc(p_fake_singlet, batch[indx])
-        #self.train_f1(p_fake_singlet, batch[indx])
-        
-        #self.log("train_auroc", self.train_auroc)                
-        #self.log("train_accuracy", self.train_acc)
-        #self.log("train_f1", self.train_f1)
-        
+                
         #y, s, fy, fs, fl = batch
         model_nll, fake_loss, p_fake_singlet = self(batch)
         
@@ -110,8 +89,8 @@ class ST(pl.LightningModule):
             self.adata.uns['init_cell_size_variances'] = np.array(init_sv)
         else:
             #init_cell_size_centroids = None; init_cell_size_variances = None
-            self.adata.uns['init_cell_size_centroids'] = None
-            self.adata.uns['init_cell_size_variances'] = None
+            self.adata.varm['init_cell_size_centroids'] = None
+            self.adata.varm['init_cell_size_variances'] = None
             self.train_df = utility.ConcatDataset(self.X, tr_fy, tr_fl)
 
         #model_params = utility.model_paramters(self.init_e, self.init_v, self.init_s, self.init_sv)
@@ -132,8 +111,10 @@ class ST(pl.LightningModule):
         
         self.adata.obs['st_label'] = np.array(singlet_assig_prob.max(1).indices) ##p(z=c|d=1)
         self.adata.obs['doublet_prob'] = 1 - np.array(singlet_prob)
+        self.adata.obs['doublet'] = 0
+        self.adata.obs.loc[self.adata.obs['doublet_prob'] > 0.5,'doublet'] = 1
         self.adata.obs['max_assign_prob'] = np.array(singlet_assig_prob.max(1).values)
-        self.adata.uns['assignment_prob_matrix'] = np.array(singlet_assig_prob)
+        self.adata.obsm['assignment_prob_matrix'] = np.array(singlet_assig_prob)
 
         #st_label = singlet_assig_label.numpy().astype('str')
         #st_label[st_label == '-1'] = 'doublet'
@@ -148,10 +129,10 @@ class ST(pl.LightningModule):
         #else:
         c = self.model_params['log_mu'].detach().exp().cpu().numpy()
         #v = self.model_params['log_sigma'].cpu().detach().exp().cpu().numpy()
-        self.adata.uns['st_exp_centroids'] = pd.DataFrame(c, columns=self.adata.var_names)
+        self.adata.varm['st_exp_centroids'] = c.T #pd.DataFrame(c, columns=self.adata.var_names)
         
         if self.model_cell_size == 'Y':
-            self.adata.uns['st_cell_size_centroids'] = self.model_params['log_psi'].reshape(-1,1).detach().exp().cpu().numpy()
+            self.adata.uns['st_cell_size_centroids'] = self.model_params['log_psi'].reshape(-1,1).detach().exp().cpu().numpy().T
 
-        self.adata.uns['init_exp_centroids'] = pd.DataFrame(self.adata.uns['init_exp_centroids'], columns = self.adata.var_names) #.to_csv(code_dir + "/output/init_centroids.csv")
-        self.adata.uns['init_exp_variances'] = pd.DataFrame(self.adata.uns['init_exp_variances'], columns = self.adata.var_names) #.to_csv(code_dir + "/output/init_centroids.csv")
+        #self.adata.varm['init_exp_centroids'] = pd.DataFrame(self.adata.varm['init_exp_centroids'], columns = self.adata.var_names) #.to_csv(code_dir + "/output/init_centroids.csv")
+        #self.adata.varm['init_exp_variances'] = pd.DataFrame(self.adata.varm['init_exp_variances'], columns = self.adata.var_names) #.to_csv(code_dir + "/output/init_centroids.csv")

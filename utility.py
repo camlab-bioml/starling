@@ -66,15 +66,15 @@ def init_clustering(adata, initial_clustering_method, k=None):
         
         ## save phenograph centers
         k = len(np.unique(init_l))
-        init_v = np.zeros((k, adata.X.shape[1]))
-        init_c = np.zeros((k, adata.X.shape[1]))
+        init_e = np.zeros((k, adata.X.shape[1]))
+        init_ev = np.zeros((k, adata.X.shape[1]))
         for c in range(k):
             init_e[c,:] = adata.X[init_l==c].mean(0)
             init_ev[c,:] = adata.X[init_l==c].var(0)
     
     adata.obs['init_label'] = init_l
-    adata.uns['init_exp_centroids'] = init_e ## An expression matrix (CxP) resulting from a clustering method (i.e., Kmeans)
-    adata.uns['init_exp_variances'] = init_ev ## An expression variance (daignal) matrix (CxP) resulting from a clustering method
+    adata.varm['init_exp_centroids'] = init_e.T ## An expression matrix (PxC) resulting from a clustering method (i.e., Kmeans)
+    adata.varm['init_exp_variances'] = init_ev.T ## An expression variance (daignal) matrix (PxC) resulting from a clustering method
 
     return adata
 
@@ -83,8 +83,8 @@ def model_paramters(adata):
 
     ''' return setup model parameters '''
 
-    init_e = adata.uns['init_exp_centroids'] 
-    init_v = adata.uns['init_exp_variances']
+    init_e = adata.varm['init_exp_centroids'].T
+    init_v = adata.varm['init_exp_variances'].T
     init_s = adata.uns['init_cell_size_centroids']
     init_sv = adata.uns['init_cell_size_variances']
 

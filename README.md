@@ -8,13 +8,15 @@ While doublets have been extensively discussed in the context of single-cell RNA
 2. A sample input file (sample_input.h5ad) can be found.
 3. Run STARLING via starling.py (sample file must be in the same directory).
 4. Note: the information can be retrieved in annData object.
-   - st.adata.uns['init_exp_centroids'] -- initial expression cluster centroids (C x P matrix)
-   - st.adata.uns['st_exp_centroids'] -- STARLING expression cluster centroids (C x P matrix)
-   - st.adata.uns['init_cell_size_centroids'] & st.adata.uns['st_cell_size_centroids'] -- initial & STARLING cell size centroids if STARLING models cell size
-   - st.adata.uns['assignment_prob_matrix'] -- cell assignment distributions (N x P maxtrix)
-   - st.adata.obs['max_assign_prob'] -- max probility of assigning to a cluster
-   - st.adata.obs['init_label'] -- inital expression cluster assignments
-   - st.adata.obs['st_label'] -- STARLING expression cluster assignments
+   - st.adata.varm['init_exp_centroids'] -- initial expression cluster centroids (P x C matrix)
+   - st.adata.varm['st_exp_centroids'] -- STARLING expression cluster centroids (P x C matrix)
+   - st.adata.uns['init_cell_size_centroids'] -- initial cell size centroids if STARLING models cell size
+   - st.adata.uns['st_cell_size_centroids'] -- initial & STARLING cell size centroids if STARLING models cell size
+   - st.adata.obsm['assignment_prob_matrix'] -- cell assignment distributions (N x C maxtrix)
+   - st.adata.obs['doublet'] -- doublet indicator
    - st.adata.obs['doublet_prob'] -- doublet probabilities
-   - N: # of cells; C: # of clusters; P: # of proteins
-5. tutorial.ipynb is an example of running STARLING
+   - st.adata.obs['init_label'] -- inital assignments
+   - st.adata.obs['st_label'] -- STARLING assignments
+   - st.adata.obs['max_assign_prob'] -- STARLING max probabilites of assignments
+      - N: # of cells; C: # of clusters; P: # of proteins
+6. tutorial.ipynb is an example of running STARLING

@@ -183,7 +183,7 @@ multidict==6.0.2
 multimethod==1.7
 munkres==1.1.4
 mygene==3.2.2
-mypy-extensions==0.4.3
+mypy-extensions==1.0.0
 napari==0.4.16
 napari-console==0.0.4
 napari-plugin-engine==0.2.0

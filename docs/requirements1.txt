@@ -276,7 +276,7 @@ pytz==2021.3
 PyWavelets==1.2.0
 PyYAML==6.0
 pyzmq==22.3.0
-qtconsole==5.2.2
+qtconsole==5.4.4
 QtPy==2.0.1
 rapidfuzz==2.6.0
 ratelimiter==1.2.0.post0

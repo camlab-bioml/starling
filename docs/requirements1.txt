@@ -79,7 +79,7 @@ executing==0.8.2
 fasteners==0.17.3
 fastjsonschema==2.16.1
 fbpca==1.0
-fcsparser==0.2.4
+fcsparser==0.2.7
 fdasrsf==2.3.7
 filelock==3.6.0
 findiff==0.8.9

@@ -5,8 +5,8 @@ description = "ST"
 authors = ["Jett (Yuju) Lee <yujulee@cs.toronto.edu>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/Usually-zz/starling-tool"
-repository = "https://github.com/Usually-zz/starling-tool"
+homepage = "https://github.com/camlab-bioml/starling-tool/starling-tool"
+repository = "https://github.com/camlab-bioml/starling-tool/starling-tool"
 documentation = "https://starling-tool.readthedocs.io"
 packages = [
     { include = "starling", from = "src" },
@@ -16,7 +16,7 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/Usually-zz/starling-tool/releases"
+Changelog = "https://github.com/camlab-bioml/starling-tool/starling-tool/releases"
 
 [tool.poetry.dependencies]
 python = "^3.7"

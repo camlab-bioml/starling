@@ -16,7 +16,7 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/camlab-bioml/starling-tool/starling-tool/releases"
+Changelog = "https://github.com/camlab-bioml/starling-tool/releases"
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -78,4 +78,4 @@ show_error_context = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+build-backend = "poetry.core.masonry.api":wq

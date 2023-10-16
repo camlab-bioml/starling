@@ -5,7 +5,7 @@
 #[![Python Version](https://img.shields.io/pypi/pyversions/starling-tool)][python version] -->
 [![License](https://github.com/camlab-bioml/starling-tool/blob/main)][license]
 
-<!--[![Read the documentation at https://starling-tool.readthedocs.io/](https://img.shields.io/readthedocs/starling-tool/latest.svg?label=Read%20the%20Docs)][read the docs] -->
+<!--[![Read the documentation at https://starling-tool.readthedocs.io/](https://img.shields.io/readthedocs/starling-tool/latest.svg?label=Read%20the%20Docs)][read the docs]
 [![Tests](https://github.com/camlab-bioml/starling-toolworkflows/Tests/badge.svg)][tests]
 [![Codecov](https://codecov.io/gh/camlab-bioml/starling-tool/branch/main/graph/badge.svg)][codecov]
 
@@ -19,7 +19,7 @@
 [tests]: https://github.com/Usually-zz/starling-tool/actions?workflow=Tests
 [codecov]: https://app.codecov.io/gh/Usually-zz/starling-tool
 [pre-commit]: https://github.com/pre-commit/pre-commit
-[black]: https://github.com/psf/black
+[black]: https://github.com/psf/black -->
 
 ## Features
 

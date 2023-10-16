@@ -1,13 +1,13 @@
 # STARLING TOOL (ST)
 
-[![PyPI](https://img.shields.io/pypi/v/starling-tool.svg)][pypi_]
-[![Status](https://img.shields.io/pypi/status/starling-tool.svg)][status]
-[![Python Version](https://img.shields.io/pypi/pyversions/starling-tool)][python version]
-[![License](https://github.com/camlab-bioml/starling-tool/blob/main/LICENSE)][license]
+#[![PyPI](https://img.shields.io/pypi/v/starling-tool.svg)][pypi_]
+#[![Status](https://img.shields.io/pypi/status/starling-tool.svg)][status]
+#[![Python Version](https://img.shields.io/pypi/pyversions/starling-tool)][python version]
+[![License](https://github.com/camlab-bioml/starling-tool/blob/main)][license]
 
-[![Read the documentation at https://starling-tool.readthedocs.io/](https://img.shields.io/readthedocs/starling-tool/latest.svg?label=Read%20the%20Docs)][read the docs]
-[![Tests](https://github.com/Usually-zz/starling-tool/workflows/Tests/badge.svg)][tests]
-[![Codecov](https://codecov.io/gh/Usually-zz/starling-tool/branch/main/graph/badge.svg)][codecov]
+#[![Read the documentation at https://starling-tool.readthedocs.io/](https://img.shields.io/readthedocs/starling-tool/latest.svg?label=Read%20the%20Docs)][read the docs]
+[![Tests](https://github.com/camlab-bioml/starling-toolworkflows/Tests/badge.svg)][tests]
+[![Codecov](https://codecov.io/gh/camlab-bioml/starling-tool/branch/main/graph/badge.svg)][codecov]
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)][pre-commit]
 [![Black](https://img.shields.io/badge/code%20style-black-000000.svg)][black]

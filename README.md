@@ -1,4 +1,4 @@
-# ST
+# STARLING TOOL (ST)
 
 [![PyPI](https://img.shields.io/pypi/v/starling-tool.svg)][pypi_]
 [![Status](https://img.shields.io/pypi/status/starling-tool.svg)][status]

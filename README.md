@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/starling-tool.svg)][pypi_]
 [![Status](https://img.shields.io/pypi/status/starling-tool.svg)][status]
 [![Python Version](https://img.shields.io/pypi/pyversions/starling-tool)][python version]
-[![License](https://img.shields.io/pypi/l/starling-tool)][license]
+[![License](https://github.com/camlab-bioml/starling-tool/blob/main/)][license]
 
 [![Read the documentation at https://starling-tool.readthedocs.io/](https://img.shields.io/readthedocs/starling-tool/latest.svg?label=Read%20the%20Docs)][read the docs]
 [![Tests](https://github.com/Usually-zz/starling-tool/workflows/Tests/badge.svg)][tests]

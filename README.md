@@ -32,7 +32,7 @@ While doublets have been extensively discussed in the context of single-cell RNA
 
 ## Installation
 
-You can install _ST_ via [pip] from [PyPI]:
+You can install _STARLING-TOOL (ST)_ via [pip] from [PyPI]:
 
 ```console
 $ pip install starling-tool
@@ -50,7 +50,7 @@ To learn more, see the [Contributor Guide].
 ## License
 
 Distributed under the terms of the [MIT license][license],
-_ST_ is free and open source software.
+_STARLING-TOOL (ST)_ is free and open source software.
 
 ## Issues
 

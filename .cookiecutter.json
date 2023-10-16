@@ -1,0 +1,16 @@
+{
+  "_checkout": "2022.6.3",
+  "_output_dir": "/home/campbell/yulee/github",
+  "_repo_dir": "/home/campbell/yulee/.cookiecutters/cookiecutter-hypermodern-python",
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Jett Lee",
+  "copyright_year": "2023",
+  "development_status": "Development Status :: 3 - Alpha",
+  "email": "yujulee@cs.toronto.edu",
+  "friendly_name": "starling",
+  "github_user": "camlab-bioml",
+  "license": "MIT",
+  "package_name": "starling",
+  "project_name": "starling-tool",
+  "version": "0.0.0"
+}

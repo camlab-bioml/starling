@@ -19,7 +19,6 @@ pip install virtualenvwrapper==4.8.4
 mkvirtualenv starling
 
 ```
-
 for convenience, one can install packages in the tested environment,
 
 ```
@@ -37,10 +36,7 @@ Note: a list of required packages can be found in setup.py if one does not want 
 
 ## Getting started
 
-Launch the interactive tutorial: |on github|
-
-.. |on github| image:: https://img.shields.io/badge/on-github-black
-    :target: https://github.com/camlab-bioml/starling/docs/tutorial.ipynb
+Launch the interactive tutorial: [jupyter notebook][tutorial]
 
 ## License
 
@@ -54,5 +50,7 @@ _starling_ is free and open source software.
 
 <!-- github-only -->
 
+[github_image]: https://img.shields.io/badge/on-github-black
+[tutorial]: https://github.com/camlab-bioml/starling/main/docs/tutorial.ipynb
 [license]: https://github.com/camlab-bioml/starling/blob/main/LICENSE
 #[contributor guide]: https://github.com/camlab-bioml/starling/blob/main/CONTRIBUTING.md

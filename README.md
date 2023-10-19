@@ -50,7 +50,7 @@ _starling_ is free and open source software.
 
 <!-- github-only -->
 
-[github_image]: https://img.shields.io/badge/on-github-black
-[tutorial]: https://github.com/camlab-bioml/starling/main/docs/tutorial.ipynb
+#[github_image]: https://img.shields.io/badge/on-github-black
+[tutorial]: https://github.com/camlab-bioml/starling/blob/main/docs/tutorial.ipynb
 [license]: https://github.com/camlab-bioml/starling/blob/main/LICENSE
 #[contributor guide]: https://github.com/camlab-bioml/starling/blob/main/CONTRIBUTING.md

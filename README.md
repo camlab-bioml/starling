@@ -45,8 +45,8 @@ _starling_ is free and open source software.
 
 ## Authors
 
-| Jett (Yuju) Lee & Kieran Campbell
-| Lunenfeld-Tanenbaum Research Institute & University of Toronto
+Jett (Yuju) Lee & Kieran Campbell
+Lunenfeld-Tanenbaum Research Institute & University of Toronto
 
 <!-- github-only -->
 

@@ -6,7 +6,7 @@ While doublets have been extensively discussed in the context of single-cell RNA
 
 ## Installation
 
-_starling_ can be cloned and installed locally using access to the Github repository
+_starling_ can be cloned and installed locally using access to the Github repository,
 
 ```
 git clone https://github.com/camlab-bioml/starling.git && cd starling
@@ -25,14 +25,14 @@ for convenience, one can install packages in the tested environment,
 pip install -r requirements.txt
 ```
 
-the virtual environment can be activated and deactivated subsequently
+the virtual environment can be activated and deactivated subsequently,
 
 ```
 workon starling 
 deactivate
 ```
 
-Note: a list of minimal required packages needed for _starling_ can be found in setup.py if creating a new virtual environment is not an option. 
+a list of minimal required packages needed for _starling_ can be found in setup.py if creating a new virtual environment is not an option. 
 
 ## Getting started
 

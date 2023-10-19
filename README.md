@@ -32,7 +32,7 @@ workon starling
 deactivate
 ```
 
-Note: a list of required packages can be found in setup.py if one does not want to create a new virtual environment. 
+Note: a list of minimal required packages needed for _starling_ can be found in setup.py if creating a new virtual environment is not an option. 
 
 ## Getting started
 
@@ -50,5 +50,5 @@ _starling_ is free and open source software.
 
 <!-- github-only -->
 
-[tutorial]: https://github.com/camlab-bioml/starling/blob/main/docs/tutorial.ipynb
+[tutorial]: https://github.com/camlab-bioml/starling/blob/main/docs/tutorial/getting-started.ipynb
 [license]: https://github.com/camlab-bioml/starling/blob/main/LICENSE

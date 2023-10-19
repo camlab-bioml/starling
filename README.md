@@ -17,8 +17,8 @@ we use virtualenvwrapper (4.8.4) to create and activated a standalone virtual en
 ```
 pip install virtualenvwrapper==4.8.4
 mkvirtualenv starling
-
 ```
+
 for convenience, one can install packages in the tested environment,
 
 ```
@@ -50,7 +50,5 @@ _starling_ is free and open source software.
 
 <!-- github-only -->
 
-#[github_image]: https://img.shields.io/badge/on-github-black
 [tutorial]: https://github.com/camlab-bioml/starling/blob/main/docs/tutorial.ipynb
 [license]: https://github.com/camlab-bioml/starling/blob/main/LICENSE
-#[contributor guide]: https://github.com/camlab-bioml/starling/blob/main/CONTRIBUTING.md

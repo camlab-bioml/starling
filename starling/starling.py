@@ -1,5 +1,4 @@
 from starling import utility
-#import utility
 
 import torch
 import numpy as np
@@ -7,14 +6,15 @@ import pandas as pd
 
 import pytorch_lightning as pl
 
+BATCH_SIZE = 512
 AVAIL_GPUS = min(1, torch.cuda.device_count())
-BATCH_SIZE = 512 if AVAIL_GPUS else 32
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class ST(pl.LightningModule):
     def __init__(self, 
                  adata,                       ## annDATA of the sample
                  dist_option = 'T',           ## T: Student-T (df=2); N: Normal (Gaussian)
+                 singlet_prop = 0.6,          ## The proportion of anticipated segmentation error free cells
                  model_cell_size = 'Y',       ## If STARLING incoporates cell size in the model (Y: Yes; N: No)
                  cell_size_col_name = 'area', ## The column name in AnnDATA object (anndata.obs)
                  model_zplane_overlap = 'Y',  ## If cell size is modelled, STARLING can model z-plane overlap (Y: Yes; N: No)
@@ -25,8 +25,9 @@ class ST(pl.LightningModule):
         
         #self.save_hyperparameters()
         
-        self.adata = adata        
+        self.adata = adata
         self.dist_option = dist_option
+        self.singlet_prop = singlet_prop
         self.model_cell_size = model_cell_size
         self.cell_size_col_name = cell_size_col_name
         self.model_zplane_overlap = model_zplane_overlap
@@ -95,7 +96,7 @@ class ST(pl.LightningModule):
             self.train_df = utility.ConcatDataset(self.X, tr_fy, tr_fl)
 
         #model_params = utility.model_paramters(self.init_e, self.init_v, self.init_s, self.init_sv)
-        model_params = utility.model_paramters(self.adata)
+        model_params = utility.model_parameters(self.adata, self.singlet_prop)
         self.model_params = {k: torch.from_numpy(val).to(DEVICE).requires_grad_(True) for (k,val) in model_params.items()}
         
     def train_dataloader(self):
@@ -108,14 +109,16 @@ class ST(pl.LightningModule):
         else:
             model_pred_loader = torch.utils.data.DataLoader(self.X, batch_size = 1000, shuffle = False)
 
-        singlet_prob, singlet_assig_prob = utility.predict(model_pred_loader, self.model_params, self.dist_option, self.model_cell_size, self.model_zplane_overlap, threshold)
-        
+        singlet_prob, singlet_assig_prob, gamma_assig_prob = utility.predict(model_pred_loader, self.model_params, self.dist_option, self.model_cell_size, self.model_zplane_overlap, threshold)
+
         self.adata.obs['st_label'] = np.array(singlet_assig_prob.max(1).indices) ##p(z=c|d=1)
         self.adata.obs['doublet_prob'] = 1 - np.array(singlet_prob)
         self.adata.obs['doublet'] = 0
         self.adata.obs.loc[self.adata.obs['doublet_prob'] > 0.5,'doublet'] = 1
         self.adata.obs['max_assign_prob'] = np.array(singlet_assig_prob.max(1).values)
+
         self.adata.obsm['assignment_prob_matrix'] = np.array(singlet_assig_prob)
+        self.adata.obsm['gamma_assignment_prob_matrix'] = np.array(gamma_assig_prob)
 
         #st_label = singlet_assig_label.numpy().astype('str')
         #st_label[st_label == '-1'] = 'doublet'

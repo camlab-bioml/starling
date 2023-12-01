@@ -78,8 +78,8 @@ def init_clustering(adata, initial_clustering_method, k=None):
 
     return adata
 
-#def model_paramters(init_c, init_v, init_s=None, init_sv=None):
-def model_paramters(adata):
+#def model_parameters(init_c, init_v, init_s=None, init_sv=None):
+def model_parameters(adata, singlet_prop):
 
     ''' return setup model parameters '''
 
@@ -96,7 +96,7 @@ def model_paramters(adata):
     model_params = {
     'is_pi': np.log(pi + 1e-6),
     'is_tau': np.log(tau + 1e-6),
-    'is_delta': np.log([0.95, 0.05])
+    'is_delta': np.log([1 - singlet_prop, singlet_prop])
     }
 
     model_params['log_mu'] = np.log(init_e + 1e-6)
@@ -144,8 +144,8 @@ def compute_p_y_given_z(Y, Theta, dist_option): ## singlet case given expression
     
     """ Returns # of obs x # of cluster matrix - p(y_n | z_n = c) """
   
-    mu = torch.exp(Theta['log_mu'])
-    sigma = torch.exp(torch.clamp(Theta['log_sigma'], min=-12, max=14))
+    mu = torch.clamp(torch.exp(torch.clamp(Theta['log_mu'], min=-12, max=14)), min=0)
+    sigma = torch.clamp(torch.exp(torch.clamp(Theta['log_sigma'], min=-12, max=14)), min=0)
     
     if dist_option == 'N':
         dist_Y = torch.distributions.Normal(loc = mu, scale = sigma)
@@ -158,8 +158,8 @@ def compute_p_s_given_z(S, Theta, dist_option): ## singlet case given cell sizes
     
     """ Returns # of obs x # of cluster matrix - p(s_n | z_n = c) """
     
-    psi = torch.exp(Theta['log_psi'])
-    omega = torch.exp(torch.clamp(Theta['log_omega'], min=-12, max=14))
+    psi = torch.clamp(torch.exp(torch.clamp(Theta['log_psi'], min=-12, max=14)), min=0)
+    omega = torch.clamp(torch.exp(torch.clamp(Theta['log_omega'], min=-12, max=14)), min=0)
 
     if dist_option == 'N':
         dist_S = torch.distributions.Normal(loc = psi, scale = omega)
@@ -172,8 +172,8 @@ def compute_p_y_given_gamma(Y, Theta, dist_option): ## doublet case given expres
     
     """ Returns # of obs x # of cluster x # of cluster matrix - p(y_n | gamma_n = [c,c']) """
 
-    mu = torch.exp(Theta['log_mu'])
-    sigma = torch.exp(torch.clamp(Theta['log_sigma'], min=-12, max=14))
+    mu = torch.clamp(torch.exp(torch.clamp(Theta['log_mu'], min=-12, max=14)), min=0)
+    sigma = torch.clamp(torch.exp(torch.clamp(Theta['log_sigma'], min=-12, max=14)), min=0)
 
     mu2 = mu.reshape(1, mu.shape[0], mu.shape[1])
     mu2 = (mu2 + mu2.permute(1,0,2)) / 2.0 # C x C x G matrix 
@@ -194,8 +194,8 @@ def compute_p_s_given_gamma(S, Theta, dist_option): ## singlet case given cell s
     
     """ Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c']) """
 
-    psi = torch.exp(Theta['log_psi'])
-    omega = torch.exp(torch.clamp(Theta['log_omega'], min=-12, max=14))
+    psi = torch.clamp(torch.exp(torch.clamp(Theta['log_psi'], min=-12, max=14)), min=0)
+    omega = torch.clamp(torch.exp(torch.clamp(Theta['log_omega'], min=-12, max=14)), min=0) #+ 1e-6
 
     psi2 = psi.reshape(-1,1)
     psi2 = psi2 + psi2.T
@@ -213,8 +213,8 @@ def compute_p_s_given_gamma_model_overlap(S, Theta):
     
     """ Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c']) """
 
-    psi = torch.exp(Theta['log_psi'])
-    omega = torch.exp(torch.clamp(Theta['log_omega'], min=-12, max=14))
+    psi = torch.clamp(torch.exp(torch.clamp(Theta['log_psi'], min=-12, max=14)), min=0)
+    omega = torch.clamp(torch.exp(torch.clamp(Theta['log_omega'], min=-12, max=14)), min=0) #+ 1e-6
 
     psi2 = psi.reshape(-1,1)
     psi2 = psi2 + psi2.T
@@ -316,3 +316,36 @@ def predict(dataLoader, model_params, dist_option, model_cell_size, model_zplane
     #singlet_assig_label = torch.cat(singlet_assig_label_list)
     
     return singlet_prob, singlet_assig_prob #, singlet_assig_label
+
+def predict(dataLoader, model_params, dist_option, model_cell_size, model_zplane_overlap, threshold=0.5):
+    
+    ''' return singlet/doublet probabilities, singlet cluster assignment probabilty matrix & assignment labels '''
+
+    singlet_prob_list = []
+    gamma_assig_prob_list = []
+    singlet_assig_prob_list = []
+    #singlet_assig_label_list = []
+
+    with torch.no_grad():
+        for i, bat in enumerate(dataLoader):
+            if model_cell_size:
+                #print(bat[0].shape)
+                #print(bat[1].shape)
+                singlet_assig_prob, gamma_assig_prob, _, singlet_prob = compute_posteriors(bat[0].to(DEVICE), bat[1].to(DEVICE), model_params, dist_option, model_zplane_overlap)
+            else:
+                singlet_assig_prob, gamma_assig_prob, _, singlet_prob = compute_posteriors(bat.to(DEVICE), None, model_params, dist_option, model_zplane_overlap)
+
+            singlet_prob_list.append(singlet_prob.cpu())
+            gamma_assig_prob_list.append(gamma_assig_prob.exp().cpu())
+            singlet_assig_prob_list.append(singlet_assig_prob.exp().cpu())
+
+            #batch_pred = singlet_assig_prob.exp().max(1).indices
+            #batch_pred[singlet_prob <= threshold] = -1
+            #singlet_assig_label_list.append(batch_pred.cpu())
+
+    singlet_prob = torch.cat(singlet_prob_list)
+    gamma_assig_prob = torch.cat(gamma_assig_prob_list)
+    singlet_assig_prob = torch.cat(singlet_assig_prob_list)
+    #singlet_assig_label = torch.cat(singlet_assig_label_list)
+    
+    return singlet_prob, singlet_assig_prob, gamma_assig_prob

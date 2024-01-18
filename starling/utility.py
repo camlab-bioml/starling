@@ -1,6 +1,7 @@
 import numpy as np
 import scanpy.external as sce
 import torch
+from scanpy import AnnData
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 

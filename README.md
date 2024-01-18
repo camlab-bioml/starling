@@ -11,6 +11,7 @@ _starling_ can be cloned and installed locally using access to the Github reposi
 ```
 git clone https://github.com/camlab-bioml/starling.git && cd starling
 ```
+Ensure that you are using at least python3.9 installed on your system.
 
 we use virtualenvwrapper (4.8.4) to create and activated a standalone virtual environment for _starling_,
 
@@ -28,11 +29,11 @@ pip install -r requirements.txt
 the virtual environment can be activated and deactivated subsequently,
 
 ```
-workon starling 
+workon starling
 deactivate
 ```
 
-a list of minimal required packages needed for _starling_ can be found in setup.py if creating a new virtual environment is not an option. 
+a list of minimal required packages needed for _starling_ can be found in setup.py if creating a new virtual environment is not an option.
 
 ## Getting started
 

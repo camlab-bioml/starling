@@ -10,34 +10,6 @@ from sklearn.mixture import GaussianMixture
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-def construct_annData(data):
-    """return annData object from a dataframe
-    TODO: can this be removed?
-    """
-
-    wCols = data.columns
-    df = data.loc[:, wCols]
-
-    cell_info = df["sample"].astype(str) + "_" + df["id"].astype(str)
-    df = df.set_index(cell_info)
-
-    obs = df[["sample", "id", "x", "y", "area", "area_convex", "neighbor"]]
-
-    df = df.drop("sample", axis=1)
-    df = df.drop("id", axis=1)
-    df = df.drop("x", axis=1)
-    df = df.drop("y", axis=1)
-    df = df.drop("area", axis=1)
-    df = df.drop("area_convex", axis=1)
-    df = df.drop("neighbor", axis=1)
-
-    adata = AnnData(df.values, obs)
-    adata.var_names = wCols[7:]
-
-    return adata
-    # adata.write("sample_input.h5ad") # h5ad file
-
-
 class ConcatDataset(torch.utils.data.Dataset):
     def __init__(self, *datasets):
         self.datasets = datasets

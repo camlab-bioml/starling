@@ -17,6 +17,7 @@ python = "^3.9"
 torch = "1.12.1"
 pytorch-lightning = "2.1.0"
 scanpy = "1.9.5"
+phenograph = "^1.5.7"
 
 [tool.poetry.group.dev]
 

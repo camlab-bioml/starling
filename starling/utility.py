@@ -1,3 +1,5 @@
+from typing import Literal, Union
+
 import numpy as np
 import scanpy.external as sce
 import torch
@@ -9,7 +11,9 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 def construct_annData(data):
-    """return annData object from a dataframe"""
+    """return annData object from a dataframe
+    TODO: can this be removed?
+    """
 
     wCols = data.columns
     df = data.loc[:, wCols]
@@ -45,8 +49,29 @@ class ConcatDataset(torch.utils.data.Dataset):
         return min(len(d) for d in self.datasets)
 
 
-def init_clustering(adata, initial_clustering_method, k=None):
-    """return initial cluster centroids, variances & labels"""
+def init_clustering(
+    adata: AnnData,
+    initial_clustering_method: Literal["KM", "GMM", "PG"],
+    k: Union[int, None] = None,
+) -> AnnData:
+    """Compute initial cluster centroids, variances & labels
+
+    :param adata: AnnData
+    :param initial_clustering_method: one of ``KM`` (K Means),
+    ``GMM`` (Gaussian Mixture), or ``PG`` (PhenoGraph).
+    :param k: ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
+    ``k`` when ``initial_clustering_method`` is ``KM`` (required),
+    ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
+    :raises: ValueError
+
+    :returns: AnnData
+    """
+
+    if initial_clustering_method not in ["KM", "GMM", "PG"]:
+        raise ValueError('initial_clustering_method must be one of "KM","GMM","PG"')
+
+    if initial_clustering_method in ["KM", "GMM"] and k is None:
+        raise ValueError("k cannot be ommitted for KMeans or Gaussian Mixture")
 
     if initial_clustering_method == "KM":
         kms = KMeans(k).fit(adata.X)
@@ -359,53 +384,6 @@ def compute_posteriors(Y, S, Theta, dist_option, model_overlap):
     )  ## p(d=1,gamma=[c,c']|data)
 
     return r.T, v.T, cost, prob_singlet
-
-
-def predict(
-    dataLoader,
-    model_params,
-    dist_option,
-    model_cell_size,
-    model_zplane_overlap,
-    threshold=0.5,
-):
-    """return singlet/doublet probabilities, singlet cluster assignment probabilty matrix & assignment labels"""
-
-    singlet_prob_list = []
-    singlet_assig_prob_list = []
-    # singlet_assig_label_list = []
-
-    with torch.no_grad():
-        for i, bat in enumerate(dataLoader):
-            if model_cell_size:
-                singlet_assig_prob, _, _, singlet_prob = compute_posteriors(
-                    bat[0].to(DEVICE),
-                    bat[1].to(DEVICE),
-                    model_params,
-                    dist_option,
-                    model_zplane_overlap,
-                )
-            else:
-                singlet_assig_prob, _, _, singlet_prob = compute_posteriors(
-                    bat.to(DEVICE),
-                    None,
-                    model_params,
-                    dist_option,
-                    model_zplane_overlap,
-                )
-
-            singlet_prob_list.append(singlet_prob.cpu())
-            singlet_assig_prob_list.append(singlet_assig_prob.exp().cpu())
-
-            # batch_pred = singlet_assig_prob.exp().max(1).indices
-            # batch_pred[singlet_prob <= threshold] = -1
-            # singlet_assig_label_list.append(batch_pred.cpu())
-
-    singlet_prob = torch.cat(singlet_prob_list)
-    singlet_assig_prob = torch.cat(singlet_assig_prob_list)
-    # singlet_assig_label = torch.cat(singlet_assig_label_list)
-
-    return singlet_prob, singlet_assig_prob  # , singlet_assig_label
 
 
 def predict(

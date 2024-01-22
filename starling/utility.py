@@ -28,7 +28,7 @@ def init_clustering(
 ) -> AnnData:
     """Compute initial cluster centroids, variances & labels
 
-    :param adata: The data to be analyzed
+    :param adata: The initial data to be analyzed
     :type adata: AnnData
     :param initial_clustering_method: The method for computing the initial clusters
     :type initial_clustering_method: str, one of ``KM`` (K Means), ``GMM`` (Gaussian Mixture),
@@ -127,7 +127,7 @@ def model_parameters(adata, singlet_prop):
 
 
 def simulate_data(
-    Y, S=None, model_overlap="Y"
+    Y, S=None, model_overlap=True
 ):  ## use real data to simulate singlets/doublets (equal proportions)
     """return same number of cells as in Y/S, half of them are singlets and another half are doublets"""
 
@@ -153,7 +153,7 @@ def simulate_data(
         return fake_Y, None, fake_label
     else:
         S_singlet = S[idx_singlet]
-        if model_overlap == "Y":
+        if model_overlap:
             dmax = torch.vstack([S[idx_doublet[0]], S[idx_doublet[1]]]).max(0).values
             dsum = S[idx_doublet[0]] + S[idx_doublet[1]]
             rr_dist = torch.distributions.Uniform(

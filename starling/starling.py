@@ -1,6 +1,7 @@
 import numpy as np
 import pytorch_lightning as pl
 import torch
+from torch.utils.data import DataLoader
 
 from anndata import AnnData
 
@@ -14,7 +15,7 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 class ST(pl.LightningModule):
     """The STARLING module
 
-    :param adata: The sample
+    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`
     :type adata: AnnData
     :param dist_option: The distribution to use
     :type dist_option: str, one of 'T' for Student-T (df=2) or 'N' for Normal (Gaussian), defaults to T
@@ -64,7 +65,17 @@ class ST(pl.LightningModule):
             else None
         )
 
-    def forward(self, batch):
+    def forward(
+        self, batch: list[torch.Tensor]
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """The module's forward pass
+
+        :param batch: A list of tensors of size m x n
+        :type batch: list
+
+        :returns: Negative log loss, Binary Cross-Entropy Loss, singlet probability
+        :rtype: tuple of type ``pytorch.Tensor``, NLL and BCE are scalars, while singlet probability has shape m
+        """
         if self.model_cell_size:
             y, s, fy, fs, fl = batch
             _, _, model_nll, _ = utility.compute_posteriors(
@@ -86,7 +97,15 @@ class ST(pl.LightningModule):
 
         return model_nll, fake_loss, p_fake_singlet
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch) -> torch.Tensor:
+        """Compute and return the training loss
+
+        :param batch: A list of tensors of size m x n
+        :type batch: list
+
+        :returns: Total loss
+        :rtype: torch.Tensor, scalar
+        """
         # y, s, fy, fs, fl = batch
         model_nll, fake_loss, p_fake_singlet = self(batch)
 
@@ -99,14 +118,21 @@ class ST(pl.LightningModule):
 
         return loss
 
-    def predict_step(self, batch, batch_idx, dataloader_idx=0):
-        return self(batch)
+    def configure_optimizers(self) -> torch.optim.adam.Adam:
+        """Configure the Adam optimizer.
 
-    def configure_optimizers(self):
+        :returns: the optimizer
+        :rtype: torch.optim.adam.Adam
+        """
         optimizer = torch.optim.Adam(self.model_params.values(), lr=self.learning_rate)
         return optimizer
 
-    def prepare_data(self):
+    def prepare_data(self) -> None:
+        """Create training dataset and set model parameters
+
+        :returns: None
+        :rtype: None
+        """
         tr_fy, tr_fs, tr_fl = utility.simulate_data(
             self.X, self.S, self.model_zplane_overlap
         )
@@ -139,20 +165,31 @@ class ST(pl.LightningModule):
             for (k, val) in model_params.items()
         }
 
-    def train_dataloader(self):
-        return torch.utils.data.DataLoader(
+    def train_dataloader(self) -> DataLoader:
+        """Create the training DataLoader
+
+        :returns: the training DataLoader
+        :rtype: torch.utils.data.DataLoader
+        """
+        return DataLoader(
             self.train_df, batch_size=BATCH_SIZE, shuffle=True, num_workers=8
         )
 
-    def result(self, threshold=0.5):
+    def result(self, threshold=0.5) -> None:
+        """Retrieve the results and add them to ``self.adata``
+
+        :param threshold: minimum for singlet probability (?) (currently unused)
+        :type threshold: float, defaults to .05
+
+        :returns: None
+        :rtype: None
+        """
         if self.model_cell_size:
-            model_pred_loader = torch.utils.data.DataLoader(
+            model_pred_loader = DataLoader(
                 utility.ConcatDataset(self.X, self.S), batch_size=1000, shuffle=False
             )
         else:
-            model_pred_loader = torch.utils.data.DataLoader(
-                self.X, batch_size=1000, shuffle=False
-            )
+            model_pred_loader = DataLoader(self.X, batch_size=1000, shuffle=False)
 
         singlet_prob, singlet_assig_prob, gamma_assig_prob = utility.predict(
             model_pred_loader,

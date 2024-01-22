@@ -3,6 +3,7 @@ from typing import Literal, Union
 import numpy as np
 import scanpy.external as sce
 import torch
+from torch.utils.data import Dataset, DataLoader
 from scanpy import AnnData
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
@@ -10,8 +11,14 @@ from sklearn.mixture import GaussianMixture
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-class ConcatDataset(torch.utils.data.Dataset):
-    def __init__(self, *datasets):
+class ConcatDataset(Dataset):
+    """A dataset of comprised of datasets
+
+    :param datasets: the datasets to concatenate, each of ``d.shape[0] == m``
+    :type datasets: tuple[torch.Tensor, ...]
+    """
+
+    def __init__(self, datasets: list[torch.Tensor]):
         self.datasets = datasets
 
     def __getitem__(self, i):
@@ -92,8 +99,16 @@ def init_clustering(
     return adata
 
 
-def model_parameters(adata, singlet_prop):
-    """Return setup model parameters
+def model_parameters(adata: AnnData, singlet_prop: float) -> dict[str, np.ndarray]:
+    """Return initial model parameters
+
+    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`
+    :type adata: AnnData
+    :param singlet_prop:  The proportion of anticipated segmentation error free cells
+    :type singlet_prop: float
+
+    :returns: the model parameters
+    :rtype: dict[str, np.array]
     """
 
     init_e = adata.varm["init_exp_centroids"].T
@@ -126,10 +141,21 @@ def model_parameters(adata, singlet_prop):
     return model_params
 
 
-def simulate_data(
-    Y, S=None, model_overlap=True
-):  ## use real data to simulate singlets/doublets (equal proportions)
-    """return same number of cells as in Y/S, half of them are singlets and another half are doublets"""
+def simulate_data(Y: torch.Tensor, S: Union[torch.Tensor, None] = None, model_overlap=True):
+    """Use real data to simulate singlets/doublets (equal proportions).
+    Return same number of cells as in Y/S, half of them are singlets and another half are doublets
+    :param Y: data matrix of shape m x n
+    :type Y: torch.Tensor
+    :param S: data matrix of shape m
+    :type S: Union[torch.Tensor, None], defaults to None
+    :param model_overlap: If cell size is modelled, should STARLING model z-plane overlap
+    :type model_overlap: bool, defaults to True
+
+    :returns: the simulated data
+    :rtype: tuple[torch.Tensor, None, torch.Tensor] if :param:`S` is None,
+    otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]
+
+    """
 
     sample_size = int(Y.shape[0] / 2)
     idx_singlet = np.random.choice(Y.shape[0], size=sample_size, replace=True)
@@ -243,7 +269,7 @@ def compute_p_s_given_gamma(S, Theta, dist_option):  ## singlet case given cell 
     if dist_option == "N":
         dist_S2 = torch.distributions.Normal(loc=psi2, scale=omega2)
     else:
-        dist_S2 = torch.distributions.StudentT(df=dist_option, loc=psi2, scale=omega2)
+        dist_S2 = torch.distributions.StudentT(df=2, loc=psi2, scale=omega2)
     return dist_S2.log_prob(S.reshape(-1, 1, 1))
 
 
@@ -363,14 +389,30 @@ def compute_posteriors(Y, S, Theta, dist_option, model_overlap):
 
 
 def predict(
-    dataLoader,
-    model_params,
-    dist_option,
-    model_cell_size,
-    model_zplane_overlap,
+    dataLoader: DataLoader,
+    model_params: dict[str, torch.Tensor],
+    dist_option: str,
+    model_cell_size: bool,
+    model_zplane_overlap: bool,
     threshold=0.5,
 ):
-    """return singlet/doublet probabilities, singlet cluster assignment probabilty matrix & assignment labels"""
+    """return singlet/doublet probabilities, singlet cluster assignment probabilty matrix & assignment labels
+
+    :param dataLoader: the dataloader
+    :type dataLoader: torch.utils.data.dataloader.Dataloader
+    :param model_params: the model parameters
+    :type model_params: dict[str, np.ndarray]
+    :param dist_option: str, one of 'T' for Student-T (df=2) or 'N' for Normal (Gaussian)
+    :type dist_option: str
+    :type model_cell_size: whether cell size is incorporated in the model
+    :param model_cell_size: bool
+    :param model_zplane_overlap: whether z-plane overlap is modeled
+    :type model_zplane_overlap: bool
+    :param threshold: ?
+    :type threshold: float, defaults to 0.5
+    :return: _description_
+    :rtype: _type_
+    """
 
     singlet_prob_list = []
     gamma_assig_prob_list = []

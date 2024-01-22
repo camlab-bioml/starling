@@ -2,6 +2,7 @@ import numpy as np
 import pytorch_lightning as pl
 import torch
 from torch.utils.data import DataLoader
+from typing import Union
 
 from anndata import AnnData
 
@@ -37,7 +38,7 @@ class ST(pl.LightningModule):
     def __init__(
         self,
         adata: AnnData,
-        dist_option=True,
+        dist_option="T",
         singlet_prop=0.6,
         model_cell_size=True,
         cell_size_col_name="area",
@@ -118,7 +119,7 @@ class ST(pl.LightningModule):
 
         return loss
 
-    def configure_optimizers(self) -> torch.optim.adam.Adam:
+    def configure_optimizers(self) -> torch.optim.Adam:
         """Configure the Adam optimizer.
 
         :returns: the optimizer
@@ -134,12 +135,12 @@ class ST(pl.LightningModule):
         :rtype: None
         """
         tr_fy, tr_fs, tr_fl = utility.simulate_data(
-            self.X, self.S, self.model_zplane_overlap
+            self.X,  self.S, self.model_zplane_overlap
         )
 
         ## simulate data
-        if self.model_cell_size:
-            self.train_df = utility.ConcatDataset(self.X, self.S, tr_fy, tr_fs, tr_fl)
+        if self.S is not None and tr_fs is not None:
+            self.train_df = utility.ConcatDataset([self.X, self.S, tr_fy, tr_fs, tr_fl])
             ## get cell size averge/variance
             init_s = []
             init_sv = []
@@ -156,7 +157,7 @@ class ST(pl.LightningModule):
             # init_cell_size_centroids = None; init_cell_size_variances = None
             self.adata.varm["init_cell_size_centroids"] = None
             self.adata.varm["init_cell_size_variances"] = None
-            self.train_df = utility.ConcatDataset(self.X, tr_fy, tr_fl)
+            self.train_df = utility.ConcatDataset([self.X, tr_fy, tr_fl])
 
         # model_params = utility.model_paramters(self.init_e, self.init_v, self.init_s, self.init_sv)
         model_params = utility.model_parameters(self.adata, self.singlet_prop)
@@ -184,9 +185,9 @@ class ST(pl.LightningModule):
         :returns: None
         :rtype: None
         """
-        if self.model_cell_size:
+        if self.S is not None:
             model_pred_loader = DataLoader(
-                utility.ConcatDataset(self.X, self.S), batch_size=1000, shuffle=False
+                utility.ConcatDataset([self.X, self.S]), batch_size=1000, shuffle=False
             )
         else:
             model_pred_loader = DataLoader(self.X, batch_size=1000, shuffle=False)

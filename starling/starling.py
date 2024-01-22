@@ -2,6 +2,8 @@ import numpy as np
 import pytorch_lightning as pl
 import torch
 
+from anndata import AnnData
+
 from starling import utility
 
 BATCH_SIZE = 512
@@ -10,16 +12,37 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 class ST(pl.LightningModule):
+    """The STARLING module
+
+    :param adata: The sample
+    :type adata: AnnData
+    :param dist_option: The distribution to use
+    :type dist_option: str, one of 'T' for Student-T (df=2) or 'N' for Normal (Gaussian), defaults to T
+    :param singlet_prop: The proportion of anticipated segmentation error free cells
+    :type singlet_prop: float, defaults to 0.6
+    :param model_cell_size: Whether STARLING should incoporate cell size in the model
+    :type model_cell_size: bool, defaults to True
+    :param cell_size_col_name: The column name in ``AnnData`` (anndata.obs)
+    :type cell_size_col_name: str, defaults to "area"
+    :param model_zplane_overlap: If cell size is modelled, should STARLING model z-plane overlap
+    :type model_zplane_overlap: bool, defaults to True
+    :param model_regularizer: Regularizier term impose on synethic doublet loss (BCE)
+    :type model_regularizer: int, defaults to 1
+    :param learning_rate: Learning rate of ADAM optimizer for STARLING
+    :type learning_rate: float, defaults to 1e-3
+
+    """
+
     def __init__(
         self,
-        adata,  ## annDATA of the sample
-        dist_option="T",  ## T: Student-T (df=2); N: Normal (Gaussian)
-        singlet_prop=0.6,  ## The proportion of anticipated segmentation error free cells
-        model_cell_size="Y",  ## If STARLING incoporates cell size in the model (Y: Yes; N: No)
-        cell_size_col_name="area",  ## The column name in AnnDATA object (anndata.obs)
-        model_zplane_overlap="Y",  ## If cell size is modelled, STARLING can model z-plane overlap (Y: Yes; N: No)
-        model_regularizer=1,  ## Regularizier term impose on synethic doublet loss (BCE)
-        learning_rate=1e-3,  ## Learning rate of ADAM optimizer for STARLING
+        adata: AnnData,
+        dist_option=True,
+        singlet_prop=0.6,
+        model_cell_size=True,
+        cell_size_col_name="area",
+        model_zplane_overlap=True,
+        model_regularizer=1,
+        learning_rate=1e-3,
     ):
         super().__init__()
 
@@ -37,12 +60,12 @@ class ST(pl.LightningModule):
         self.X = torch.tensor(self.adata.X)
         self.S = (
             torch.tensor(self.adata.obs[self.cell_size_col_name])
-            if self.model_cell_size == "Y"
+            if self.model_cell_size
             else None
         )
 
     def forward(self, batch):
-        if self.model_cell_size == "Y":
+        if self.model_cell_size:
             y, s, fy, fs, fl = batch
             _, _, model_nll, _ = utility.compute_posteriors(
                 y, s, self.model_params, self.dist_option, self.model_zplane_overlap
@@ -89,7 +112,7 @@ class ST(pl.LightningModule):
         )
 
         ## simulate data
-        if self.model_cell_size == "Y":
+        if self.model_cell_size:
             self.train_df = utility.ConcatDataset(self.X, self.S, tr_fy, tr_fs, tr_fl)
             ## get cell size averge/variance
             init_s = []
@@ -122,7 +145,7 @@ class ST(pl.LightningModule):
         )
 
     def result(self, threshold=0.5):
-        if self.model_cell_size == "Y":
+        if self.model_cell_size:
             model_pred_loader = torch.utils.data.DataLoader(
                 utility.ConcatDataset(self.X, self.S), batch_size=1000, shuffle=False
             )
@@ -168,7 +191,7 @@ class ST(pl.LightningModule):
             "st_exp_centroids"
         ] = c.T  # pd.DataFrame(c, columns=self.adata.var_names)
 
-        if self.model_cell_size == "Y":
+        if self.model_cell_size:
             self.adata.uns["st_cell_size_centroids"] = (
                 self.model_params["log_psi"]
                 .reshape(-1, 1)

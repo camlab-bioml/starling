@@ -28,15 +28,19 @@ def init_clustering(
 ) -> AnnData:
     """Compute initial cluster centroids, variances & labels
 
-    :param adata: AnnData
-    :param initial_clustering_method: one of ``KM`` (K Means),
-    ``GMM`` (Gaussian Mixture), or ``PG`` (PhenoGraph).
-    :param k: ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
+    :param adata: The data to be analyzed
+    :type adata: AnnData
+    :param initial_clustering_method: The method for computing the initial clusters
+    :type initial_clustering_method: str, one of ``KM`` (K Means), ``GMM`` (Gaussian Mixture),
+    or ``PG`` (PhenoGraph).
+    :param k: The number of clusters
+    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
     ``k`` when ``initial_clustering_method`` is ``KM`` (required),
     ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
     :raises: ValueError
 
-    :returns: AnnData
+    :returns: The annotated data with labels, centroids, and variances
+    :rtype: AnnData
     """
 
     if initial_clustering_method not in ["KM", "GMM", "PG"]:
@@ -88,9 +92,9 @@ def init_clustering(
     return adata
 
 
-# def model_parameters(init_c, init_v, init_s=None, init_sv=None):
 def model_parameters(adata, singlet_prop):
-    """return setup model parameters"""
+    """Return setup model parameters
+    """
 
     init_e = adata.varm["init_exp_centroids"].T
     init_v = adata.varm["init_exp_variances"].T

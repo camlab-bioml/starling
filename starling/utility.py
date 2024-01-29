@@ -102,7 +102,7 @@ def init_clustering(
 def model_parameters(adata: AnnData, singlet_prop: float) -> dict[str, np.ndarray]:
     """Return initial model parameters
 
-    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`
+    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`init_clustering`
     :type adata: AnnData
     :param singlet_prop:  The proportion of anticipated segmentation error free cells
     :type singlet_prop: float
@@ -141,7 +141,9 @@ def model_parameters(adata: AnnData, singlet_prop: float) -> dict[str, np.ndarra
     return model_params
 
 
-def simulate_data(Y: torch.Tensor, S: Union[torch.Tensor, None] = None, model_overlap=True):
+def simulate_data(
+    Y: torch.Tensor, S: Union[torch.Tensor, None] = None, model_overlap=True
+):
     """Use real data to simulate singlets/doublets (equal proportions).
     Return same number of cells as in Y/S, half of them are singlets and another half are doublets
     :param Y: data matrix of shape m x n
@@ -239,8 +241,6 @@ def compute_p_y_given_gamma(Y, Theta, dist_option):  ## doublet case given expre
 
     sigma2 = sigma.reshape(1, mu.shape[0], mu.shape[1])
     sigma2 = (sigma2 + sigma2.permute(1, 0, 2)) / 2.0
-
-    dist_Y2 = torch.distributions.Normal(mu2, sigma2)
 
     if dist_option == "N":
         dist_Y2 = torch.distributions.Normal(loc=mu2, scale=sigma2)
@@ -410,8 +410,8 @@ def predict(
     :type model_zplane_overlap: bool
     :param threshold: ?
     :type threshold: float, defaults to 0.5
-    :return: _description_
-    :rtype: _type_
+    :return: ?
+    :rtype: ?
     """
 
     singlet_prob_list = []

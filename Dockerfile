@@ -37,4 +37,4 @@ USER $USERNAME
 
 COPY . .
 
-RUN poetry install --with docs
+RUN poetry install --with docs,dev

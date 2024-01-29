@@ -13,8 +13,10 @@ def test_can_run_km(tmpdir):
     """Temporary sanity check"""
     seed_everything(10, workers=True)
 
+    raw_adata = ad.read_h5ad(join(dirname(__file__), "fixtures", "sample_input.h5ad"))
+
     adata = utility.init_clustering(
-        ad.read_h5ad(join(dirname(__file__), "fixtures", "sample_input.h5ad")),
+        raw_adata,
         "KM",
         k=10,
     )

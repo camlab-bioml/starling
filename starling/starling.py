@@ -71,11 +71,11 @@ class ST(pl.LightningModule):
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """The module's forward pass
 
-        :param batch: A list of tensors of size m x n
+        :param batch: A list of tensors
         :type batch: list
 
         :returns: Negative log loss, Binary Cross-Entropy Loss, singlet probability
-        :rtype: tuple of type ``pytorch.Tensor``, NLL and BCE are scalars, while singlet probability has shape m
+        :rtype: tuple of type ``pytorch.Tensor``
         """
         if self.model_cell_size:
             y, s, fy, fs, fl = batch
@@ -179,7 +179,7 @@ class ST(pl.LightningModule):
     def result(self, threshold=0.5) -> None:
         """Retrieve the results and add them to ``self.adata``
 
-        :param threshold: minimum for singlet probability (?) (currently unused)
+        :param threshold: minimum threshold for singlet probability (?)
         :type threshold: float, defaults to .05
 
         :returns: None

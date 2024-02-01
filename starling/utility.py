@@ -4,10 +4,10 @@ from typing import Literal, Union
 import numpy as np
 import scanpy.external as sce
 import torch
-from torch.utils.data import Dataset, DataLoader
 from scanpy import AnnData
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
+from torch.utils.data import DataLoader, Dataset
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -147,11 +147,6 @@ def validate_starling_arguments(
     if not type(model_zplane_overlap) == bool:
         raise ValueError(
             f"Argument `model_zplane_overlap` must be boolean, received {type(model_cell_size)}"
-        )
-
-    if not isinstance(model_zplane_overlap, Number) or 0 > singlet_prop > 1:
-        raise ValueError(
-            f"Argument `singlet_prop` must be a number between 0 and 1, received {singlet_prop}"
         )
 
     if not is_non_negative_float(model_regularizer):

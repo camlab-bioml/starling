@@ -1,0 +1,8 @@
+__pycache__
+.venv
+pyvenv.cfg
+**/log/**
+!**/log/.gitkeep
+model.pt
+.pytest_cache
+.vscode

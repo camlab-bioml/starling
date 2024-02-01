@@ -12,27 +12,40 @@ _starling_ can be cloned and installed locally using access to the Github reposi
 git clone https://github.com/camlab-bioml/starling.git && cd starling
 ```
 
-we use virtualenvwrapper (4.8.4) to create and activated a standalone virtual environment for _starling_,
+Note that _starling_ requires at least python version 3.9.
+
+After cloning the repository, the next step is to install the required dependencies. There are two recommended methods:
+
+### 1. Use `requirements.tex` and your own virtual environment:
+
+We use virtualenvwrapper (4.8.4) to create and activated a standalone virtual environment for _starling_:
 
 ```
 pip install virtualenvwrapper==4.8.4
 mkvirtualenv starling
 ```
 
-for convenience, one can install packages in the tested environment,
+For convenience, one can install packages in the tested environment:
 
 ```
 pip install -r requirements.txt
 ```
 
-the virtual environment can be activated and deactivated subsequently,
+The virtual environment can be activated and deactivated subsequently:
 
 ```
-workon starling 
+workon starling
 deactivate
 ```
 
-a list of minimal required packages needed for _starling_ can be found in setup.py if creating a new virtual environment is not an option. 
+### 2. Use Poetry and `pyproject.toml`.
+
+[Poetry](https://python-poetry.org/) is a packaging and dependency management tool can simplify code development and deployment. If you do not have Poetry installed, you can find instructions [here](https://python-poetry.org/docs/).
+
+Once poetry is installed, navigate to the `starling` directory and run `poetry install`. This will download the required packages into a virtual environment and install Starling in development mode. The location and state of the virtual environment may depend on your system. For more details, see [the documentation](https://python-poetry.org/docs/managing-environments/).
+
+
+A list of minimal required packages needed for _starling_ can be found in setup.py if creating a new virtual environment is not an option.
 
 ## Getting started
 

@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "starling"
+version = "0.1.0"
+description = "A short description of the package"
+repository = "https://github.com/camlab-bioml/starling"
+authors = ["Jett (Yuju) Lee <yulee@lunenfeld.ca>"]
+readme = "README.md"
+keywords = ["imaging cytometry classifier single-cell"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.8",
+]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+torch = "1.12.1"
+pytorch-lightning = "2.1.0"
+scanpy = "1.9.5"
+phenograph = "^1.5.7"
+
+[tool.poetry.group.dev]
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+pytest = "^7.4.4"
+isort = "^5.13.2"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+tensorboard = "^2.15.1"
+lightning-lite = "^1.8.6"
+ipykernel = "^6.29.0"
+
+[tool.isort]
+profile = "black"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

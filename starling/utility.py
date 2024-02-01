@@ -1,3 +1,4 @@
+from numbers import Number
 from typing import Literal, Union
 
 import numpy as np
@@ -97,6 +98,71 @@ def init_clustering(
     )  ## An expression variance (daignal) matrix (PxC) resulting from a clustering method
 
     return adata
+
+
+def is_non_negative_float(arg):
+    return isinstance(arg, Number) and arg > 0
+
+
+def validate_starling_arguments(
+    adata: AnnData,
+    dist_option: str,
+    singlet_prop: float,
+    model_cell_size: bool,
+    cell_size_col_name: str,
+    model_zplane_overlap: bool,
+    model_regularizer: float,
+    learning_rate: float,
+):
+    if type(adata) != AnnData:
+        raise ValueError(
+            f"Argument `adata` must be of type AnnData, received {type(adata)}."
+        )
+
+    if adata.shape[0] < 10 or adata.shape[1] < 10:
+        raise ValueError(
+            f"Argument `adata` shape must be at least (10,10), received {adata.shape}."
+        )
+
+    if type(dist_option) != str or dist_option not in ["T", "N"]:
+        raise ValueError(
+            f"Argument `dist_option` must be either 'T' or 'N', received {dist_option}"
+        )
+
+    if not isinstance(singlet_prop, Number) or 0 > singlet_prop > 1:
+        raise ValueError(
+            f"Argument `singlet_prop` must be a number between 0 and 1, received {singlet_prop}"
+        )
+
+    if not type(model_cell_size) == bool:
+        raise ValueError(
+            f"Argument `model_cell_size` must be boolean, received {type(model_cell_size)}"
+        )
+
+    if cell_size_col_name not in adata.obs:
+        raise ValueError(
+            f"Argument `cell_size_col_name` must be a valid column in `adata.obs`"
+        )
+
+    if not type(model_zplane_overlap) == bool:
+        raise ValueError(
+            f"Argument `model_zplane_overlap` must be boolean, received {type(model_cell_size)}"
+        )
+
+    if not isinstance(model_zplane_overlap, Number) or 0 > singlet_prop > 1:
+        raise ValueError(
+            f"Argument `singlet_prop` must be a number between 0 and 1, received {singlet_prop}"
+        )
+
+    if not is_non_negative_float(model_regularizer):
+        raise ValueError(
+            f"Argument `model_regularizer` must be a non-negative number, received {model_regularizer}"
+        )
+
+    if not is_non_negative_float(learning_rate):
+        raise ValueError(
+            f"Argument `learning_rate` must be a non-negative number, received {learning_rate}"
+        )
 
 
 def model_parameters(adata: AnnData, singlet_prop: float) -> dict[str, np.ndarray]:

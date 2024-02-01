@@ -9,7 +9,7 @@ from starling.utility import init_clustering
 
 @pytest.fixture
 def simple_adata(size=True):
-    adata = AnnData(np.arange(256).reshape(32, 8))
+    adata = AnnData(np.arange(512).reshape(32, 16))
     if size:
         adata.obs["area"] = [random.randint(1, 5) for i in range(adata.shape[0])]
     return adata

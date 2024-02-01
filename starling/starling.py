@@ -2,7 +2,6 @@ import numpy as np
 import pytorch_lightning as pl
 import torch
 from torch.utils.data import DataLoader
-from typing import Union
 
 from anndata import AnnData
 
@@ -49,6 +48,17 @@ class ST(pl.LightningModule):
         super().__init__()
 
         # self.save_hyperparameters()
+
+        utility.validate_starling_arguments(
+            adata,
+            dist_option,
+            singlet_prop,
+            model_cell_size,
+            cell_size_col_name,
+            model_zplane_overlap,
+            model_regularizer,
+            learning_rate,
+        )
 
         self.adata = adata
         self.dist_option = dist_option
@@ -135,7 +145,7 @@ class ST(pl.LightningModule):
         :rtype: None
         """
         tr_fy, tr_fs, tr_fl = utility.simulate_data(
-            self.X,  self.S, self.model_zplane_overlap
+            self.X, self.S, self.model_zplane_overlap
         )
 
         ## simulate data

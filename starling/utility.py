@@ -33,6 +33,9 @@ def init_clustering(
     adata: AnnData,
     initial_clustering_method: Literal["KM", "GMM", "FS", "PG"],
     k: Union[int, None] = None,
+    labels: None,
+    centroids: None,
+    variances: None,
 ) -> AnnData:
     """Compute initial cluster centroids, variances & labels
 
@@ -53,7 +56,10 @@ def init_clustering(
     """
 
     if initial_clustering_method not in ["KM", "GMM", "FS", "PG"]:
-        raise ValueError('initial_clustering_method must be one of "KM","GMM","FS","PG"')
+        raise ValueError('Please import user defined cluster centroids and variances')
+
+    #if initial_clustering_method not in ["KM", "GMM", "FS", "PG"]:
+    #    raise ValueError('initial_clustering_method must be one of "KM","GMM","FS","PG"')
 
     if initial_clustering_method in ["KM", "GMM", "FS"] and k is None:
         raise ValueError("k cannot be ommitted for KMeans or Gaussian Mixture")
@@ -127,6 +133,10 @@ def init_clustering(
             
         init_e = init_e[:,:-1]
         init_ev = init_ev[:,:-1]
+    else:
+        init_l = labels
+        init_e = centroids
+        init_ev = variances
         
     adata.obs["init_label"] = init_l
     adata.varm[

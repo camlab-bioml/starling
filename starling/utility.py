@@ -31,7 +31,7 @@ class ConcatDataset(Dataset):
 
 def init_clustering(
     adata: AnnData,
-    initial_clustering_method: Literal["KM", "GMM", "PG"],
+    initial_clustering_method: Literal["KM", "GMM", "FS", "PG"],
     k: Union[int, None] = None,
 ) -> AnnData:
     """Compute initial cluster centroids, variances & labels
@@ -39,11 +39,12 @@ def init_clustering(
     :param adata: The initial data to be analyzed
     :type adata: AnnData
     :param initial_clustering_method: The method for computing the initial clusters
-    :type initial_clustering_method: str, one of ``KM`` (K Means), ``GMM`` (Gaussian Mixture),
-    or ``PG`` (PhenoGraph).
+    :type initial_clustering_method: str, one of ``KM`` (KMeans), ``GMM`` (Gaussian Mixture Model),
+    ``FS`` (FlowSOM) or ``PG`` (PhenoGraph).
     :param k: The number of clusters
     :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
     ``k`` when ``initial_clustering_method`` is ``KM`` (required),
+    ``k`` when ``initial_clustering_method`` is ``FS`` (required),
     ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
     :raises: ValueError
 
@@ -51,10 +52,10 @@ def init_clustering(
     :rtype: AnnData
     """
 
-    if initial_clustering_method not in ["KM", "GMM", "PG"]:
-        raise ValueError('initial_clustering_method must be one of "KM","GMM","PG"')
+    if initial_clustering_method not in ["KM", "GMM", "FS", "PG"]:
+        raise ValueError('initial_clustering_method must be one of "KM","GMM","FS","PG"')
 
-    if initial_clustering_method in ["KM", "GMM"] and k is None:
+    if initial_clustering_method in ["KM", "GMM", "FS"] and k is None:
         raise ValueError("k cannot be ommitted for KMeans or Gaussian Mixture")
 
     if initial_clustering_method == "KM":
@@ -84,7 +85,49 @@ def init_clustering(
         for c in range(k):
             init_e[c, :] = adata.X[init_l == c].mean(0)
             init_ev[c, :] = adata.X[init_l == c].var(0)
+    
+    elif initial_clustering_method == "FS":
+        ## needs to output to csv first
+        #ofn = OPATH + "fs_" + ONAME + ".csv"
+        pd.DataFrame(X).to_csv("fs.csv")
+        fsom = flowsom("fs.csv", if_fcs=False, if_drop=True, drop_col=['Unnamed: 0'])
 
+        fsom.som_mapping(50, # x_n: e.g. 100, the dimension of expected map
+            50, # y_n: e.g. 100, the dimension of expected map
+            fsom.df.shape[1],
+            1, # sigma: e.g 1, the standard deviation of initialized weights
+            0.5, # lr: e.g 0.5, learning rate
+            1000, # batch_size: 1000, iteration times
+            tf_str=None, # string, e.g. hlog', None, etc - the transform algorithm
+            if_fcs=False # bool, when the the input file is fcs file. If not, it should be a csv file
+            # seed = 10, for reproducing
+        )
+        start = k; fsom_num_cluster = 0
+        while fsom_num_cluster < k:
+            #print(nc, start, fsom_nc)
+            fsom.meta_clustering(AgglomerativeClustering, min_n=start, max_n=start, verbose=False, iter_n=10) # train the meta clustering for cluster in range(40,45)  
+
+            fsom.labeling()
+            #fsom.bestk # the best number of clusters within the range of (min_n, max_n)
+            fsom_class = np.unique(fsom.df['category'])
+            fsom_num_cluster = len(fsom_class)
+            start += 1
+    
+        fsom_labels = np.array(fsom.df['category'])
+
+        i = 0
+        init_l = np.zeros(fsom.df.shape[0], dtype=int)
+        init_e = np.zeros((len(fsom_class), fsom.df.shape[1]))
+        init_ev = np.zeros((len(fsom_class), fsom.df.shape[1]))
+        for row in fsom_class:
+            init_l[fsom_labels==row] = i
+            init_e[i,:] = fsom.df[fsom_labels==row].mean(0)
+            init_ev[i,:] = fsom.df[fsom_labels==row].var(0)
+            i += 1
+            
+        init_e = init_e[:,:-1]
+        init_ev = init_ev[:,:-1]
+        
     adata.obs["init_label"] = init_l
     adata.varm[
         "init_exp_centroids"

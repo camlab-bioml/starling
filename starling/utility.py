@@ -30,8 +30,8 @@ class ConcatDataset(Dataset):
 
 
 def init_clustering(
-    adata: AnnData,
-    initial_clustering_method: Literal["KM", "GMM", "FS", "PG"],
+    initial_clustering_method: Literal["User", "KM", "GMM", "FS", "PG"],
+    adata: AnnData = None,
     k: Union[int, None] = None,
     labels: None,
     centroids: None,
@@ -54,12 +54,9 @@ def init_clustering(
     :returns: The annotated data with labels, centroids, and variances
     :rtype: AnnData
     """
-
+    
     if initial_clustering_method not in ["KM", "GMM", "FS", "PG"]:
-        raise ValueError('Please import user defined cluster centroids and variances')
-
-    #if initial_clustering_method not in ["KM", "GMM", "FS", "PG"]:
-    #    raise ValueError('initial_clustering_method must be one of "KM","GMM","FS","PG"')
+        raise ValueError('initial_clustering_method must be one of "KM","GMM","FS","PG" or "User" defined cluster centroids/variances')
 
     if initial_clustering_method in ["KM", "GMM", "FS"] and k is None:
         raise ValueError("k cannot be ommitted for KMeans or Gaussian Mixture")
@@ -133,7 +130,7 @@ def init_clustering(
             
         init_e = init_e[:,:-1]
         init_ev = init_ev[:,:-1]
-    else:
+    elif initial_clustering_method == "User":
         init_l = labels
         init_e = centroids
         init_ev = variances

@@ -4,7 +4,7 @@ Highly multiplexed imaging technologies such as Imaging Mass Cytometry (IMC) ena
 
 While doublets have been extensively discussed in the context of single-cell RNA-sequencing analysis, there is currently no method to cluster IMC data while accounting for such segmentation errors. Therefore, we introduce SegmentaTion AwaRe cLusterING (STARLING), a probabilistic method tailored for densely packed tissues profiled with IMC that clusters the cells explicitly allowing for doublets resulting from mis-segmentation. To benchmark STARLING against a range of existing clustering methods, we further develop a novel evaluation score that penalizes methods that return clusters with biologically-implausible marker co-expression combinations. Finally, we generate IMC data of the human tonsil -- a densely packed human secondary lymphoid organ -- and demonstrate cellular states captured by STARLING identify known cell types not visible with other methods and important for understanding the dynamics of immune response.
 
-https://github.com/camlab-bioml/starling/blob/main/starling.png
+![Model](https://github.com/camlab-bioml/starling/blob/main/starling.png)
 
 ## Installation
 

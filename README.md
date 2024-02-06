@@ -6,6 +6,8 @@ While doublets have been extensively discussed in the context of single-cell RNA
 
 ![Model](https://github.com/camlab-bioml/starling/blob/main/starling.png)
 
+**Figure 1 A** Segmentation errors in highly multiplexed imaging experiments induce clusters formed by the composition of multiple "true" cell types. **B** Our probabilistic model STARLING for clustering highly multiplexed imaging data models whether each cell is observed segmentation error free, and if not models the composition of cell types leading to the observed cell. The loss function jointly maximizes the likelihood of the data and the ability to discriminate on-the-fly simulated segmentation errors. **C** The Input to STARLING includes a high dimensional multiplexed imaging and imperfect segmentation that is summarized to an expression matrix with cell sizes. **D** The output includes both the denoised cell types along with a per-cell estimate of segmentation errors.
+
 ## Installation
 
 _starling_ can be cloned and installed locally using access to the Github repository,

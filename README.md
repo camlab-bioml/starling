@@ -69,5 +69,5 @@ Lunenfeld-Tanenbaum Research Institute & University of Toronto
 
 <!-- github-only -->
 
-[tutorial]: https://github.com/camlab-bioml/starling/blob/main/docs/tutorial/getting-started.ipynb
+[tutorial]: https://github.com/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb
 [license]: https://github.com/camlab-bioml/starling/blob/main/LICENSE

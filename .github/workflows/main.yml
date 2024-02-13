@@ -2,9 +2,9 @@ name: Starling
 
 on:
   push:
-    branches: [ "read-the-docs" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "read-the-docs" ]
+    branches: [ "main" ]
 
 jobs:
   build:

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>starling.utility &mdash; Starling  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=6916c06d" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Starling Class (ST)" href="starling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Starling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="starling.html">Starling Class (ST)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">starling.utility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-starling.utility">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.ConcatDataset"><code class="docutils literal notranslate"><span class="pre">ConcatDataset</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.compute_p_s_given_gamma"><code class="docutils literal notranslate"><span class="pre">compute_p_s_given_gamma()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.compute_p_s_given_gamma_model_overlap"><code class="docutils literal notranslate"><span class="pre">compute_p_s_given_gamma_model_overlap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.compute_p_s_given_z"><code class="docutils literal notranslate"><span class="pre">compute_p_s_given_z()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.compute_p_y_given_gamma"><code class="docutils literal notranslate"><span class="pre">compute_p_y_given_gamma()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.compute_p_y_given_z"><code class="docutils literal notranslate"><span class="pre">compute_p_y_given_z()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.compute_posteriors"><code class="docutils literal notranslate"><span class="pre">compute_posteriors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.init_clustering"><code class="docutils literal notranslate"><span class="pre">init_clustering()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.is_non_negative_float"><code class="docutils literal notranslate"><span class="pre">is_non_negative_float()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.model_parameters"><code class="docutils literal notranslate"><span class="pre">model_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.predict"><code class="docutils literal notranslate"><span class="pre">predict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.simulate_data"><code class="docutils literal notranslate"><span class="pre">simulate_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.utility.validate_starling_arguments"><code class="docutils literal notranslate"><span class="pre">validate_starling_arguments()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Starling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">starling.utility</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/utility.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="starling-utility">
+<h1>starling.utility<a class="headerlink" href="#starling-utility" title="Link to this heading"></a></h1>
+<section id="module-starling.utility">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-starling.utility" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="starling.utility.ConcatDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">ConcatDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasets</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#ConcatDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.ConcatDataset" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
+<p>A dataset composed of datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>datasets</strong> (<em>tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>...</em><em>]</em>) – the datasets to concatenate, each of <code class="docutils literal notranslate"><span class="pre">d.shape[0]</span> <span class="pre">==</span> <span class="pre">m</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.compute_p_s_given_gamma">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_s_given_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_s_given_gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_s_given_gamma" title="Link to this definition"></a></dt>
+<dd><p>Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c’])</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.compute_p_s_given_gamma_model_overlap">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_s_given_gamma_model_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_s_given_gamma_model_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_s_given_gamma_model_overlap" title="Link to this definition"></a></dt>
+<dd><p>Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c’])</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.compute_p_s_given_z">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_s_given_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_s_given_z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_s_given_z" title="Link to this definition"></a></dt>
+<dd><p>Returns # of obs x # of cluster matrix - p(s_n | z_n = c)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.compute_p_y_given_gamma">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_y_given_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_y_given_gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_y_given_gamma" title="Link to this definition"></a></dt>
+<dd><p>Returns # of obs x # of cluster x # of cluster matrix - p(y_n | gamma_n = [c,c’])</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.compute_p_y_given_z">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_y_given_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_y_given_z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_y_given_z" title="Link to this definition"></a></dt>
+<dd><p>Returns # of obs x # of cluster matrix - p(y_n | z_n = c)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.compute_posteriors">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_posteriors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_overlap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_posteriors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_posteriors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.init_clustering">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">init_clustering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_clustering_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centroids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variances</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#init_clustering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.init_clustering" title="Link to this definition"></a></dt>
+<dd><p>Compute initial cluster centroids, variances &amp; labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> (<em>AnnData</em>) – The initial data to be analyzed</p></li>
+<li><p><strong>initial_clustering_method</strong> (str, one of <code class="docutils literal notranslate"><span class="pre">KM</span></code> (KMeans), <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (Gaussian Mixture Model),) – The method for computing the initial clusters</p></li>
+</ul>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">FS</span></code> (FlowSOM), <code class="docutils literal notranslate"><span class="pre">User</span></code> (user-provided), or <code class="docutils literal notranslate"><span class="pre">PG</span></code> (PhenoGraph).
+:type k: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>
+:param k: The number of clusters
+:type k: int, must be <code class="docutils literal notranslate"><span class="pre">n_components</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (required), <code class="docutils literal notranslate"><span class="pre">k</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">KM</span></code> (required), <code class="docutils literal notranslate"><span class="pre">k</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">FS</span></code> (required), <code class="docutils literal notranslate"><span class="pre">?</span></code> when  <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">PG</span></code> (optional)
+:type labels: 
+:param labels: optional, user-provided labels
+:type labels: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(m,)</span></code>
+:type centroids: 
+:param centroids: optional, user-provided centroids
+:type centroids: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(?,n)</span></code>
+:type variances: 
+:param variances: optional, user-provided variances
+:type variances: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(?,n)</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ValueError</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The annotated data with labels, centroids, and variances</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AnnData</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.is_non_negative_float">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">is_non_negative_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#is_non_negative_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.is_non_negative_float" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.model_parameters">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">model_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">singlet_prop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#model_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.model_parameters" title="Link to this definition"></a></dt>
+<dd><p>Return initial model parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> (<em>AnnData</em>) – The sample to be analyzed, with clusters and annotations from <a class="reference internal" href="#starling.utility.init_clustering" title="starling.utility.init_clustering"><code class="xref py py-func docutils literal notranslate"><span class="pre">init_clustering()</span></code></a></p></li>
+<li><p><strong>singlet_prop</strong> (<em>float</em>) – The proportion of anticipated segmentation error free cells</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the model parameters</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, np.array]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.predict">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataLoader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_cell_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_zplane_overlap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.predict" title="Link to this definition"></a></dt>
+<dd><p>return singlet/doublet probabilities, singlet cluster assignment probabilty matrix &amp; assignment labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataLoader</strong> (<em>torch.utils.data.dataloader.Dataloader</em>) – the dataloader</p></li>
+<li><p><strong>model_params</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – the model parameters</p></li>
+<li><p><strong>dist_option</strong> (<em>str</em>) – str, one of ‘T’ for Student-T (df=2) or ‘N’ for Normal (Gaussian)</p></li>
+<li><p><strong>model_cell_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – bool</p></li>
+<li><p><strong>model_zplane_overlap</strong> (<em>bool</em>) – whether z-plane overlap is modeled</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>defaults to 0.5</em>) – <p>?</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>?</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>?</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.simulate_data">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">simulate_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#simulate_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.simulate_data" title="Link to this definition"></a></dt>
+<dd><p>Use real data to simulate singlets/doublets (equal proportions).
+Return same number of cells as in Y/S, half of them are singlets and another half are doublets
+:type Y: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>
+:param Y: data matrix of shape m x n
+:type Y: torch.Tensor
+:type S: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>
+:param S: data matrix of shape m
+:type S: Union[torch.Tensor, None], defaults to None
+:type model_overlap: 
+:param model_overlap: If cell size is modelled, should STARLING model z-plane overlap
+:type model_overlap: bool, defaults to True</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the simulated data</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[torch.Tensor, None, torch.Tensor] if <code class="docutils literal notranslate"><span class="pre">S</span></code> is None, otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="starling.utility.validate_starling_arguments">
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">validate_starling_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">singlet_prop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_cell_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_size_col_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_zplane_overlap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_regularizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#validate_starling_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.validate_starling_arguments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="starling.html" class="btn btn-neutral float-left" title="Starling Class (ST)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, contribs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

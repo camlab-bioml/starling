@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SegmentaTion AwaRe cLusterING (starling) &mdash; Starling  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=6916c06d" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Starling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="starling.html">Starling Class (ST)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">starling.utility</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Starling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">SegmentaTion AwaRe cLusterING (starling)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<section id="segmentation-aware-clustering-starling">
+<h1>SegmentaTion AwaRe cLusterING (starling)<a class="headerlink" href="#segmentation-aware-clustering-starling" title="Link to this heading"></a></h1>
+<p><img alt="build" src="https://github.com/camlab-bioml/starling/actions/workflows/main.yml/badge.svg" /></p>
+<p>Highly multiplexed imaging technologies such as Imaging Mass Cytometry (IMC) enable the quantification of the expression proteins in tissue sections while retaining spatial information. Data preprocessing pipelines subsequently segment the data to single cells, recording their average expression profile along with spatial characteristics (area, morphology, location etc.). However, segmentation of the resulting images to single cells remains a challenge, with doublets – an area erroneously segmented as a single-cell that is composed of more than one ‘true’ single cell – being frequent in densely packed tissues. This results in cells with implausible protein co-expression combinations, confounding the interpretation of important cellular populations across tissues.</p>
+<p>While doublets have been extensively discussed in the context of single-cell RNA-sequencing analysis, there is currently no method to cluster IMC data while accounting for such segmentation errors. Therefore, we introduce SegmentaTion AwaRe cLusterING (STARLING), a probabilistic method tailored for densely packed tissues profiled with IMC that clusters the cells explicitly allowing for doublets resulting from mis-segmentation. To benchmark STARLING against a range of existing clustering methods, we further develop a novel evaluation score that penalizes methods that return clusters with biologically-implausible marker co-expression combinations. Finally, we generate IMC data of the human tonsil – a densely packed human secondary lymphoid organ – and demonstrate cellular states captured by STARLING identify known cell types not visible with other methods and important for understanding the dynamics of immune response.</p>
+<p><img alt="Model" src="https://github.com/camlab-bioml/starling/blob/main/starling.png" /></p>
+<p><strong>Figure A</strong> Segmentation errors in highly multiplexed imaging experiments induce clusters formed by the composition of multiple “true” cell types. <strong>B</strong> Our probabilistic model STARLING for clustering highly multiplexed imaging data models whether each cell is observed segmentation error free, and if not models the composition of cell types leading to the observed cell. The loss function jointly maximizes the likelihood of the data and the ability to discriminate on-the-fly simulated segmentation errors. <strong>C</strong> The Input to STARLING includes a high dimensional multiplexed imaging and imperfect segmentation that is summarized to an expression matrix with cell sizes. <strong>D</strong> The output includes both the denoised cell types along with a per-cell estimate of segmentation errors.</p>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<p><em>starling</em> can be cloned and installed locally using access to the Github repository,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">camlab</span><span class="o">-</span><span class="n">bioml</span><span class="o">/</span><span class="n">starling</span><span class="o">.</span><span class="n">git</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">starling</span>
+</pre></div>
+</div>
+<p>Note that <em>starling</em> requires <strong>python version 3.9</strong>.</p>
+<p>After cloning the repository, the next step is to install the required dependencies. There are two recommended methods:</p>
+<section id="use-requirements-txt-and-your-own-virtual-environment">
+<h2>1. Use <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> and your own virtual environment:<a class="headerlink" href="#use-requirements-txt-and-your-own-virtual-environment" title="Link to this heading"></a></h2>
+<p>We use virtualenvwrapper (4.8.4) to create and activated a standalone virtual environment for <em>starling</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenvwrapper</span><span class="o">==</span><span class="mf">4.8.4</span>
+<span class="n">mkvirtualenv</span> <span class="n">starling</span>
+</pre></div>
+</div>
+<p>For convenience, one can install packages in the tested environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>The virtual environment can be activated and deactivated subsequently:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">workon</span> <span class="n">starling</span>
+<span class="n">deactivate</span>
+</pre></div>
+</div>
+</section>
+<section id="use-poetry-and-pyproject-toml">
+<h2>2. Use Poetry and <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.<a class="headerlink" href="#use-poetry-and-pyproject-toml" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://python-poetry.org/">Poetry</a> is a packaging and dependency management tool can simplify code development and deployment. If you do not have Poetry installed, you can find instructions <a class="reference external" href="https://python-poetry.org/docs/">here</a>.</p>
+<p>Once poetry is installed, navigate to the <code class="docutils literal notranslate"><span class="pre">starling</span></code> directory and run <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span></code>. This will download the required packages into a virtual environment and install Starling in development mode. The location and state of the virtual environment may depend on your system. For more details, see <a class="reference external" href="https://python-poetry.org/docs/managing-environments/">the documentation</a>.</p>
+<p>A list of minimal required packages needed for <em>starling</em> can be found in setup.py if creating a new virtual environment is not an option.</p>
+</section>
+</section>
+<section id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>Launch the interactive tutorial: <a class="reference external" href="https://github.com/camlab-bioml/starling/blob/main/docs/tutorial/getting-started.ipynb">jupyter notebook</a></p>
+</section>
+<section id="license">
+<h1>License<a class="headerlink" href="#license" title="Link to this heading"></a></h1>
+<p>Distributed under the terms of the <a class="reference external" href="https://github.com/camlab-bioml/starling/blob/main/LICENSE">MIT license</a>,
+<em>starling</em> is free and open source software.</p>
+</section>
+<section id="authors">
+<h1>Authors<a class="headerlink" href="#authors" title="Link to this heading"></a></h1>
+<p>Jett (Yuju) Lee &amp; Kieran Campbell
+Lunenfeld-Tanenbaum Research Institute &amp; University of Toronto</p>
+<!-- github-only -->
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorials.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, contribs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

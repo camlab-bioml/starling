@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>starling.starling &mdash; Starling  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=6916c06d" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Starling
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../starling.html">Starling Class (ST)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utility.html">starling.utility</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Starling</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">starling.starling</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for starling.starling</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pytorch_lightning</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">anndata</span> <span class="kn">import</span> <span class="n">AnnData</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+
+<span class="kn">from</span> <span class="nn">starling</span> <span class="kn">import</span> <span class="n">utility</span>
+
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">512</span>
+<span class="n">AVAIL_GPUS</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">())</span>
+<span class="n">DEVICE</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ST">
+<a class="viewcode-back" href="../../starling.html#starling.starling.ST">[docs]</a>
+<span class="k">class</span> <span class="nc">ST</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The STARLING module</span>
+
+<span class="sd">    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`starling.uility.init_clustering`</span>
+<span class="sd">    :type adata: AnnData</span>
+<span class="sd">    :param dist_option: The distribution to use</span>
+<span class="sd">    :type dist_option: str, one of &#39;T&#39; for Student-T (df=2) or &#39;N&#39; for Normal (Gaussian), defaults to T</span>
+<span class="sd">    :param singlet_prop: The proportion of anticipated segmentation error free cells</span>
+<span class="sd">    :type singlet_prop: float, defaults to 0.6</span>
+<span class="sd">    :param model_cell_size: Whether STARLING should incoporate cell size in the model</span>
+<span class="sd">    :type model_cell_size: bool, defaults to True</span>
+<span class="sd">    :param cell_size_col_name: The column name in ``AnnData`` (anndata.obs)</span>
+<span class="sd">    :type cell_size_col_name: str, defaults to &quot;area&quot;</span>
+<span class="sd">    :param model_zplane_overlap: If cell size is modelled, should STARLING model z-plane overlap</span>
+<span class="sd">    :type model_zplane_overlap: bool, defaults to True</span>
+<span class="sd">    :param model_regularizer: Regularizier term impose on synethic doublet loss (BCE)</span>
+<span class="sd">    :type model_regularizer: int, defaults to 1</span>
+<span class="sd">    :param learning_rate: Learning rate of ADAM optimizer for STARLING</span>
+<span class="sd">    :type learning_rate: float, defaults to 1e-3</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
+        <span class="n">dist_option</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">,</span>
+        <span class="n">singlet_prop</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+        <span class="n">model_cell_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">cell_size_col_name</span><span class="o">=</span><span class="s2">&quot;area&quot;</span><span class="p">,</span>
+        <span class="n">model_zplane_overlap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">model_regularizer</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># self.save_hyperparameters()</span>
+
+        <span class="n">utility</span><span class="o">.</span><span class="n">validate_starling_arguments</span><span class="p">(</span>
+            <span class="n">adata</span><span class="p">,</span>
+            <span class="n">dist_option</span><span class="p">,</span>
+            <span class="n">singlet_prop</span><span class="p">,</span>
+            <span class="n">model_cell_size</span><span class="p">,</span>
+            <span class="n">cell_size_col_name</span><span class="p">,</span>
+            <span class="n">model_zplane_overlap</span><span class="p">,</span>
+            <span class="n">model_regularizer</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dist_option</span> <span class="o">=</span> <span class="n">dist_option</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">singlet_prop</span> <span class="o">=</span> <span class="n">singlet_prop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_cell_size</span> <span class="o">=</span> <span class="n">model_cell_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_size_col_name</span> <span class="o">=</span> <span class="n">cell_size_col_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_zplane_overlap</span> <span class="o">=</span> <span class="n">model_zplane_overlap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_regularizer</span> <span class="o">=</span> <span class="n">model_regularizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">learning_rate</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_size_col_name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cell_size</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ST.forward">
+<a class="viewcode-back" href="../../starling.html#starling.starling.ST.forward">[docs]</a>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The module&#39;s forward pass</span>
+
+<span class="sd">        :param batch: A list of tensors</span>
+<span class="sd">        :type batch: list</span>
+
+<span class="sd">        :returns: Negative log loss, Binary Cross-Entropy Loss, singlet probability</span>
+<span class="sd">        :rtype: tuple of type ``pytorch.Tensor``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cell_size</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">fl</span> <span class="o">=</span> <span class="n">batch</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">model_nll</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">compute_posteriors</span><span class="p">(</span>
+                <span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_option</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_zplane_overlap</span>
+            <span class="p">)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">p_fake_singlet</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">compute_posteriors</span><span class="p">(</span>
+                <span class="n">fy</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_option</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_zplane_overlap</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">fl</span> <span class="o">=</span> <span class="n">batch</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">model_nll</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">compute_posteriors</span><span class="p">(</span>
+                <span class="n">y</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_option</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_zplane_overlap</span>
+            <span class="p">)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">p_fake_singlet</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">compute_posteriors</span><span class="p">(</span>
+                <span class="n">fy</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_option</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_zplane_overlap</span>
+            <span class="p">)</span>
+
+        <span class="n">fake_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()(</span><span class="n">p_fake_singlet</span><span class="p">,</span> <span class="n">fl</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">double</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">model_nll</span><span class="p">,</span> <span class="n">fake_loss</span><span class="p">,</span> <span class="n">p_fake_singlet</span></div>
+
+
+<div class="viewcode-block" id="ST.training_step">
+<a class="viewcode-back" href="../../starling.html#starling.starling.ST.training_step">[docs]</a>
+    <span class="k">def</span> <span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute and return the training loss</span>
+
+<span class="sd">        :param batch: A list of tensors of size m x n</span>
+<span class="sd">        :type batch: list</span>
+
+<span class="sd">        :returns: Total loss</span>
+<span class="sd">        :rtype: torch.Tensor, scalar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># y, s, fy, fs, fl = batch</span>
+        <span class="n">model_nll</span><span class="p">,</span> <span class="n">fake_loss</span><span class="p">,</span> <span class="n">p_fake_singlet</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+
+        <span class="c1"># total loss</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">model_nll</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_regularizer</span> <span class="o">*</span> <span class="n">fake_loss</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;train_nll&quot;</span><span class="p">,</span> <span class="n">model_nll</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;train_bce&quot;</span><span class="p">,</span> <span class="n">fake_loss</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;train_loss&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">prog_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">loss</span></div>
+
+
+<div class="viewcode-block" id="ST.configure_optimizers">
+<a class="viewcode-back" href="../../starling.html#starling.starling.ST.configure_optimizers">[docs]</a>
+    <span class="k">def</span> <span class="nf">configure_optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure the Adam optimizer.</span>
+
+<span class="sd">        :returns: the optimizer</span>
+<span class="sd">        :rtype: torch.optim.adam.Adam</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">optimizer</span></div>
+
+
+<div class="viewcode-block" id="ST.prepare_data">
+<a class="viewcode-back" href="../../starling.html#starling.starling.ST.prepare_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create training dataset and set model parameters</span>
+
+<span class="sd">        :returns: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tr_fy</span><span class="p">,</span> <span class="n">tr_fs</span><span class="p">,</span> <span class="n">tr_fl</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">simulate_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_zplane_overlap</span>
+        <span class="p">)</span>
+
+        <span class="c1">## simulate data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tr_fs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">ConcatDataset</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">tr_fy</span><span class="p">,</span> <span class="n">tr_fs</span><span class="p">,</span> <span class="n">tr_fl</span><span class="p">])</span>
+            <span class="c1">## get cell size averge/variance</span>
+            <span class="n">init_s</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">init_sv</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;init_label&quot;</span><span class="p">]))):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;init_label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ii</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cell_size_col_name</span>
+                <span class="p">]</span>
+                <span class="n">init_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span>
+                <span class="n">init_sv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span>
+            <span class="c1"># self.init_cell_size_centroids = np.array(init_s); self.init_cell_size_variances = np.array(init_sv)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;init_cell_size_centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">init_s</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;init_cell_size_variances&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">init_sv</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># init_cell_size_centroids = None; init_cell_size_variances = None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span><span class="s2">&quot;init_cell_size_centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span><span class="s2">&quot;init_cell_size_variances&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">ConcatDataset</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">tr_fy</span><span class="p">,</span> <span class="n">tr_fl</span><span class="p">])</span>
+
+        <span class="c1"># model_params = utility.model_paramters(self.init_e, self.init_v, self.init_s, self.init_sv)</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">model_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">singlet_prop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="n">model_params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ST.train_dataloader">
+<a class="viewcode-back" href="../../starling.html#starling.starling.ST.train_dataloader">[docs]</a>
+    <span class="k">def</span> <span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataLoader</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the training DataLoader</span>
+
+<span class="sd">        :returns: the training DataLoader</span>
+<span class="sd">        :rtype: torch.utils.data.DataLoader</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ST.result">
+<a class="viewcode-back" href="../../starling.html#starling.starling.ST.result">[docs]</a>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the results and add them to ``self.adata``</span>
+
+<span class="sd">        :param threshold: minimum threshold for singlet probability (?)</span>
+<span class="sd">        :type threshold: float, defaults to .05</span>
+
+<span class="sd">        :returns: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">model_pred_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+                <span class="n">utility</span><span class="o">.</span><span class="n">ConcatDataset</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">]),</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">model_pred_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">singlet_prob</span><span class="p">,</span> <span class="n">singlet_assig_prob</span><span class="p">,</span> <span class="n">gamma_assig_prob</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+            <span class="n">model_pred_loader</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dist_option</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_cell_size</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_zplane_overlap</span><span class="p">,</span>
+            <span class="n">threshold</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;st_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">singlet_assig_prob</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">indices</span>
+        <span class="p">)</span>  <span class="c1">##p(z=c|d=1)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;doublet_prob&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">singlet_prob</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;doublet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;doublet_prob&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;doublet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;max_assign_prob&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">singlet_assig_prob</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;assignment_prob_matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">singlet_assig_prob</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;gamma_assignment_prob_matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gamma_assig_prob</span><span class="p">)</span>
+
+        <span class="c1"># st_label = singlet_assig_label.numpy().astype(&#39;str&#39;)</span>
+        <span class="c1"># st_label[st_label == &#39;-1&#39;] = &#39;doublet&#39;</span>
+        <span class="c1"># self.adata.obs[&#39;st_label&#39;] = st_label</span>
+
+        <span class="c1"># if self.model_cell_size == &#39;Y&#39;:</span>
+        <span class="c1">#    pretty_printing = np.hstack((self.adata.var_names, self.cell_size_col_name))</span>
+        <span class="c1">#    c = torch.hstack([self.model_params[&#39;log_mu&#39;], self.model_params[&#39;log_psi&#39;].reshape(-1,1)]).detach().exp().cpu().numpy()</span>
+        <span class="c1"># v = torch.hstack([self.model_params[&#39;log_sigma&#39;], self.model_params[&#39;log_omega&#39;].reshape(-1,1)]).detach().exp().cpu().numpy()</span>
+        <span class="c1">#    self.adata.uns[&#39;st_exp_centroids&#39;] = pd.DataFrame(c, columns=pretty_printing)</span>
+
+        <span class="c1"># else:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">[</span><span class="s2">&quot;log_mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="c1"># v = self.model_params[&#39;log_sigma&#39;].cpu().detach().exp().cpu().numpy()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span><span class="s2">&quot;st_exp_centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">T</span>
+        <span class="p">)</span>  <span class="c1"># pd.DataFrame(c, columns=self.adata.var_names)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cell_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;st_cell_size_centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">[</span><span class="s2">&quot;log_psi&quot;</span><span class="p">]</span>
+                <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">exp</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">T</span>
+            <span class="p">)</span></div>
+</div>
+
+
+        <span class="c1"># self.adata.varm[&#39;init_exp_centroids&#39;] = pd.DataFrame(self.adata.varm[&#39;init_exp_centroids&#39;], columns = self.adata.var_names) #.to_csv(code_dir + &quot;/output/init_centroids.csv&quot;)</span>
+        <span class="c1"># self.adata.varm[&#39;init_exp_variances&#39;] = pd.DataFrame(self.adata.varm[&#39;init_exp_variances&#39;], columns = self.adata.var_names) #.to_csv(code_dir + &quot;/output/init_centroids.csv&quot;)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, contribs.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

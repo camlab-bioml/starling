@@ -1,0 +1,4 @@
+/* Prevent wide tables from overflowing */
+.cell.docutils.container {
+    overflow-x: auto;
+}

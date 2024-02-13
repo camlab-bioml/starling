@@ -20,7 +20,7 @@ Note that _starling_ requires at least python version 3.9.
 
 After cloning the repository, the next step is to install the required dependencies. There are two recommended methods:
 
-### 1. Use `requirements.tex` and your own virtual environment:
+### 1. Use `requirements.txt` and your own virtual environment:
 
 We use virtualenvwrapper (4.8.4) to create and activated a standalone virtual environment for _starling_:
 

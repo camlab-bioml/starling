@@ -14,7 +14,7 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 class ST(pl.LightningModule):
     """The STARLING module
 
-    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`
+    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`starling.uility.init_clustering`
     :type adata: AnnData
     :param dist_option: The distribution to use
     :type dist_option: str, one of 'T' for Student-T (df=2) or 'N' for Normal (Gaussian), defaults to T

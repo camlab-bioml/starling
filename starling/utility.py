@@ -31,8 +31,8 @@ class ConcatDataset(Dataset):
 
 def init_clustering(
     initial_clustering_method: Literal["User", "KM", "GMM", "FS", "PG"],
-    adata: AnnData = None,
-    k: Union[int, None] = None,
+    adata: AnnData,
+    k: Union[int, None],
     labels: None,
     centroids: None,
     variances: None,
@@ -54,7 +54,7 @@ def init_clustering(
     :returns: The annotated data with labels, centroids, and variances
     :rtype: AnnData
     """
-    
+
     if initial_clustering_method not in ["KM", "GMM", "FS", "PG"]:
         raise ValueError('initial_clustering_method must be one of "KM","GMM","FS","PG" or "User" defined cluster centroids/variances')
 
@@ -88,7 +88,7 @@ def init_clustering(
         for c in range(k):
             init_e[c, :] = adata.X[init_l == c].mean(0)
             init_ev[c, :] = adata.X[init_l == c].var(0)
-    
+
     elif initial_clustering_method == "FS":
         ## needs to output to csv first
         #ofn = OPATH + "fs_" + ONAME + ".csv"
@@ -108,14 +108,14 @@ def init_clustering(
         start = k; fsom_num_cluster = 0
         while fsom_num_cluster < k:
             #print(nc, start, fsom_nc)
-            fsom.meta_clustering(AgglomerativeClustering, min_n=start, max_n=start, verbose=False, iter_n=10) # train the meta clustering for cluster in range(40,45)  
+            fsom.meta_clustering(AgglomerativeClustering, min_n=start, max_n=start, verbose=False, iter_n=10) # train the meta clustering for cluster in range(40,45)
 
             fsom.labeling()
             #fsom.bestk # the best number of clusters within the range of (min_n, max_n)
             fsom_class = np.unique(fsom.df['category'])
             fsom_num_cluster = len(fsom_class)
             start += 1
-    
+
         fsom_labels = np.array(fsom.df['category'])
 
         i = 0
@@ -127,14 +127,14 @@ def init_clustering(
             init_e[i,:] = fsom.df[fsom_labels==row].mean(0)
             init_ev[i,:] = fsom.df[fsom_labels==row].var(0)
             i += 1
-            
+
         init_e = init_e[:,:-1]
         init_ev = init_ev[:,:-1]
     elif initial_clustering_method == "User":
         init_l = labels
         init_e = centroids
         init_ev = variances
-        
+
     adata.obs["init_label"] = init_l
     adata.varm[
         "init_exp_centroids"

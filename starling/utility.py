@@ -7,7 +7,7 @@ import scanpy.external as sce
 import torch
 from flowsom import flowsom
 from scanpy import AnnData
-from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn.cluster import AgglomerativeClustering, KMeans
 from sklearn.mixture import GaussianMixture
 from torch.utils.data import DataLoader, Dataset
 

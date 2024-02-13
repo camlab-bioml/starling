@@ -2,10 +2,12 @@ from numbers import Number
 from typing import Literal, Union
 
 import numpy as np
+import pandas as pd
 import scanpy.external as sce
 import torch
+from flowsom import flowsom
 from scanpy import AnnData
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.mixture import GaussianMixture
 from torch.utils.data import DataLoader, Dataset
 
@@ -33,9 +35,9 @@ def init_clustering(
     initial_clustering_method: Literal["User", "KM", "GMM", "FS", "PG"],
     adata: AnnData,
     k: Union[int, None],
-    labels: None,
-    centroids: None,
-    variances: None,
+    labels=None,
+    centroids=None,
+    variances=None,
 ) -> AnnData:
     """Compute initial cluster centroids, variances & labels
 
@@ -43,23 +45,24 @@ def init_clustering(
     :type adata: AnnData
     :param initial_clustering_method: The method for computing the initial clusters
     :type initial_clustering_method: str, one of ``KM`` (KMeans), ``GMM`` (Gaussian Mixture Model),
-    ``FS`` (FlowSOM) or ``PG`` (PhenoGraph).
+    ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).
     :param k: The number of clusters
-    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
-    ``k`` when ``initial_clustering_method`` is ``KM`` (required),
-    ``k`` when ``initial_clustering_method`` is ``FS`` (required),
-    ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
+    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required), ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method`` is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
     :raises: ValueError
 
     :returns: The annotated data with labels, centroids, and variances
     :rtype: AnnData
     """
 
-    if initial_clustering_method not in ["KM", "GMM", "FS", "PG"]:
-        raise ValueError('initial_clustering_method must be one of "KM","GMM","FS","PG" or "User" defined cluster centroids/variances')
+    if initial_clustering_method not in ["KM", "GMM", "FS", "PG", "User"]:
+        raise ValueError(
+            'initial_clustering_method must be one of "KM","GMM","FS","PG" or "User" defined cluster centroids/variances'
+        )
 
     if initial_clustering_method in ["KM", "GMM", "FS"] and k is None:
-        raise ValueError("k cannot be ommitted for KMeans or Gaussian Mixture")
+        raise ValueError(
+            "k cannot be ommitted for KMeans, FlowSOM, or Gaussian Mixture"
+        )
 
     if initial_clustering_method == "KM":
         kms = KMeans(k).fit(adata.X)
@@ -91,59 +94,63 @@ def init_clustering(
 
     elif initial_clustering_method == "FS":
         ## needs to output to csv first
-        #ofn = OPATH + "fs_" + ONAME + ".csv"
+        # ofn = OPATH + "fs_" + ONAME + ".csv"
         pd.DataFrame(X).to_csv("fs.csv")
-        fsom = flowsom("fs.csv", if_fcs=False, if_drop=True, drop_col=['Unnamed: 0'])
+        fsom = flowsom("fs.csv", if_fcs=False, if_drop=True, drop_col=["Unnamed: 0"])
 
-        fsom.som_mapping(50, # x_n: e.g. 100, the dimension of expected map
-            50, # y_n: e.g. 100, the dimension of expected map
+        fsom.som_mapping(
+            50,  # x_n: e.g. 100, the dimension of expected map
+            50,  # y_n: e.g. 100, the dimension of expected map
             fsom.df.shape[1],
-            1, # sigma: e.g 1, the standard deviation of initialized weights
-            0.5, # lr: e.g 0.5, learning rate
-            1000, # batch_size: 1000, iteration times
-            tf_str=None, # string, e.g. hlog', None, etc - the transform algorithm
-            if_fcs=False # bool, when the the input file is fcs file. If not, it should be a csv file
+            1,  # sigma: e.g 1, the standard deviation of initialized weights
+            0.5,  # lr: e.g 0.5, learning rate
+            1000,  # batch_size: 1000, iteration times
+            tf_str=None,  # string, e.g. hlog', None, etc - the transform algorithm
+            if_fcs=False,  # bool, when the the input file is fcs file. If not, it should be a csv file
             # seed = 10, for reproducing
         )
-        start = k; fsom_num_cluster = 0
+        start = k
+        fsom_num_cluster = 0
         while fsom_num_cluster < k:
-            #print(nc, start, fsom_nc)
-            fsom.meta_clustering(AgglomerativeClustering, min_n=start, max_n=start, verbose=False, iter_n=10) # train the meta clustering for cluster in range(40,45)
+            # print(nc, start, fsom_nc)
+            fsom.meta_clustering(
+                AgglomerativeClustering,
+                min_n=start,
+                max_n=start,
+                verbose=False,
+                iter_n=10,
+            )  # train the meta clustering for cluster in range(40,45)
 
             fsom.labeling()
-            #fsom.bestk # the best number of clusters within the range of (min_n, max_n)
-            fsom_class = np.unique(fsom.df['category'])
+            # fsom.bestk # the best number of clusters within the range of (min_n, max_n)
+            fsom_class = np.unique(fsom.df["category"])
             fsom_num_cluster = len(fsom_class)
             start += 1
 
-        fsom_labels = np.array(fsom.df['category'])
+        fsom_labels = np.array(fsom.df["category"])
 
         i = 0
         init_l = np.zeros(fsom.df.shape[0], dtype=int)
         init_e = np.zeros((len(fsom_class), fsom.df.shape[1]))
         init_ev = np.zeros((len(fsom_class), fsom.df.shape[1]))
         for row in fsom_class:
-            init_l[fsom_labels==row] = i
-            init_e[i,:] = fsom.df[fsom_labels==row].mean(0)
-            init_ev[i,:] = fsom.df[fsom_labels==row].var(0)
+            init_l[fsom_labels == row] = i
+            init_e[i, :] = fsom.df[fsom_labels == row].mean(0)
+            init_ev[i, :] = fsom.df[fsom_labels == row].var(0)
             i += 1
 
-        init_e = init_e[:,:-1]
-        init_ev = init_ev[:,:-1]
+        init_e = init_e[:, :-1]
+        init_ev = init_ev[:, :-1]
     elif initial_clustering_method == "User":
         init_l = labels
         init_e = centroids
         init_ev = variances
 
     adata.obs["init_label"] = init_l
-    adata.varm[
-        "init_exp_centroids"
-    ] = (
+    adata.varm["init_exp_centroids"] = (
         init_e.T
     )  ## An expression matrix (PxC) resulting from a clustering method (i.e., Kmeans)
-    adata.varm[
-        "init_exp_variances"
-    ] = (
+    adata.varm["init_exp_variances"] = (
         init_ev.T
     )  ## An expression variance (daignal) matrix (PxC) resulting from a clustering method
 
@@ -265,8 +272,7 @@ def simulate_data(
     :type model_overlap: bool, defaults to True
 
     :returns: the simulated data
-    :rtype: tuple[torch.Tensor, None, torch.Tensor] if :param:`S` is None,
-    otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]
+    :rtype: tuple[torch.Tensor, None, torch.Tensor] if ``S`` is None, otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]
 
     """
 

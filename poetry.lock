@@ -739,6 +739,56 @@ files = [
 devel = ["colorama", "json-spec", "jsonschema", "pylint", "pytest", "pytest-benchmark", "pytest-cache", "validictory"]
 
 [[package]]
+name = "fcsparser"
+version = "0.2.8"
+description = "A python package for reading raw fcs files"
+optional = false
+python-versions = ">=3.8.0,<4.0.0"
+files = [
+    {file = "fcsparser-0.2.8-py3-none-any.whl", hash = "sha256:833b02ceff18f34c9304681f5b6675039f5b39a31dfdd9640881f43223bcc2ab"},
+    {file = "fcsparser-0.2.8.tar.gz", hash = "sha256:df0436bf678df1f4ad3274e55fa06773f884fa45d8329015913a6178d10c73ea"},
+]
+
+[package.dependencies]
+numpy = ">=1,<2"
+pandas = ">=1.5.3"
+
+[[package]]
+name = "flowcytometrytools"
+version = "0.5.1"
+description = "A python package for performing flow cytometry analysis"
+optional = false
+python-versions = "*"
+files = [
+    {file = "FlowCytometryTools-0.5.1-py3-none-any.whl", hash = "sha256:9380ffb968469e3f0a97113add1c10e82cab6131462cf47b6826d36d1679e354"},
+    {file = "FlowCytometryTools-0.5.1.tar.gz", hash = "sha256:2a2a151f6d0bc53318848c7bb2d5dfa61412e7c81fc5efcbb4643aee471e5393"},
+]
+
+[package.dependencies]
+decorator = "*"
+fcsparser = ">=0.1.1"
+setuptools = "*"
+
+[[package]]
+name = "flowsom"
+version = "0.1.1"
+description = "A Python implementation of FlowSOM algorithm for clustering and visualizing a mass cytometry data set."
+optional = false
+python-versions = "*"
+files = [
+    {file = "FlowSom-0.1.1.tar.gz", hash = "sha256:b1a14e770ac9b0c66afe6dfad4746b1c7b5b46ca1651e191808d2538a89b169e"},
+]
+
+[package.dependencies]
+FlowCytometryTools = "*"
+matplotlib = "*"
+minisom = "*"
+networkx = "*"
+numpy = "*"
+pandas = "*"
+scikit-learn = "*"
+
+[[package]]
 name = "fonttools"
 version = "4.47.2"
 description = "Tools to manipulate font files"
@@ -1991,6 +2041,16 @@ python-versions = ">=3.7"
 files = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
     {file = "mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
+]
+
+[[package]]
+name = "minisom"
+version = "2.3.1"
+description = "Minimalistic implementation of the Self Organizing Maps (SOM)"
+optional = false
+python-versions = "*"
+files = [
+    {file = "MiniSom-2.3.1.tar.gz", hash = "sha256:c0f1411616d7614fbd440a811975c12c7dfc091baea33efb49f5f4eabad7b966"},
 ]
 
 [[package]]
@@ -4271,4 +4331,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "24d7531d1b4533d5db801125abdf7a1acee2db31f006ac125c19ae14c1fa0da6"
+content-hash = "8726be507fd3e34bd48a414355a819c741016819d6b2585d6273b88c9be83982"

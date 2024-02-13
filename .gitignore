@@ -6,3 +6,4 @@ pyvenv.cfg
 model.pt
 .pytest_cache
 .vscode
+jupyter_execute

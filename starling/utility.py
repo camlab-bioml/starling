@@ -15,7 +15,7 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 class ConcatDataset(Dataset):
-    """A dataset of comprised of datasets
+    """A dataset composed of datasets
 
     :param datasets: the datasets to concatenate, each of ``d.shape[0] == m``
     :type datasets: tuple[torch.Tensor, ...]
@@ -48,6 +48,13 @@ def init_clustering(
     ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).
     :param k: The number of clusters
     :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required), ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method`` is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
+    :param labels: optional, user-provided labels
+    :type labels: ``numpy.ndarray`` of shape ``(m,)``
+    :param centroids: optional, user-provided centroids
+    :type centroids: ``numpy.ndarray`` of shape ``(?,n)``
+    :param variances: optional, user-provided variances
+    :type variances: ``numpy.ndarray`` of shape ``(?,n)``
+
     :raises: ValueError
 
     :returns: The annotated data with labels, centroids, and variances

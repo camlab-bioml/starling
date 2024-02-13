@@ -1,8 +1,6 @@
 from anndata import AnnData
 
-from starling.utility import init_clustering, model_parameters
-
-""" TODO: numeric checks """
+from starling.utility import init_clustering
 
 
 def assert_annotated(adata: AnnData, k):

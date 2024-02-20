@@ -3,6 +3,9 @@ __pycache__
 pyvenv.cfg
 **/log/**
 !**/log/.gitkeep
+docs/build/**
+!docs/build/.gitkeep
 model.pt
 .pytest_cache
 .vscode
+jupyter_execute

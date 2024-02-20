@@ -16,8 +16,8 @@ def test_can_run_km(tmpdir):
     raw_adata = ad.read_h5ad(join(dirname(__file__), "fixtures", "sample_input.h5ad"))
 
     adata = utility.init_clustering(
-        raw_adata,
         "KM",
+        raw_adata,
         k=10,
     )
     st = starling.ST(adata)
@@ -55,13 +55,14 @@ def test_can_run_km(tmpdir):
     )
 
     assert prom_mat.shape == (13685, 10)
+
 
 def test_can_run_gmm(tmpdir):
     """Temporary sanity check"""
     seed_everything(10, workers=True)
     adata = utility.init_clustering(
-        ad.read_h5ad(join(dirname(__file__), "fixtures", "sample_input.h5ad")),
         "GMM",
+        ad.read_h5ad(join(dirname(__file__), "fixtures", "sample_input.h5ad")),
         k=10,
     )
     st = starling.ST(adata)
@@ -100,12 +101,13 @@ def test_can_run_gmm(tmpdir):
 
     assert prom_mat.shape == (13685, 10)
 
+
 def test_can_run_pg(tmpdir):
     """Temporary sanity check"""
     seed_everything(10, workers=True)
     adata = utility.init_clustering(
-        ad.read_h5ad(join(dirname(__file__), "fixtures", "sample_input.h5ad")),
         "PG",
+        ad.read_h5ad(join(dirname(__file__), "fixtures", "sample_input.h5ad")),
         k=10,
     )
     st = starling.ST(adata)
@@ -144,4 +146,3 @@ def test_can_run_pg(tmpdir):
     )
 
     assert prom_mat.shape[0] == 13685
-

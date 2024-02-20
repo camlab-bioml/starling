@@ -1,8 +1,6 @@
 from anndata import AnnData
 
-from starling.utility import init_clustering, model_parameters
-
-""" TODO: numeric checks """
+from starling.utility import init_clustering
 
 
 def assert_annotated(adata: AnnData, k):
@@ -18,17 +16,17 @@ def assert_annotated(adata: AnnData, k):
 
 def test_init_clustering_km(simple_adata):
     k = 3
-    initialized = init_clustering(simple_adata, "KM", k)
+    initialized = init_clustering("KM", simple_adata, k)
     assert_annotated(initialized, k)
 
 
 def test_init_clustering_gmm(simple_adata):
     k = 3
-    initialized = init_clustering(simple_adata, "GMM", k)
+    initialized = init_clustering("GMM", simple_adata, k)
     assert_annotated(initialized, k)
 
 
 def test_init_clustering_pg(simple_adata):
     k = 2
-    initialized = init_clustering(simple_adata, "PG", k)
+    initialized = init_clustering("PG", simple_adata, k)
     assert_annotated(initialized, k)

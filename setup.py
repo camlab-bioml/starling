@@ -22,7 +22,7 @@ setup(
         "Intended Audience :: Science/Research",
         "Programming Language :: Python :: 3.8",
     ],
-    license="MIT",
+    license="See License.txt",
     install_requires=[
         "pip==23.2.1" "torch==1.12.1",
         "tensorflow==2.14.0",

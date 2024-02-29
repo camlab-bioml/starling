@@ -1,14 +1,19 @@
-## SegmentaTion AwaRe cLusterING (starling)
+## SegmentaTion AwaRe cLusterING (STARLING)
 
 ![build](https://github.com/camlab-bioml/starling/actions/workflows/main.yml/badge.svg)
 
-Highly multiplexed imaging technologies such as Imaging Mass Cytometry (IMC) enable the quantification of the expression proteins in tissue sections while retaining spatial information. Data preprocessing pipelines subsequently segment the data to single cells, recording their average expression profile along with spatial characteristics (area, morphology, location etc.). However, segmentation of the resulting images to single cells remains a challenge, with doublets -- an area erroneously segmented as a single-cell that is composed of more than one 'true' single cell -- being frequent in densely packed tissues. This results in cells with implausible protein co-expression combinations, confounding the interpretation of important cellular populations across tissues.
+STARLING is a probabilistic model for clustering cells measured with spatial expression assays (e.g. IMC, MIBI, etc...) while accounting for segmentation errors.
 
-While doublets have been extensively discussed in the context of single-cell RNA-sequencing analysis, there is currently no method to cluster IMC data while accounting for such segmentation errors. Therefore, we introduce SegmentaTion AwaRe cLusterING (STARLING), a probabilistic method tailored for densely packed tissues profiled with IMC that clusters the cells explicitly allowing for doublets resulting from mis-segmentation. To benchmark STARLING against a range of existing clustering methods, we further develop a novel evaluation score that penalizes methods that return clusters with biologically-implausible marker co-expression combinations. Finally, we generate IMC data of the human tonsil -- a densely packed human secondary lymphoid organ -- and demonstrate cellular states captured by STARLING identify known cell types not visible with other methods and important for understanding the dynamics of immune response.
+It outputs:
+1. Clusters that account for segmentation errors in the data (i.e. should no longer show implausible marker co-expression)
+2. Assignments for every cell in the dataset to those clusters
+3. A segmentation error probability for each cell
 
-![Model](https://github.com/camlab-bioml/starling/blob/main/starling.png)
+A **preprint** describing the method and introducing a novel benchmarking workflow is available: [Lee et al. (2024) _Segmentation error aware clustering for highly multiplexed imaging_](to-update)
 
-**Figure A** Segmentation errors in highly multiplexed imaging experiments induce clusters formed by the composition of multiple "true" cell types. **B** Our probabilistic model STARLING for clustering highly multiplexed imaging data models whether each cell is observed segmentation error free, and if not models the composition of cell types leading to the observed cell. The loss function jointly maximizes the likelihood of the data and the ability to discriminate on-the-fly simulated segmentation errors. **C** The Input to STARLING includes a high dimensional multiplexed imaging and imperfect segmentation that is summarized to an expression matrix with cell sizes. **D** The output includes both the denoised cell types along with a per-cell estimate of segmentation errors.
+A **tutorial** outlining basic usage is available [here](https://github.com/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb).
+
+![Model](https://github.com/camlab-bioml/starling/blob/main/starling-schematic600x.png)
 
 ## Installation
 
@@ -57,14 +62,10 @@ A list of minimal required packages needed for _starling_ can be found in setup.
 
 Launch the interactive tutorial: [jupyter notebook][tutorial]
 
-## License
-
-Distributed under the terms of the [MIT license][license],
-_starling_ is free and open source software.
-
 ## Authors
 
-Jett (Yuju) Lee & Kieran Campbell
+This software is authored by: Jett (Yuju) Lee, Conor Klamann, Kieran R Campbell
+
 Lunenfeld-Tanenbaum Research Institute & University of Toronto
 
 <!-- github-only -->

@@ -532,10 +532,10 @@ def predict(
     :param model_cell_size: bool
     :param model_zplane_overlap: whether z-plane overlap is modeled
     :type model_zplane_overlap: bool
-    :param threshold: ?
+    :param threshold:
     :type threshold: float, defaults to 0.5
-    :return: ?
-    :rtype: ?
+    :return:
+    :rtype:
     """
 
     singlet_prob_list = []

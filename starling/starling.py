@@ -188,7 +188,7 @@ class ST(pl.LightningModule):
     def result(self, threshold=0.5) -> None:
         """Retrieve the results and add them to ``self.adata``
 
-        :param threshold: minimum threshold for singlet probability (?)
+        :param threshold: minimum threshold for singlet probability
         :type threshold: float, defaults to .05
 
         :returns: None

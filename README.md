@@ -13,7 +13,7 @@ A **preprint** describing the method and introducing a novel benchmarking workfl
 
 A **tutorial** outlining basic usage is available [here](https://github.com/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb).
 
-![Model](https://github.com/camlab-bioml/starling/blob/main/starling-schematic600x.png)
+![Model](https://github.com/camlab-bioml/starling/raw/main/starling-schematic600x.png)
 
 ## Installation
 

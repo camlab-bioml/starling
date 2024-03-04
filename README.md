@@ -9,7 +9,7 @@ It outputs:
 2. Assignments for every cell in the dataset to those clusters
 3. A segmentation error probability for each cell
 
-A **preprint** describing the method and introducing a novel benchmarking workflow is available: [Lee et al. (2024) _Segmentation error aware clustering for highly multiplexed imaging_](to-update)
+A **preprint** describing the method and introducing a novel benchmarking workflow is available: [Lee et al. (2024) _Segmentation error aware clustering for highly multiplexed imaging_](https://www.biorxiv.org/content/10.1101/2024.02.29.582827v1)
 
 A **tutorial** outlining basic usage is available [here](https://github.com/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb).
 

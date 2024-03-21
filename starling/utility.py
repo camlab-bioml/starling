@@ -36,8 +36,6 @@ def init_clustering(
     adata: AnnData,
     k: Union[int, None],
     labels=None,
-    centroids=None,
-    variances=None,
 ) -> AnnData:
     """Compute initial cluster centroids, variances & labels
 
@@ -50,10 +48,11 @@ def init_clustering(
     :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required), ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method`` is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
     :param labels: optional, user-provided labels
     :type labels: ``numpy.ndarray`` of shape ``(m,)``
-    :param centroids: optional, user-provided centroids
-    :type centroids: ``numpy.ndarray`` of shape ``(?,n)``
-    :param variances: optional, user-provided variances
-    :type variances: ``numpy.ndarray`` of shape ``(?,n)``
+    
+    #:param centroids: optional, user-provided centroids
+    #:type centroids: ``numpy.ndarray`` of shape ``(?,n)``
+    #:param variances: optional, user-provided variances
+    #:type variances: ``numpy.ndarray`` of shape ``(?,n)``
 
     :raises: ValueError
 
@@ -88,10 +87,13 @@ def init_clustering(
         init_e = gmm.means_
         init_ev = gmm.covariances_
 
-    elif initial_clustering_method == "PG":
-        init_l, _, _ = sce.tl.phenograph(adata.X)
+    elif initial_clustering_method == "User" or initial_clustering_method == "PG":
 
-        ## save phenograph centers
+        if initial_clustering_method == "PG":
+            init_l, _, _ = sce.tl.phenograph(adata.X)
+        else:
+            init_l = labels
+            
         k = len(np.unique(init_l))
         init_e = np.zeros((k, adata.X.shape[1]))
         init_ev = np.zeros((k, adata.X.shape[1]))
@@ -148,10 +150,6 @@ def init_clustering(
 
         init_e = init_e[:, :-1]
         init_ev = init_ev[:, :-1]
-    elif initial_clustering_method == "User":
-        init_l = labels
-        init_e = centroids
-        init_ev = variances
 
     adata.obs["init_label"] = init_l
     adata.varm["init_exp_centroids"] = (

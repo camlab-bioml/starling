@@ -5,6 +5,10 @@ import numpy as np
 import pandas as pd
 import scanpy.external as sce
 import torch
+#https://github.com/eyurtsev/FlowCytometryTools/issues/44
+import collections
+from collections import abc
+collections.MutableMapping = abc.MutableMapping
 from flowsom import flowsom
 from scanpy import AnnData
 from sklearn.cluster import AgglomerativeClustering, KMeans
@@ -85,7 +89,6 @@ def init_clustering(
         init_ev = gmm.covariances_
 
     elif initial_clustering_method == "User" or initial_clustering_method == "PG":
-
         if initial_clustering_method == "PG":
             init_l, _, _ = sce.tl.phenograph(adata.X)
         else:
@@ -149,10 +152,14 @@ def init_clustering(
         init_ev = init_ev[:, :-1]
 
     adata.obs["init_label"] = init_l
-    adata.varm["init_exp_centroids"] = (
+    adata.varm[
+        "init_exp_centroids"
+    ] = (
         init_e.T
     )  ## An expression matrix (PxC) resulting from a clustering method (i.e., Kmeans)
-    adata.varm["init_exp_variances"] = (
+    adata.varm[
+        "init_exp_variances"
+    ] = (
         init_ev.T
     )  ## An expression variance (daignal) matrix (PxC) resulting from a clustering method
 

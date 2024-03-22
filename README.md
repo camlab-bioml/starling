@@ -23,8 +23,6 @@ _starling_ can be cloned and installed locally using access to the Github reposi
 git clone https://github.com/camlab-bioml/starling.git && cd starling
 ```
 
-Note that _starling_ requires **python version 3.9**.
-
 After cloning the repository, the next step is to install the required dependencies. There are two recommended methods:
 
 ### 1. Use `requirements.txt` and your own virtual environment:

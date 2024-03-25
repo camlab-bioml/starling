@@ -1,3 +1,6 @@
+#https://github.com/eyurtsev/FlowCytometryTools/issues/44
+import collections
+from collections import abc
 from numbers import Number
 from typing import Literal, Union
 
@@ -5,9 +8,7 @@ import numpy as np
 import pandas as pd
 import scanpy.external as sce
 import torch
-#https://github.com/eyurtsev/FlowCytometryTools/issues/44
-import collections
-from collections import abc
+
 collections.MutableMapping = abc.MutableMapping
 from flowsom import flowsom
 from scanpy import AnnData

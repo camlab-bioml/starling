@@ -333,9 +333,9 @@
         <span class="c1"># else:</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="p">[</span><span class="s2">&quot;log_mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="c1"># v = self.model_params[&#39;log_sigma&#39;].cpu().detach().exp().cpu().numpy()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span><span class="s2">&quot;st_exp_centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">c</span><span class="o">.</span><span class="n">T</span>
-        <span class="p">)</span>  <span class="c1"># pd.DataFrame(c, columns=self.adata.var_names)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span>
+            <span class="s2">&quot;st_exp_centroids&quot;</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># pd.DataFrame(c, columns=self.adata.var_names)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cell_size</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;st_cell_size_centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>

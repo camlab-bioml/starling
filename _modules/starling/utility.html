@@ -78,13 +78,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for starling.utility</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span></span><span class="c1"># https://github.com/eyurtsev/FlowCytometryTools/issues/44</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">abc</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">scanpy.external</span> <span class="k">as</span> <span class="nn">sce</span>
 <span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span>
 <span class="kn">from</span> <span class="nn">flowsom</span> <span class="kn">import</span> <span class="n">flowsom</span>
 <span class="kn">from</span> <span class="nn">scanpy</span> <span class="kn">import</span> <span class="n">AnnData</span>
 <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">AgglomerativeClustering</span><span class="p">,</span> <span class="n">KMeans</span>
@@ -121,8 +126,6 @@
     <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
     <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
     <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">centroids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">variances</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnnData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute initial cluster centroids, variances &amp; labels</span>
 
@@ -130,15 +133,13 @@
 <span class="sd">    :type adata: AnnData</span>
 <span class="sd">    :param initial_clustering_method: The method for computing the initial clusters</span>
 <span class="sd">    :type initial_clustering_method: str, one of ``KM`` (KMeans), ``GMM`` (Gaussian Mixture Model),</span>
-<span class="sd">    ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).</span>
+<span class="sd">        ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).</span>
 <span class="sd">    :param k: The number of clusters</span>
-<span class="sd">    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required), ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method`` is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)</span>
+<span class="sd">    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),</span>
+<span class="sd">        ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method``</span>
+<span class="sd">        is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)</span>
 <span class="sd">    :param labels: optional, user-provided labels</span>
 <span class="sd">    :type labels: ``numpy.ndarray`` of shape ``(m,)``</span>
-<span class="sd">    :param centroids: optional, user-provided centroids</span>
-<span class="sd">    :type centroids: ``numpy.ndarray`` of shape ``(?,n)``</span>
-<span class="sd">    :param variances: optional, user-provided variances</span>
-<span class="sd">    :type variances: ``numpy.ndarray`` of shape ``(?,n)``</span>
 
 <span class="sd">    :raises: ValueError</span>
 
@@ -173,10 +174,12 @@
         <span class="n">init_e</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">means_</span>
         <span class="n">init_ev</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">covariances_</span>
 
-    <span class="k">elif</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;PG&quot;</span><span class="p">:</span>
-        <span class="n">init_l</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sce</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">phenograph</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;User&quot;</span> <span class="ow">or</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;PG&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;PG&quot;</span><span class="p">:</span>
+            <span class="n">init_l</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sce</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">phenograph</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">init_l</span> <span class="o">=</span> <span class="n">labels</span>
 
-        <span class="c1">## save phenograph centers</span>
         <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">init_l</span><span class="p">))</span>
         <span class="n">init_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="n">init_ev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
@@ -233,16 +236,16 @@
 
         <span class="n">init_e</span> <span class="o">=</span> <span class="n">init_e</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">init_ev</span> <span class="o">=</span> <span class="n">init_ev</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;User&quot;</span><span class="p">:</span>
-        <span class="n">init_l</span> <span class="o">=</span> <span class="n">labels</span>
-        <span class="n">init_e</span> <span class="o">=</span> <span class="n">centroids</span>
-        <span class="n">init_ev</span> <span class="o">=</span> <span class="n">variances</span>
 
     <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;init_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">init_l</span>
-    <span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span><span class="s2">&quot;init_exp_centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span>
+        <span class="s2">&quot;init_exp_centroids&quot;</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">init_e</span><span class="o">.</span><span class="n">T</span>
     <span class="p">)</span>  <span class="c1">## An expression matrix (PxC) resulting from a clustering method (i.e., Kmeans)</span>
-    <span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span><span class="s2">&quot;init_exp_variances&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span>
+        <span class="s2">&quot;init_exp_variances&quot;</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">init_ev</span><span class="o">.</span><span class="n">T</span>
     <span class="p">)</span>  <span class="c1">## An expression variance (daignal) matrix (PxC) resulting from a clustering method</span>
 
@@ -368,6 +371,7 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Use real data to simulate singlets/doublets (equal proportions).</span>
 <span class="sd">    Return same number of cells as in Y/S, half of them are singlets and another half are doublets</span>
+
 <span class="sd">    :param Y: data matrix of shape m x n</span>
 <span class="sd">    :type Y: torch.Tensor</span>
 <span class="sd">    :param S: data matrix of shape m</span>

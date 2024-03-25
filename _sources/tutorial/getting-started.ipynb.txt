@@ -24,6 +24,9 @@
     }
    ],
    "source": [
+    "%pip install https://github.com/camlab-bioml/starling/archive/main.zip\n",
+    "%pip install lightning_lite\n",
+    "\n",
     "import anndata as ad\n",
     "import pandas as pd\n",
     "import pytorch_lightning as pl\n",
@@ -109,6 +112,8 @@
     }
    ],
    "source": [
+    "!wget https://github.com/camlab-bioml/starling/raw/main/docs/source/tutorial/sample_input.h5ad\n",
+    "\n",
     "adata = utility.init_clustering(\"KM\", ad.read_h5ad(\"sample_input.h5ad\"), k=10)\n"
    ]
   },

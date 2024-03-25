@@ -150,38 +150,28 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.init_clustering">
-<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">init_clustering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_clustering_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centroids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variances</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#init_clustering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.init_clustering" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">init_clustering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_clustering_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#init_clustering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.init_clustering" title="Link to this definition"></a></dt>
 <dd><p>Compute initial cluster centroids, variances &amp; labels</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>adata</strong> (<em>AnnData</em>) – The initial data to be analyzed</p></li>
-<li><p><strong>initial_clustering_method</strong> (str, one of <code class="docutils literal notranslate"><span class="pre">KM</span></code> (KMeans), <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (Gaussian Mixture Model),) – The method for computing the initial clusters</p></li>
+<li><p><strong>initial_clustering_method</strong> (str, one of <code class="docutils literal notranslate"><span class="pre">KM</span></code> (KMeans), <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (Gaussian Mixture Model),
+<code class="docutils literal notranslate"><span class="pre">FS</span></code> (FlowSOM), <code class="docutils literal notranslate"><span class="pre">User</span></code> (user-provided), or <code class="docutils literal notranslate"><span class="pre">PG</span></code> (PhenoGraph).) – The method for computing the initial clusters</p></li>
+<li><p><strong>k</strong> (int, must be <code class="docutils literal notranslate"><span class="pre">n_components</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (required),
+<code class="docutils literal notranslate"><span class="pre">k</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">KM</span></code> (required), <code class="docutils literal notranslate"><span class="pre">k</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code>
+is <code class="docutils literal notranslate"><span class="pre">FS</span></code> (required), <code class="docutils literal notranslate"><span class="pre">?</span></code> when  <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">PG</span></code> (optional)) – The number of clusters</p></li>
+<li><p><strong>labels</strong> (<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(m,)</span></code>) – optional, user-provided labels</p></li>
 </ul>
 </dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">FS</span></code> (FlowSOM), <code class="docutils literal notranslate"><span class="pre">User</span></code> (user-provided), or <code class="docutils literal notranslate"><span class="pre">PG</span></code> (PhenoGraph).
-:type k: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>
-:param k: The number of clusters
-:type k: int, must be <code class="docutils literal notranslate"><span class="pre">n_components</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (required), <code class="docutils literal notranslate"><span class="pre">k</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">KM</span></code> (required), <code class="docutils literal notranslate"><span class="pre">k</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">FS</span></code> (required), <code class="docutils literal notranslate"><span class="pre">?</span></code> when  <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">PG</span></code> (optional)
-:type labels: 
-:param labels: optional, user-provided labels
-:type labels: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(m,)</span></code>
-:type centroids: 
-:param centroids: optional, user-provided centroids
-:type centroids: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(?,n)</span></code>
-:type variances: 
-:param variances: optional, user-provided variances
-:type variances: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(?,n)</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ValueError</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p>ValueError</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The annotated data with labels, centroids, and variances</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The annotated data with labels, centroids, and variances</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>AnnData</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>AnnData</p>
 </dd>
 </dl>
 </dd></dl>
@@ -239,22 +229,20 @@
 <dt class="sig sig-object py" id="starling.utility.simulate_data">
 <span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">simulate_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#simulate_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.simulate_data" title="Link to this definition"></a></dt>
 <dd><p>Use real data to simulate singlets/doublets (equal proportions).
-Return same number of cells as in Y/S, half of them are singlets and another half are doublets
-:type Y: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>
-:param Y: data matrix of shape m x n
-:type Y: torch.Tensor
-:type S: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>
-:param S: data matrix of shape m
-:type S: Union[torch.Tensor, None], defaults to None
-:type model_overlap: 
-:param model_overlap: If cell size is modelled, should STARLING model z-plane overlap
-:type model_overlap: bool, defaults to True</p>
+Return same number of cells as in Y/S, half of them are singlets and another half are doublets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the simulated data</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Y</strong> (<em>torch.Tensor</em>) – data matrix of shape m x n</p></li>
+<li><p><strong>S</strong> (<em>Union</em><em>[</em><em>torch.Tensor</em><em>, </em><em>None</em><em>]</em><em>, </em><em>defaults to None</em>) – data matrix of shape m</p></li>
+<li><p><strong>model_overlap</strong> (<em>bool</em><em>, </em><em>defaults to True</em>) – If cell size is modelled, should STARLING model z-plane overlap</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple[torch.Tensor, None, torch.Tensor] if <code class="docutils literal notranslate"><span class="pre">S</span></code> is None, otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the simulated data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[torch.Tensor, None, torch.Tensor] if <code class="docutils literal notranslate"><span class="pre">S</span></code> is None, otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]</p>
 </dd>
 </dl>
 </dd></dl>

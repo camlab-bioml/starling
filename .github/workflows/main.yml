@@ -25,10 +25,9 @@ jobs:
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: poetry install --with docs,dev --no-interaction
     - uses: isort/isort-action@v1
-    - uses: psf/black@stable
-      with:
-        options: "--check --verbose"
-        src: "./starling"
+    - name: Black
+      run: |
+        poetry run black --check --verbose ./starling
     - name: Pytest
       run: |
         poetry run pytest

@@ -1,3 +1,6 @@
+# https://github.com/eyurtsev/FlowCytometryTools/issues/44
+import collections
+from collections import abc
 from numbers import Number
 from typing import Literal, Union
 
@@ -5,6 +8,8 @@ import numpy as np
 import pandas as pd
 import scanpy.external as sce
 import torch
+
+collections.MutableMapping = abc.MutableMapping
 from flowsom import flowsom
 from scanpy import AnnData
 from sklearn.cluster import AgglomerativeClustering, KMeans
@@ -43,16 +48,13 @@ def init_clustering(
     :type adata: AnnData
     :param initial_clustering_method: The method for computing the initial clusters
     :type initial_clustering_method: str, one of ``KM`` (KMeans), ``GMM`` (Gaussian Mixture Model),
-    ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).
+        ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).
     :param k: The number of clusters
-    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required), ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method`` is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
+    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
+        ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method``
+        is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
     :param labels: optional, user-provided labels
     :type labels: ``numpy.ndarray`` of shape ``(m,)``
-    
-    #:param centroids: optional, user-provided centroids
-    #:type centroids: ``numpy.ndarray`` of shape ``(?,n)``
-    #:param variances: optional, user-provided variances
-    #:type variances: ``numpy.ndarray`` of shape ``(?,n)``
 
     :raises: ValueError
 
@@ -88,12 +90,11 @@ def init_clustering(
         init_ev = gmm.covariances_
 
     elif initial_clustering_method == "User" or initial_clustering_method == "PG":
-
         if initial_clustering_method == "PG":
             init_l, _, _ = sce.tl.phenograph(adata.X)
         else:
             init_l = labels
-            
+
         k = len(np.unique(init_l))
         init_e = np.zeros((k, adata.X.shape[1]))
         init_ev = np.zeros((k, adata.X.shape[1]))
@@ -152,10 +153,14 @@ def init_clustering(
         init_ev = init_ev[:, :-1]
 
     adata.obs["init_label"] = init_l
-    adata.varm["init_exp_centroids"] = (
+    adata.varm[
+        "init_exp_centroids"
+    ] = (
         init_e.T
     )  ## An expression matrix (PxC) resulting from a clustering method (i.e., Kmeans)
-    adata.varm["init_exp_variances"] = (
+    adata.varm[
+        "init_exp_variances"
+    ] = (
         init_ev.T
     )  ## An expression variance (daignal) matrix (PxC) resulting from a clustering method
 
@@ -269,6 +274,7 @@ def simulate_data(
 ):
     """Use real data to simulate singlets/doublets (equal proportions).
     Return same number of cells as in Y/S, half of them are singlets and another half are doublets
+
     :param Y: data matrix of shape m x n
     :type Y: torch.Tensor
     :param S: data matrix of shape m

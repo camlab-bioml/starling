@@ -1,4 +1,4 @@
-#https://github.com/eyurtsev/FlowCytometryTools/issues/44
+# https://github.com/eyurtsev/FlowCytometryTools/issues/44
 import collections
 from collections import abc
 from numbers import Number

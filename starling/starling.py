@@ -27,34 +27,26 @@ class ST(pl.LightningModule):
     """The STARLING module
 
     :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`starling.uility.init_clustering`
-    :type adata: AnnData
-    :param dist_option: The distribution to use
-    :type dist_option: str, one of 'T' for Student-T (df=2) or 'N' for Normal (Gaussian), defaults to T
+    :param dist_option: The distribution to use, one of 'T' for Student-T (df=2) or 'N' for Normal (Gaussian), defaults to T
     :param singlet_prop: The proportion of anticipated segmentation error free cells
-    :type singlet_prop: float, defaults to 0.6
     :param model_cell_size: Whether STARLING should incoporate cell size in the model
-    :type model_cell_size: bool, defaults to True
     :param cell_size_col_name: The column name in ``AnnData`` (anndata.obs)
-    :type cell_size_col_name: str, defaults to "area"
     :param model_zplane_overlap: If cell size is modelled, should STARLING model z-plane overlap
-    :type model_zplane_overlap: bool, defaults to True
-    :param model_regularizer: Regularizier term impose on synethic doublet loss (BCE)
-    :type model_regularizer: int, defaults to 1
+    :param model_regularizer: Regularizer term impose on synethic doublet loss (BCE)
     :param learning_rate: Learning rate of ADAM optimizer for STARLING
-    :type learning_rate: float, defaults to 1e-3
 
     """
 
     def __init__(
         self,
         adata: AnnData,
-        dist_option="T",
-        singlet_prop=0.6,
-        model_cell_size=True,
-        cell_size_col_name="area",
-        model_zplane_overlap=True,
-        model_regularizer=1,
-        learning_rate=1e-3,
+        dist_option: str = "T",
+        singlet_prop: float = 0.6,
+        model_cell_size: bool = True,
+        cell_size_col_name: str = "area",
+        model_zplane_overlap: bool = True,
+        model_regularizer: int = 1,
+        learning_rate: float = 1e-3,
     ):
         super().__init__()
 
@@ -93,10 +85,8 @@ class ST(pl.LightningModule):
         """The module's forward pass
 
         :param batch: A list of tensors
-        :type batch: list
 
         :returns: Negative log loss, Binary Cross-Entropy Loss, singlet probability
-        :rtype: tuple of type ``pytorch.Tensor``
         """
         if self.model_cell_size:
             y, s, fy, fs, fl = batch
@@ -119,14 +109,12 @@ class ST(pl.LightningModule):
 
         return model_nll, fake_loss, p_fake_singlet
 
-    def training_step(self, batch) -> torch.Tensor:
+    def training_step(self, batch: List[torch.Tensor]) -> torch.Tensor:
         """Compute and return the training loss
 
         :param batch: A list of tensors of size m x n
-        :type batch: list
 
         :returns: Total loss
-        :rtype: torch.Tensor, scalar
         """
         # y, s, fy, fs, fl = batch
         model_nll, fake_loss, p_fake_singlet = self(batch)
@@ -144,17 +132,12 @@ class ST(pl.LightningModule):
         """Configure the Adam optimizer.
 
         :returns: the optimizer
-        :rtype: torch.optim.adam.Adam
         """
         optimizer = torch.optim.Adam(self.model_params.values(), lr=self.learning_rate)
         return optimizer
 
     def prepare_data(self) -> None:
-        """Create training dataset and set model parameters
-
-        :returns: None
-        :rtype: None
-        """
+        """Create training dataset and set model parameters"""
         tr_fy, tr_fs, tr_fl = utility.simulate_data(
             self.X, self.S, self.model_zplane_overlap
         )
@@ -191,7 +174,6 @@ class ST(pl.LightningModule):
         """Create the training DataLoader
 
         :returns: the training DataLoader
-        :rtype: torch.utils.data.DataLoader
         """
         return DataLoader(
             self.train_df, batch_size=BATCH_SIZE, shuffle=True, num_workers=8

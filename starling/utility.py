@@ -2,7 +2,7 @@
 import collections
 from collections import abc
 from numbers import Number
-from typing import Literal, Union
+from typing import Dict, Literal, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -23,7 +23,6 @@ class ConcatDataset(Dataset):
     """A dataset composed of datasets
 
     :param datasets: the datasets to concatenate, each of ``d.shape[0] == m``
-    :type datasets: tuple[torch.Tensor, ...]
     """
 
     def __init__(self, datasets: list[torch.Tensor]):
@@ -40,26 +39,22 @@ def init_clustering(
     initial_clustering_method: Literal["User", "KM", "GMM", "FS", "PG"],
     adata: AnnData,
     k: Union[int, None],
-    labels=None,
+    labels: Optional[np.ndarray] = None,
 ) -> AnnData:
     """Compute initial cluster centroids, variances & labels
 
     :param adata: The initial data to be analyzed
-    :type adata: AnnData
-    :param initial_clustering_method: The method for computing the initial clusters
-    :type initial_clustering_method: str, one of ``KM`` (KMeans), ``GMM`` (Gaussian Mixture Model),
+    :param initial_clustering_method: The method for computing the initial clusters,
+        one of ``KM`` (KMeans), ``GMM`` (Gaussian Mixture Model),
         ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).
-    :param k: The number of clusters
-    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
+    :param k: The number of clusters, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
         ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method``
         is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
     :param labels: optional, user-provided labels
-    :type labels: ``numpy.ndarray`` of shape ``(m,)``
 
     :raises: ValueError
 
-    :returns: The annotated data with labels, centroids, and variances
-    :rtype: AnnData
+    :return: The annotated data with labels, centroids, and variances
     """
 
     if initial_clustering_method not in ["KM", "GMM", "FS", "PG", "User"]:
@@ -167,7 +162,7 @@ def init_clustering(
     return adata
 
 
-def is_non_negative_float(arg):
+def is_non_negative_float(arg: float):
     return isinstance(arg, Number) and arg > 0
 
 
@@ -227,16 +222,13 @@ def validate_starling_arguments(
         )
 
 
-def model_parameters(adata: AnnData, singlet_prop: float) -> dict[str, np.ndarray]:
+def model_parameters(adata: AnnData, singlet_prop: float) -> Dict[str, np.ndarray]:
     """Return initial model parameters
 
     :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`init_clustering`
-    :type adata: AnnData
     :param singlet_prop:  The proportion of anticipated segmentation error free cells
-    :type singlet_prop: float
 
-    :returns: the model parameters
-    :rtype: dict[str, np.array]
+    :return: the model parameters
     """
 
     init_e = adata.varm["init_exp_centroids"].T
@@ -270,21 +262,16 @@ def model_parameters(adata: AnnData, singlet_prop: float) -> dict[str, np.ndarra
 
 
 def simulate_data(
-    Y: torch.Tensor, S: Union[torch.Tensor, None] = None, model_overlap=True
-):
+    Y: torch.Tensor, S: Union[torch.Tensor, None] = None, model_overlap: bool = True
+) -> Tuple[torch.tensor]:
     """Use real data to simulate singlets/doublets (equal proportions).
     Return same number of cells as in Y/S, half of them are singlets and another half are doublets
 
     :param Y: data matrix of shape m x n
-    :type Y: torch.Tensor
     :param S: data matrix of shape m
-    :type S: Union[torch.Tensor, None], defaults to None
     :param model_overlap: If cell size is modelled, should STARLING model z-plane overlap
-    :type model_overlap: bool, defaults to True
 
-    :returns: the simulated data
-    :rtype: tuple[torch.Tensor, None, torch.Tensor] if ``S`` is None, otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]
-
+    :return: the simulated data
     """
 
     sample_size = int(Y.shape[0] / 2)
@@ -323,7 +310,7 @@ def simulate_data(
 
 
 def compute_p_y_given_z(Y, Theta, dist_option):  ## singlet case given expressions
-    """Returns # of obs x # of cluster matrix - p(y_n | z_n = c)"""
+    """:return: # of obs x # of cluster matrix - p(y_n | z_n = c)"""
 
     mu = torch.clamp(torch.exp(torch.clamp(Theta["log_mu"], min=-12, max=14)), min=0)
     sigma = torch.clamp(
@@ -341,7 +328,7 @@ def compute_p_y_given_z(Y, Theta, dist_option):  ## singlet case given expressio
 
 
 def compute_p_s_given_z(S, Theta, dist_option):  ## singlet case given cell sizes
-    """Returns # of obs x # of cluster matrix - p(s_n | z_n = c)"""
+    """:return: # of obs x # of cluster matrix - p(s_n | z_n = c)"""
 
     psi = torch.clamp(torch.exp(torch.clamp(Theta["log_psi"], min=-12, max=14)), min=0)
     omega = torch.clamp(
@@ -357,7 +344,7 @@ def compute_p_s_given_z(S, Theta, dist_option):  ## singlet case given cell size
 
 
 def compute_p_y_given_gamma(Y, Theta, dist_option):  ## doublet case given expressions
-    """Returns # of obs x # of cluster x # of cluster matrix - p(y_n | gamma_n = [c,c'])"""
+    """:return: # of obs x # of cluster x # of cluster matrix - p(y_n | gamma_n = [c,c'])"""
 
     mu = torch.clamp(torch.exp(torch.clamp(Theta["log_mu"], min=-12, max=14)), min=0)
     sigma = torch.clamp(
@@ -381,7 +368,7 @@ def compute_p_y_given_gamma(Y, Theta, dist_option):  ## doublet case given expre
 
 
 def compute_p_s_given_gamma(S, Theta, dist_option):  ## singlet case given cell size
-    """Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c'])"""
+    """:return: # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c'])"""
 
     psi = torch.clamp(torch.exp(torch.clamp(Theta["log_psi"], min=-12, max=14)), min=0)
     omega = torch.clamp(
@@ -402,7 +389,7 @@ def compute_p_s_given_gamma(S, Theta, dist_option):  ## singlet case given cell 
 
 
 def compute_p_s_given_gamma_model_overlap(S, Theta):
-    """Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c'])"""
+    """:return: # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c'])"""
 
     psi = torch.clamp(torch.exp(torch.clamp(Theta["log_psi"], min=-12, max=14)), min=0)
     omega = torch.clamp(
@@ -518,28 +505,21 @@ def compute_posteriors(Y, S, Theta, dist_option, model_overlap):
 
 def predict(
     dataLoader: DataLoader,
-    model_params: dict[str, torch.Tensor],
+    model_params: Dict[str, torch.Tensor],
     dist_option: str,
     model_cell_size: bool,
     model_zplane_overlap: bool,
-    threshold=0.5,
+    threshold: float = 0.5,
 ):
     """return singlet/doublet probabilities, singlet cluster assignment probabilty matrix & assignment labels
 
     :param dataLoader: the dataloader
-    :type dataLoader: torch.utils.data.dataloader.Dataloader
     :param model_params: the model parameters
-    :type model_params: dict[str, np.ndarray]
     :param dist_option: str, one of 'T' for Student-T (df=2) or 'N' for Normal (Gaussian)
-    :type dist_option: str
-    :type model_cell_size: whether cell size is incorporated in the model
     :param model_cell_size: bool
     :param model_zplane_overlap: whether z-plane overlap is modeled
-    :type model_zplane_overlap: bool
     :param threshold:
-    :type threshold: float, defaults to 0.5
     :return:
-    :rtype:
     """
 
     singlet_prob_list = []

@@ -24,16 +24,11 @@ def test_can_run_km(tmpdir):
     cb_early_stopping = EarlyStopping(monitor="train_loss", mode="min", verbose=False)
 
     ## train ST
-    trainer = pl.Trainer(
+    st.train_and_fit(
         max_epochs=2,
-        accelerator="auto",
-        devices="auto",
-        deterministic=True,
         callbacks=[cb_early_stopping],
         default_root_dir=tmpdir,
     )
-
-    trainer.fit(st)
 
     st.result()
 
@@ -69,16 +64,11 @@ def test_can_run_gmm(tmpdir):
     cb_early_stopping = EarlyStopping(monitor="train_loss", mode="min", verbose=False)
 
     ## train ST
-    trainer = pl.Trainer(
+    st.train_and_fit(
         max_epochs=2,
-        accelerator="auto",
-        devices="auto",
-        deterministic=True,
         callbacks=[cb_early_stopping],
         default_root_dir=tmpdir,
     )
-
-    trainer.fit(st)
 
     st.result()
 
@@ -114,16 +104,11 @@ def test_can_run_pg(tmpdir):
     cb_early_stopping = EarlyStopping(monitor="train_loss", mode="min", verbose=False)
 
     ## train ST
-    trainer = pl.Trainer(
+    st.train_and_fit(
         max_epochs=2,
-        accelerator="auto",
-        devices="auto",
-        deterministic=True,
         callbacks=[cb_early_stopping],
         default_root_dir=tmpdir,
     )
-
-    trainer.fit(st)
 
     st.result()
 

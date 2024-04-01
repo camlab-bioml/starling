@@ -21,6 +21,8 @@ source_suffix = [".rst", ".md"]
 
 nb_execution_timeout = -1
 
+autodoc_typehints = "description"
+
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 html_css_files = [

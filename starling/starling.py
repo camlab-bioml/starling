@@ -208,8 +208,8 @@ class ST(pl.LightningModule):
         logger: Optional[Union[Logger, Iterable[Logger], bool]] = True,
         callbacks: Optional[Union[List[Callback], Callback]] = None,
         fast_dev_run: Union[int, bool] = False,
-        max_epochs: Optional[int] = None,
-        min_epochs: Optional[int] = 100,
+        max_epochs: Optional[int] = 100,
+        min_epochs: Optional[int] = None,
         max_steps: int = -1,
         min_steps: Optional[int] = None,
         max_time: Optional[Union[str, timedelta, Dict[str, int]]] = None,
@@ -365,22 +365,14 @@ class ST(pl.LightningModule):
 
         _locals.pop("self")
 
-        print("foo")
-
-        print(_locals)
-
         trainer = pl.Trainer(**_locals)
 
         trainer.fit(self)
 
-    def result(self, threshold=0.5) -> None:
+    def result(self, threshold: float = 0.5) -> AnnData:
         """Retrieve the results and add them to ``self.adata``
 
         :param threshold: minimum threshold for singlet probability
-        :type threshold: float, defaults to .05
-
-        :returns: None
-        :rtype: None
         """
         if self.S is not None:
             model_pred_loader = DataLoader(
@@ -439,3 +431,5 @@ class ST(pl.LightningModule):
 
         # self.adata.varm['init_exp_centroids'] = pd.DataFrame(self.adata.varm['init_exp_centroids'], columns = self.adata.var_names) #.to_csv(code_dir + "/output/init_centroids.csv")
         # self.adata.varm['init_exp_variances'] = pd.DataFrame(self.adata.varm['init_exp_variances'], columns = self.adata.var_names) #.to_csv(code_dir + "/output/init_centroids.csv")
+
+        return self.adata

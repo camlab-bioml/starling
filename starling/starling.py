@@ -30,7 +30,8 @@ class ST(pl.LightningModule):
     :param dist_option: The distribution to use, one of 'T' for Student-T (df=2) or 'N' for Normal (Gaussian), defaults to T
     :param singlet_prop: The proportion of anticipated segmentation error free cells
     :param model_cell_size: Whether STARLING should incoporate cell size in the model
-    :param cell_size_col_name: The column name in ``AnnData`` (anndata.obs)
+    :param cell_size_col_name: The column name in ``AnnData`` (anndata.obs). Required only if ``model_cell_size`` is ``True``,
+        otherwise ignored.
     :param model_zplane_overlap: If cell size is modelled, should STARLING model z-plane overlap
     :param model_regularizer: Regularizer term impose on synethic doublet loss (BCE)
     :param learning_rate: Learning rate of ADAM optimizer for STARLING

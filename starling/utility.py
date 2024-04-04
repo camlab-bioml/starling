@@ -201,7 +201,7 @@ def validate_starling_arguments(
             f"Argument `model_cell_size` must be boolean, received {type(model_cell_size)}"
         )
 
-    if cell_size_col_name not in adata.obs:
+    if model_cell_size and cell_size_col_name not in adata.obs:
         raise ValueError(
             f"Argument `cell_size_col_name` must be a valid column in `adata.obs`"
         )

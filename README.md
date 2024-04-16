@@ -17,7 +17,7 @@ A **tutorial** outlining basic usage is available [here](https://github.com/caml
 
 ## Installation
 
-_starling_ can be cloned and installed locally using access to the Github repository,
+_starling_ can be cloned and installed locally (typically <10 minutes) using access to the Github repository,
 
 ```
 git clone https://github.com/camlab-bioml/starling.git && cd starling

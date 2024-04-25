@@ -82,7 +82,7 @@
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">abc</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -105,7 +105,6 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A dataset composed of datasets</span>
 
 <span class="sd">    :param datasets: the datasets to concatenate, each of ``d.shape[0] == m``</span>
-<span class="sd">    :type datasets: tuple[torch.Tensor, ...]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
@@ -125,26 +124,22 @@
     <span class="n">initial_clustering_method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="s2">&quot;KM&quot;</span><span class="p">,</span> <span class="s2">&quot;GMM&quot;</span><span class="p">,</span> <span class="s2">&quot;FS&quot;</span><span class="p">,</span> <span class="s2">&quot;PG&quot;</span><span class="p">],</span>
     <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
     <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
-    <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnnData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute initial cluster centroids, variances &amp; labels</span>
 
 <span class="sd">    :param adata: The initial data to be analyzed</span>
-<span class="sd">    :type adata: AnnData</span>
-<span class="sd">    :param initial_clustering_method: The method for computing the initial clusters</span>
-<span class="sd">    :type initial_clustering_method: str, one of ``KM`` (KMeans), ``GMM`` (Gaussian Mixture Model),</span>
+<span class="sd">    :param initial_clustering_method: The method for computing the initial clusters,</span>
+<span class="sd">        one of ``KM`` (KMeans), ``GMM`` (Gaussian Mixture Model),</span>
 <span class="sd">        ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).</span>
-<span class="sd">    :param k: The number of clusters</span>
-<span class="sd">    :type k: int, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),</span>
+<span class="sd">    :param k: The number of clusters, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),</span>
 <span class="sd">        ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method``</span>
 <span class="sd">        is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)</span>
 <span class="sd">    :param labels: optional, user-provided labels</span>
-<span class="sd">    :type labels: ``numpy.ndarray`` of shape ``(m,)``</span>
 
 <span class="sd">    :raises: ValueError</span>
 
-<span class="sd">    :returns: The annotated data with labels, centroids, and variances</span>
-<span class="sd">    :rtype: AnnData</span>
+<span class="sd">    :return: The annotated data with labels, centroids, and variances</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">initial_clustering_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;KM&quot;</span><span class="p">,</span> <span class="s2">&quot;GMM&quot;</span><span class="p">,</span> <span class="s2">&quot;FS&quot;</span><span class="p">,</span> <span class="s2">&quot;PG&quot;</span><span class="p">,</span> <span class="s2">&quot;User&quot;</span><span class="p">]:</span>
@@ -255,7 +250,7 @@
 
 <div class="viewcode-block" id="is_non_negative_float">
 <a class="viewcode-back" href="../../utility.html#starling.utility.is_non_negative_float">[docs]</a>
-<span class="k">def</span> <span class="nf">is_non_negative_float</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">is_non_negative_float</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arg</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 
 
@@ -297,7 +292,7 @@
             <span class="sa">f</span><span class="s2">&quot;Argument `model_cell_size` must be boolean, received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model_cell_size</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">cell_size_col_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">model_cell_size</span> <span class="ow">and</span> <span class="n">cell_size_col_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Argument `cell_size_col_name` must be a valid column in `adata.obs`&quot;</span>
         <span class="p">)</span>
@@ -321,16 +316,13 @@
 
 <div class="viewcode-block" id="model_parameters">
 <a class="viewcode-back" href="../../utility.html#starling.utility.model_parameters">[docs]</a>
-<span class="k">def</span> <span class="nf">model_parameters</span><span class="p">(</span><span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span> <span class="n">singlet_prop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">model_parameters</span><span class="p">(</span><span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span> <span class="n">singlet_prop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return initial model parameters</span>
 
 <span class="sd">    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`init_clustering`</span>
-<span class="sd">    :type adata: AnnData</span>
 <span class="sd">    :param singlet_prop:  The proportion of anticipated segmentation error free cells</span>
-<span class="sd">    :type singlet_prop: float</span>
 
-<span class="sd">    :returns: the model parameters</span>
-<span class="sd">    :rtype: dict[str, np.array]</span>
+<span class="sd">    :return: the model parameters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">init_e</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span><span class="s2">&quot;init_exp_centroids&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
@@ -367,21 +359,16 @@
 <div class="viewcode-block" id="simulate_data">
 <a class="viewcode-back" href="../../utility.html#starling.utility.simulate_data">[docs]</a>
 <span class="k">def</span> <span class="nf">simulate_data</span><span class="p">(</span>
-    <span class="n">Y</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">model_overlap</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">):</span>
+    <span class="n">Y</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">model_overlap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Use real data to simulate singlets/doublets (equal proportions).</span>
 <span class="sd">    Return same number of cells as in Y/S, half of them are singlets and another half are doublets</span>
 
 <span class="sd">    :param Y: data matrix of shape m x n</span>
-<span class="sd">    :type Y: torch.Tensor</span>
 <span class="sd">    :param S: data matrix of shape m</span>
-<span class="sd">    :type S: Union[torch.Tensor, None], defaults to None</span>
 <span class="sd">    :param model_overlap: If cell size is modelled, should STARLING model z-plane overlap</span>
-<span class="sd">    :type model_overlap: bool, defaults to True</span>
 
-<span class="sd">    :returns: the simulated data</span>
-<span class="sd">    :rtype: tuple[torch.Tensor, None, torch.Tensor] if ``S`` is None, otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]</span>
-
+<span class="sd">    :return: the simulated data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">sample_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
@@ -423,7 +410,7 @@
 <div class="viewcode-block" id="compute_p_y_given_z">
 <a class="viewcode-back" href="../../utility.html#starling.utility.compute_p_y_given_z">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_p_y_given_z</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Theta</span><span class="p">,</span> <span class="n">dist_option</span><span class="p">):</span>  <span class="c1">## singlet case given expressions</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns # of obs x # of cluster matrix - p(y_n | z_n = c)&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:return: # of obs x # of cluster matrix - p(y_n | z_n = c)&quot;&quot;&quot;</span>
 
     <span class="n">mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">Theta</span><span class="p">[</span><span class="s2">&quot;log_mu&quot;</span><span class="p">],</span> <span class="nb">min</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">14</span><span class="p">)),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
@@ -444,7 +431,7 @@
 <div class="viewcode-block" id="compute_p_s_given_z">
 <a class="viewcode-back" href="../../utility.html#starling.utility.compute_p_s_given_z">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_p_s_given_z</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">Theta</span><span class="p">,</span> <span class="n">dist_option</span><span class="p">):</span>  <span class="c1">## singlet case given cell sizes</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns # of obs x # of cluster matrix - p(s_n | z_n = c)&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:return: # of obs x # of cluster matrix - p(s_n | z_n = c)&quot;&quot;&quot;</span>
 
     <span class="n">psi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">Theta</span><span class="p">[</span><span class="s2">&quot;log_psi&quot;</span><span class="p">],</span> <span class="nb">min</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">14</span><span class="p">)),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">omega</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
@@ -463,7 +450,7 @@
 <div class="viewcode-block" id="compute_p_y_given_gamma">
 <a class="viewcode-back" href="../../utility.html#starling.utility.compute_p_y_given_gamma">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_p_y_given_gamma</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Theta</span><span class="p">,</span> <span class="n">dist_option</span><span class="p">):</span>  <span class="c1">## doublet case given expressions</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns # of obs x # of cluster x # of cluster matrix - p(y_n | gamma_n = [c,c&#39;])&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:return: # of obs x # of cluster x # of cluster matrix - p(y_n | gamma_n = [c,c&#39;])&quot;&quot;&quot;</span>
 
     <span class="n">mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">Theta</span><span class="p">[</span><span class="s2">&quot;log_mu&quot;</span><span class="p">],</span> <span class="nb">min</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">14</span><span class="p">)),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
@@ -490,7 +477,7 @@
 <div class="viewcode-block" id="compute_p_s_given_gamma">
 <a class="viewcode-back" href="../../utility.html#starling.utility.compute_p_s_given_gamma">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_p_s_given_gamma</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">Theta</span><span class="p">,</span> <span class="n">dist_option</span><span class="p">):</span>  <span class="c1">## singlet case given cell size</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c&#39;])&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:return: # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c&#39;])&quot;&quot;&quot;</span>
 
     <span class="n">psi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">Theta</span><span class="p">[</span><span class="s2">&quot;log_psi&quot;</span><span class="p">],</span> <span class="nb">min</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">14</span><span class="p">)),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">omega</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
@@ -514,7 +501,7 @@
 <div class="viewcode-block" id="compute_p_s_given_gamma_model_overlap">
 <a class="viewcode-back" href="../../utility.html#starling.utility.compute_p_s_given_gamma_model_overlap">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_p_s_given_gamma_model_overlap</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">Theta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c&#39;])&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:return: # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c&#39;])&quot;&quot;&quot;</span>
 
     <span class="n">psi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">Theta</span><span class="p">[</span><span class="s2">&quot;log_psi&quot;</span><span class="p">],</span> <span class="nb">min</span><span class="o">=-</span><span class="mi">12</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">14</span><span class="p">)),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">omega</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
@@ -636,28 +623,21 @@
 <a class="viewcode-back" href="../../utility.html#starling.utility.predict">[docs]</a>
 <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
     <span class="n">dataLoader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span>
-    <span class="n">model_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+    <span class="n">model_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
     <span class="n">dist_option</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">model_cell_size</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">model_zplane_overlap</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;return singlet/doublet probabilities, singlet cluster assignment probabilty matrix &amp; assignment labels</span>
 
 <span class="sd">    :param dataLoader: the dataloader</span>
-<span class="sd">    :type dataLoader: torch.utils.data.dataloader.Dataloader</span>
 <span class="sd">    :param model_params: the model parameters</span>
-<span class="sd">    :type model_params: dict[str, np.ndarray]</span>
 <span class="sd">    :param dist_option: str, one of &#39;T&#39; for Student-T (df=2) or &#39;N&#39; for Normal (Gaussian)</span>
-<span class="sd">    :type dist_option: str</span>
-<span class="sd">    :type model_cell_size: whether cell size is incorporated in the model</span>
 <span class="sd">    :param model_cell_size: bool</span>
 <span class="sd">    :param model_zplane_overlap: whether z-plane overlap is modeled</span>
-<span class="sd">    :type model_zplane_overlap: bool</span>
 <span class="sd">    :param threshold:</span>
-<span class="sd">    :type threshold: float, defaults to 0.5</span>
 <span class="sd">    :return:</span>
-<span class="sd">    :rtype:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">singlet_prob_list</span> <span class="o">=</span> <span class="p">[]</span>

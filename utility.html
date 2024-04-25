@@ -108,7 +108,7 @@
 <p>A dataset composed of datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>datasets</strong> (<em>tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>...</em><em>]</em>) – the datasets to concatenate, each of <code class="docutils literal notranslate"><span class="pre">d.shape[0]</span> <span class="pre">==</span> <span class="pre">m</span></code></p>
+<dd class="field-odd"><p><strong>datasets</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>) – the datasets to concatenate, each of <code class="docutils literal notranslate"><span class="pre">d.shape[0]</span> <span class="pre">==</span> <span class="pre">m</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -116,31 +116,51 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.compute_p_s_given_gamma">
 <span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_s_given_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_s_given_gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_s_given_gamma" title="Link to this definition"></a></dt>
-<dd><p>Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c’])</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p># of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c’])</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.compute_p_s_given_gamma_model_overlap">
 <span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_s_given_gamma_model_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_s_given_gamma_model_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_s_given_gamma_model_overlap" title="Link to this definition"></a></dt>
-<dd><p>Returns # of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c’])</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p># of obs x # of cluster x # of cluster matrix - p(s_n | gamma_n = [c,c’])</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.compute_p_s_given_z">
 <span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_s_given_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_s_given_z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_s_given_z" title="Link to this definition"></a></dt>
-<dd><p>Returns # of obs x # of cluster matrix - p(s_n | z_n = c)</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p># of obs x # of cluster matrix - p(s_n | z_n = c)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.compute_p_y_given_gamma">
 <span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_y_given_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_y_given_gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_y_given_gamma" title="Link to this definition"></a></dt>
-<dd><p>Returns # of obs x # of cluster x # of cluster matrix - p(y_n | gamma_n = [c,c’])</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p># of obs x # of cluster x # of cluster matrix - p(y_n | gamma_n = [c,c’])</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.compute_p_y_given_z">
 <span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">compute_p_y_given_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#compute_p_y_given_z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.compute_p_y_given_z" title="Link to this definition"></a></dt>
-<dd><p>Returns # of obs x # of cluster matrix - p(y_n | z_n = c)</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p># of obs x # of cluster matrix - p(y_n | z_n = c)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -155,23 +175,24 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>adata</strong> (<em>AnnData</em>) – The initial data to be analyzed</p></li>
-<li><p><strong>initial_clustering_method</strong> (str, one of <code class="docutils literal notranslate"><span class="pre">KM</span></code> (KMeans), <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (Gaussian Mixture Model),
-<code class="docutils literal notranslate"><span class="pre">FS</span></code> (FlowSOM), <code class="docutils literal notranslate"><span class="pre">User</span></code> (user-provided), or <code class="docutils literal notranslate"><span class="pre">PG</span></code> (PhenoGraph).) – The method for computing the initial clusters</p></li>
-<li><p><strong>k</strong> (int, must be <code class="docutils literal notranslate"><span class="pre">n_components</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (required),
+<li><p><strong>adata</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code></span>) – The initial data to be analyzed</p></li>
+<li><p><strong>initial_clustering_method</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'User'</span></code>, <code class="docutils literal notranslate"><span class="pre">'KM'</span></code>, <code class="docutils literal notranslate"><span class="pre">'GMM'</span></code>, <code class="docutils literal notranslate"><span class="pre">'FS'</span></code>, <code class="docutils literal notranslate"><span class="pre">'PG'</span></code>]</span>) – The method for computing the initial clusters,
+one of <code class="docutils literal notranslate"><span class="pre">KM</span></code> (KMeans), <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (Gaussian Mixture Model),
+<code class="docutils literal notranslate"><span class="pre">FS</span></code> (FlowSOM), <code class="docutils literal notranslate"><span class="pre">User</span></code> (user-provided), or <code class="docutils literal notranslate"><span class="pre">PG</span></code> (PhenoGraph).</p></li>
+<li><p><strong>k</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – The number of clusters, must be <code class="docutils literal notranslate"><span class="pre">n_components</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">GMM</span></code> (required),
 <code class="docutils literal notranslate"><span class="pre">k</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">KM</span></code> (required), <code class="docutils literal notranslate"><span class="pre">k</span></code> when <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code>
-is <code class="docutils literal notranslate"><span class="pre">FS</span></code> (required), <code class="docutils literal notranslate"><span class="pre">?</span></code> when  <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">PG</span></code> (optional)) – The number of clusters</p></li>
-<li><p><strong>labels</strong> (<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape <code class="docutils literal notranslate"><span class="pre">(m,)</span></code>) – optional, user-provided labels</p></li>
+is <code class="docutils literal notranslate"><span class="pre">FS</span></code> (required), <code class="docutils literal notranslate"><span class="pre">?</span></code> when  <code class="docutils literal notranslate"><span class="pre">initial_clustering_method</span></code> is <code class="docutils literal notranslate"><span class="pre">PG</span></code> (optional)</p></li>
+<li><p><strong>labels</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span>) – optional, user-provided labels</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p>ValueError</p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The annotated data with labels, centroids, and variances</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code></span></p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>AnnData</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The annotated data with labels, centroids, and variances</p>
 </dd>
 </dl>
 </dd></dl>
@@ -179,7 +200,12 @@ is <code class="docutils literal notranslate"><span class="pre">FS</span></code>
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.is_non_negative_float">
 <span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">is_non_negative_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#is_non_negative_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.is_non_negative_float" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>arg</strong> (<em>float</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.model_parameters">
@@ -188,15 +214,15 @@ is <code class="docutils literal notranslate"><span class="pre">FS</span></code>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>adata</strong> (<em>AnnData</em>) – The sample to be analyzed, with clusters and annotations from <a class="reference internal" href="#starling.utility.init_clustering" title="starling.utility.init_clustering"><code class="xref py py-func docutils literal notranslate"><span class="pre">init_clustering()</span></code></a></p></li>
-<li><p><strong>singlet_prop</strong> (<em>float</em>) – The proportion of anticipated segmentation error free cells</p></li>
+<li><p><strong>adata</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code></span>) – The sample to be analyzed, with clusters and annotations from <a class="reference internal" href="#starling.utility.init_clustering" title="starling.utility.init_clustering"><code class="xref py py-func docutils literal notranslate"><span class="pre">init_clustering()</span></code></a></p></li>
+<li><p><strong>singlet_prop</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The proportion of anticipated segmentation error free cells</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the model parameters</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict[str, np.array]</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the model parameters</p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,19 +234,16 @@ is <code class="docutils literal notranslate"><span class="pre">FS</span></code>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataLoader</strong> (<em>torch.utils.data.dataloader.Dataloader</em>) – the dataloader</p></li>
-<li><p><strong>model_params</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – the model parameters</p></li>
-<li><p><strong>dist_option</strong> (<em>str</em>) – str, one of ‘T’ for Student-T (df=2) or ‘N’ for Normal (Gaussian)</p></li>
+<li><p><strong>dataLoader</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code></span>) – the dataloader</p></li>
+<li><p><strong>model_params</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>) – the model parameters</p></li>
+<li><p><strong>dist_option</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – str, one of ‘T’ for Student-T (df=2) or ‘N’ for Normal (Gaussian)</p></li>
 <li><p><strong>model_cell_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – bool</p></li>
-<li><p><strong>model_zplane_overlap</strong> (<em>bool</em>) – whether z-plane overlap is modeled</p></li>
-<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>defaults to 0.5</em>) – </p></li>
+<li><p><strong>model_zplane_overlap</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – whether z-plane overlap is modeled</p></li>
+<li><p><strong>threshold</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,16 +256,16 @@ Return same number of cells as in Y/S, half of them are singlets and another hal
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Y</strong> (<em>torch.Tensor</em>) – data matrix of shape m x n</p></li>
-<li><p><strong>S</strong> (<em>Union</em><em>[</em><em>torch.Tensor</em><em>, </em><em>None</em><em>]</em><em>, </em><em>defaults to None</em>) – data matrix of shape m</p></li>
-<li><p><strong>model_overlap</strong> (<em>bool</em><em>, </em><em>defaults to True</em>) – If cell size is modelled, should STARLING model z-plane overlap</p></li>
+<li><p><strong>Y</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>) – data matrix of shape m x n</p></li>
+<li><p><strong>S</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>) – data matrix of shape m</p></li>
+<li><p><strong>model_overlap</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If cell size is modelled, should STARLING model z-plane overlap</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the simulated data</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tensor</span></code>]</span></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[torch.Tensor, None, torch.Tensor] if <code class="docutils literal notranslate"><span class="pre">S</span></code> is None, otherwise tuple[torch.Tensor, torch.Tensor, torch.Tensor]</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the simulated data</p>
 </dd>
 </dl>
 </dd></dl>
@@ -250,7 +273,21 @@ Return same number of cells as in Y/S, half of them are singlets and another hal
 <dl class="py function">
 <dt class="sig sig-object py" id="starling.utility.validate_starling_arguments">
 <span class="sig-prename descclassname"><span class="pre">starling.utility.</span></span><span class="sig-name descname"><span class="pre">validate_starling_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">singlet_prop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_cell_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_size_col_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_zplane_overlap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_regularizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/utility.html#validate_starling_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.utility.validate_starling_arguments" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> (<em>AnnData</em>) – </p></li>
+<li><p><strong>dist_option</strong> (<em>str</em>) – </p></li>
+<li><p><strong>singlet_prop</strong> (<em>float</em>) – </p></li>
+<li><p><strong>model_cell_size</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>cell_size_col_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>model_zplane_overlap</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>model_regularizer</strong> (<em>float</em>) – </p></li>
+<li><p><strong>learning_rate</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 </section>

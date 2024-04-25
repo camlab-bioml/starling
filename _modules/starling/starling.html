@@ -78,10 +78,22 @@
            <div itemprop="articleBody">
              
   <h1>Source code for starling.starling</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pytorch_lightning</span> <span class="k">as</span> <span class="nn">pl</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">anndata</span> <span class="kn">import</span> <span class="n">AnnData</span>
+<span class="kn">from</span> <span class="nn">lightning_fabric.connector</span> <span class="kn">import</span> <span class="n">_PRECISION_INPUT</span>
+<span class="kn">from</span> <span class="nn">lightning_fabric.utilities.types</span> <span class="kn">import</span> <span class="n">_PATH</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.accelerators.accelerator</span> <span class="kn">import</span> <span class="n">Accelerator</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.callbacks</span> <span class="kn">import</span> <span class="n">Callback</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.loggers</span> <span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.plugins</span> <span class="kn">import</span> <span class="n">PLUGIN_INPUT</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.profilers</span> <span class="kn">import</span> <span class="n">Profiler</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.strategies.strategy</span> <span class="kn">import</span> <span class="n">Strategy</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.trainer.connectors.accelerator_connector</span> <span class="kn">import</span> <span class="n">_LITERAL_WARN</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
 
 <span class="kn">from</span> <span class="nn">starling</span> <span class="kn">import</span> <span class="n">utility</span>
@@ -97,34 +109,27 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The STARLING module</span>
 
 <span class="sd">    :param adata: The sample to be analyzed, with clusters and annotations from :py:func:`starling.uility.init_clustering`</span>
-<span class="sd">    :type adata: AnnData</span>
-<span class="sd">    :param dist_option: The distribution to use</span>
-<span class="sd">    :type dist_option: str, one of &#39;T&#39; for Student-T (df=2) or &#39;N&#39; for Normal (Gaussian), defaults to T</span>
+<span class="sd">    :param dist_option: The distribution to use, one of &#39;T&#39; for Student-T (df=2) or &#39;N&#39; for Normal (Gaussian), defaults to T</span>
 <span class="sd">    :param singlet_prop: The proportion of anticipated segmentation error free cells</span>
-<span class="sd">    :type singlet_prop: float, defaults to 0.6</span>
 <span class="sd">    :param model_cell_size: Whether STARLING should incoporate cell size in the model</span>
-<span class="sd">    :type model_cell_size: bool, defaults to True</span>
-<span class="sd">    :param cell_size_col_name: The column name in ``AnnData`` (anndata.obs)</span>
-<span class="sd">    :type cell_size_col_name: str, defaults to &quot;area&quot;</span>
+<span class="sd">    :param cell_size_col_name: The column name in ``AnnData`` (anndata.obs). Required only if ``model_cell_size`` is ``True``,</span>
+<span class="sd">        otherwise ignored.</span>
 <span class="sd">    :param model_zplane_overlap: If cell size is modelled, should STARLING model z-plane overlap</span>
-<span class="sd">    :type model_zplane_overlap: bool, defaults to True</span>
-<span class="sd">    :param model_regularizer: Regularizier term impose on synethic doublet loss (BCE)</span>
-<span class="sd">    :type model_regularizer: int, defaults to 1</span>
+<span class="sd">    :param model_regularizer: Regularizer term impose on synethic doublet loss (BCE)</span>
 <span class="sd">    :param learning_rate: Learning rate of ADAM optimizer for STARLING</span>
-<span class="sd">    :type learning_rate: float, defaults to 1e-3</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
-        <span class="n">dist_option</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">,</span>
-        <span class="n">singlet_prop</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-        <span class="n">model_cell_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">cell_size_col_name</span><span class="o">=</span><span class="s2">&quot;area&quot;</span><span class="p">,</span>
-        <span class="n">model_zplane_overlap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">model_regularizer</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+        <span class="n">dist_option</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span>
+        <span class="n">singlet_prop</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+        <span class="n">model_cell_size</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">cell_size_col_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;area&quot;</span><span class="p">,</span>
+        <span class="n">model_zplane_overlap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">model_regularizer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -165,10 +170,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The module&#39;s forward pass</span>
 
 <span class="sd">        :param batch: A list of tensors</span>
-<span class="sd">        :type batch: list</span>
 
 <span class="sd">        :returns: Negative log loss, Binary Cross-Entropy Loss, singlet probability</span>
-<span class="sd">        :rtype: tuple of type ``pytorch.Tensor``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_cell_size</span><span class="p">:</span>
             <span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">fl</span> <span class="o">=</span> <span class="n">batch</span>
@@ -194,14 +197,12 @@
 
 <div class="viewcode-block" id="ST.training_step">
 <a class="viewcode-back" href="../../starling.html#starling.starling.ST.training_step">[docs]</a>
-    <span class="k">def</span> <span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute and return the training loss</span>
 
 <span class="sd">        :param batch: A list of tensors of size m x n</span>
-<span class="sd">        :type batch: list</span>
 
 <span class="sd">        :returns: Total loss</span>
-<span class="sd">        :rtype: torch.Tensor, scalar</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># y, s, fy, fs, fl = batch</span>
         <span class="n">model_nll</span><span class="p">,</span> <span class="n">fake_loss</span><span class="p">,</span> <span class="n">p_fake_singlet</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
@@ -222,7 +223,6 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure the Adam optimizer.</span>
 
 <span class="sd">        :returns: the optimizer</span>
-<span class="sd">        :rtype: torch.optim.adam.Adam</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">optimizer</span></div>
@@ -231,11 +231,7 @@
 <div class="viewcode-block" id="ST.prepare_data">
 <a class="viewcode-back" href="../../starling.html#starling.starling.ST.prepare_data">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create training dataset and set model parameters</span>
-
-<span class="sd">        :returns: None</span>
-<span class="sd">        :rtype: None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create training dataset and set model parameters&quot;&quot;&quot;</span>
         <span class="n">tr_fy</span><span class="p">,</span> <span class="n">tr_fs</span><span class="p">,</span> <span class="n">tr_fl</span> <span class="o">=</span> <span class="n">utility</span><span class="o">.</span><span class="n">simulate_data</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_zplane_overlap</span>
         <span class="p">)</span>
@@ -275,23 +271,193 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the training DataLoader</span>
 
 <span class="sd">        :returns: the training DataLoader</span>
-<span class="sd">        :rtype: torch.utils.data.DataLoader</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span>
         <span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="ST.train_and_fit">
+<a class="viewcode-back" href="../../starling.html#starling.starling.ST.train_and_fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">train_and_fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">accelerator</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Accelerator</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">strategy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Strategy</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">num_nodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">precision</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">_PRECISION_INPUT</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">logger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Logger</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Logger</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">callbacks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Callback</span><span class="p">],</span> <span class="n">Callback</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fast_dev_run</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">max_epochs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">min_epochs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">min_steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit_train_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit_val_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit_test_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit_predict_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">overfit_batches</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">val_check_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">check_val_every_n_epoch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">num_sanity_val_steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">log_every_n_steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">enable_checkpointing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">enable_progress_bar</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">enable_model_summary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">accumulate_grad_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">gradient_clip_val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">gradient_clip_algorithm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">deterministic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">_LITERAL_WARN</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">benchmark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">inference_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">use_distributed_sampler</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">profiler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Profiler</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">detect_anomaly</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">barebones</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">plugins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">PLUGIN_INPUT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">PLUGIN_INPUT</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sync_batchnorm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">reload_dataloaders_every_n_epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">default_root_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">_PATH</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Train the model using lightning&#39;s trainer.</span>
+<span class="sd">        Param annotations (with defaults altered as needed) taken from https://lightning.ai/docs/pytorch/stable/_modules/lightning/pytorch/trainer/trainer.html#Trainer.__init__</span>
+
+<span class="sd">        :param accelerator: Supports passing different accelerator types (&quot;cpu&quot;, &quot;gpu&quot;, &quot;tpu&quot;, &quot;ipu&quot;, &quot;hpu&quot;, &quot;mps&quot;, &quot;auto&quot;)</span>
+<span class="sd">            as well as custom accelerator instances. Defaults to ``&quot;auto&quot;``.</span>
+<span class="sd">        :param strategy: Supports different training strategies with aliases as well custom strategies.</span>
+<span class="sd">            Defaults to ``&quot;auto&quot;``.</span>
+<span class="sd">        :param devices: The devices to use. Can be set to a positive number (int or str), a sequence of device indices</span>
+<span class="sd">            (list or str), the value ``-1`` to indicate all available devices should be used, or ``&quot;auto&quot;`` for</span>
+<span class="sd">            automatic selection based on the chosen accelerator. Defaults to ``&quot;auto&quot;``.</span>
+<span class="sd">        :param num_nodes: Number of GPU nodes for distributed training.</span>
+<span class="sd">            Defaults to ``1``.</span>
+<span class="sd">        :param precision: Double precision (64, &#39;64&#39; or &#39;64-true&#39;), full precision (32, &#39;32&#39; or &#39;32-true&#39;),</span>
+<span class="sd">            16bit mixed precision (16, &#39;16&#39;, &#39;16-mixed&#39;) or bfloat16 mixed precision (&#39;bf16&#39;, &#39;bf16-mixed&#39;).</span>
+<span class="sd">            Can be used on CPU, GPU, TPUs, HPUs or IPUs.</span>
+<span class="sd">            Defaults to ``&#39;32-true&#39;``.</span>
+<span class="sd">        :param logger: Logger (or iterable collection of loggers) for experiment tracking. A ``True`` value uses</span>
+<span class="sd">            the default ``TensorBoardLogger`` if it is installed, otherwise ``CSVLogger``.</span>
+<span class="sd">            ``False`` will disable logging. If multiple loggers are provided, local files</span>
+<span class="sd">            (checkpoints, profiler traces, etc.) are saved in the ``log_dir`` of the first logger.</span>
+<span class="sd">            Defaults to ``True``.</span>
+<span class="sd">        :param callbacks: Add a callback or list of callbacks.</span>
+<span class="sd">            Defaults to ``None``.</span>
+<span class="sd">        :param fast_dev_run: Runs n if set to ``n`` (int) else 1 if set to ``True`` batch(es)</span>
+<span class="sd">            of train, val and test to find any bugs (:param ie: a sort of unit test).</span>
+<span class="sd">            Defaults to ``False``.</span>
+<span class="sd">        :param max_epochs: Stop training once this number of epochs is reached. Disabled by default (None).</span>
+<span class="sd">            If both max_epochs and max_steps are not specified, defaults to ``max_epochs = 100``.</span>
+<span class="sd">            To enable infinite training, set ``max_epochs = -1``.</span>
+<span class="sd">        :param min_epochs: Force training for at least these many epochs. Disabled by default (None).</span>
+<span class="sd">        :param max_steps: Stop training after this number of steps. Disabled by default (-1). If ``max_steps = -1``</span>
+<span class="sd">            and ``max_epochs = None``, will default to ``max_epochs = 1000``. To enable infinite training, set</span>
+<span class="sd">            ``max_epochs`` to ``-1``.</span>
+<span class="sd">        :param min_steps: Force training for at least these number of steps. Disabled by default (``None``).</span>
+<span class="sd">        :param max_time: Stop training after this amount of time has passed. Disabled by default (``None``).</span>
+<span class="sd">            The time duration can be specified in the format DD:HH:MM:SS (days, hours, minutes seconds), as a</span>
+<span class="sd">            :class:`datetime.timedelta`, or a dictionary with keys that will be passed to</span>
+<span class="sd">            :class:`datetime.timedelta`.</span>
+<span class="sd">        :param limit_train_batches: How much of training dataset to check (float = fraction, int = num_batches).</span>
+<span class="sd">            Defaults to ``1.0``.</span>
+<span class="sd">        :param limit_val_batches: How much of validation dataset to check (float = fraction, int = num_batches).</span>
+<span class="sd">            Defaults to ``1.0``.</span>
+<span class="sd">        :param limit_test_batches: How much of test dataset to check (float = fraction, int = num_batches).</span>
+<span class="sd">            Defaults to ``1.0``.</span>
+<span class="sd">        :param limit_predict_batches: How much of prediction dataset to check (float = fraction, int = num_batches).</span>
+<span class="sd">            Defaults to ``1.0``.</span>
+<span class="sd">        :param overfit_batches: Overfit a fraction of training/validation data (float) or a set number of batches (int).</span>
+<span class="sd">            Defaults to ``0.0``.</span>
+<span class="sd">        :param val_check_interval: How often to check the validation set. Pass a ``float`` in the range [0.0, 1.0] to check</span>
+<span class="sd">            after a fraction of the training epoch. Pass an ``int`` to check after a fixed number of training</span>
+<span class="sd">            batches. An ``int`` value can only be higher than the number of training batches when</span>
+<span class="sd">            ``check_val_every_n_epoch=None``, which validates after every ``N`` training batches</span>
+<span class="sd">            across epochs or during iteration-based training.</span>
+<span class="sd">            Defaults to ``1.0``.</span>
+<span class="sd">        :param check_val_every_n_epoch: Perform a validation loop every after every `N` training epochs. If ``None``,</span>
+<span class="sd">            validation will be done solely based on the number of training batches, requiring ``val_check_interval``</span>
+<span class="sd">            to be an integer value.</span>
+<span class="sd">            Defaults to ``1``.</span>
+<span class="sd">        :param num_sanity_val_steps: Sanity check runs n validation batches before starting the training routine.</span>
+<span class="sd">            Set it to `-1` to run all batches in all validation dataloaders.</span>
+<span class="sd">            Defaults to ``2``.</span>
+<span class="sd">        :param log_every_n_steps: How often to log within steps.</span>
+<span class="sd">            Defaults to ``50``.</span>
+<span class="sd">        :param enable_checkpointing: If ``True``, enable checkpointing.</span>
+<span class="sd">            It will configure a default ModelCheckpoint callback if there is no user-defined ModelCheckpoint in</span>
+<span class="sd">            `lightning.pytorch.trainer.trainer.Trainer.callbacks`.</span>
+<span class="sd">            Defaults to ``True``.</span>
+<span class="sd">        :param enable_progress_bar: Whether to enable to progress bar by default.</span>
+<span class="sd">            Defaults to ``True``.</span>
+<span class="sd">        :param enable_model_summary: Whether to enable model summarization by default.</span>
+<span class="sd">            Defaults to ``True``.</span>
+<span class="sd">        :param accumulate_grad_batches: Accumulates gradients over k batches before stepping the optimizer.</span>
+<span class="sd">            Defaults to 1.</span>
+<span class="sd">        :param gradient_clip_val: The value at which to clip gradients. Passing ``gradient_clip_val=None`` disables</span>
+<span class="sd">            gradient clipping. If using Automatic Mixed Precision (AMP), the gradients will be unscaled before.</span>
+<span class="sd">            Defaults to ``None``.</span>
+<span class="sd">        :param gradient_clip_algorithm: The gradient clipping algorithm to use. Pass ``gradient_clip_algorithm=&quot;value&quot;``</span>
+<span class="sd">            to clip by value, and ``gradient_clip_algorithm=&quot;norm&quot;`` to clip by norm. By default it will</span>
+<span class="sd">            be set to ``&quot;norm&quot;``.</span>
+<span class="sd">        :param deterministic: If ``True``, sets whether PyTorch operations must use deterministic algorithms.</span>
+<span class="sd">            Set to ``&quot;warn&quot;`` to use deterministic algorithms whenever possible, throwing warnings on operations</span>
+<span class="sd">            that don&#39;t support deterministic mode. If not set, defaults to ``False``. Defaults to ``True``.</span>
+<span class="sd">        :param benchmark: The value (``True`` or ``False``) to set ``torch.backends.cudnn.benchmark`` to.</span>
+<span class="sd">            The value for ``torch.backends.cudnn.benchmark`` set in the current session will be used</span>
+<span class="sd">            (``False`` if not manually set). If `deterministic`</span>
+<span class="sd">            is set to ``True``, this will default to ``False``. Override to manually set a different value.</span>
+<span class="sd">            Defaults to ``None``.</span>
+<span class="sd">        :param inference_mode: Whether to use `torch.inference_mode` or `torch.no_grad` during</span>
+<span class="sd">            evaluation (``validate``/``test``/``predict``).</span>
+<span class="sd">        :param use_distributed_sampler: Whether to wrap the DataLoader&#39;s sampler with</span>
+<span class="sd">            :class:`torch.utils.data.DistributedSampler`. If not specified this is toggled automatically for</span>
+<span class="sd">            strategies that require it. By default, it will add ``shuffle=True`` for the train sampler and</span>
+<span class="sd">            ``shuffle=False`` for validation/test/predict samplers. If you want to disable this logic, you can pass</span>
+<span class="sd">            ``False`` and add your own distributed sampler in the dataloader hooks. If ``True`` and a distributed</span>
+<span class="sd">            sampler was already added, Lightning will not replace the existing one. For iterable-style datasets,</span>
+<span class="sd">            we don&#39;t do this automatically.</span>
+<span class="sd">        :param profiler: To profile individual steps during training and assist in identifying bottlenecks.</span>
+<span class="sd">            Defaults to ``None``.</span>
+<span class="sd">        :param detect_anomaly: Enable anomaly detection for the autograd engine.</span>
+<span class="sd">            Defaults to ``False``.</span>
+<span class="sd">        :param barebones: Whether to run in &quot;barebones mode&quot;, where all features that may impact raw speed are</span>
+<span class="sd">            disabled. This is meant for analyzing the Trainer overhead and is discouraged during regular training</span>
+<span class="sd">            runs.</span>
+<span class="sd">        :param plugins: Plugins allow modification of core behavior like ddp and amp, and enable custom lightning plugins.</span>
+<span class="sd">            Defaults to ``None``.</span>
+<span class="sd">        :param sync_batchnorm: Synchronize batch norm layers between process groups/whole world.</span>
+<span class="sd">            Defaults to ``False``.</span>
+<span class="sd">        :param reload_dataloaders_every_n_epochs: Set to a positive integer to reload dataloaders every n epochs.</span>
+<span class="sd">            Defaults to ``0``.</span>
+<span class="sd">        :param default_root_dir: Default path for logs and weights when no logger/ckpt_callback passed.</span>
+<span class="sd">            Defaults to ``os.getcwd()``.</span>
+<span class="sd">            Can be remote file paths such as `s3://mybucket/path` or &#39;hdfs://path/&#39;</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                If ``gradient_clip_val`` is not an int or float.</span>
+
+<span class="sd">            MisconfigurationException:</span>
+<span class="sd">                If ``gradient_clip_algorithm`` is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_locals</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
+
+        <span class="n">_locals</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">)</span>
+
+        <span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="o">**</span><span class="n">_locals</span><span class="p">)</span>
+
+        <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="ST.result">
 <a class="viewcode-back" href="../../starling.html#starling.starling.ST.result">[docs]</a>
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnnData</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the results and add them to ``self.adata``</span>
 
 <span class="sd">        :param threshold: minimum threshold for singlet probability</span>
-<span class="sd">        :type threshold: float, defaults to .05</span>
-
-<span class="sd">        :returns: None</span>
-<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">model_pred_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
@@ -346,12 +512,14 @@
                 <span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">T</span>
-            <span class="p">)</span></div>
-</div>
-
+            <span class="p">)</span>
 
         <span class="c1"># self.adata.varm[&#39;init_exp_centroids&#39;] = pd.DataFrame(self.adata.varm[&#39;init_exp_centroids&#39;], columns = self.adata.var_names) #.to_csv(code_dir + &quot;/output/init_centroids.csv&quot;)</span>
         <span class="c1"># self.adata.varm[&#39;init_exp_variances&#39;] = pd.DataFrame(self.adata.varm[&#39;init_exp_variances&#39;], columns = self.adata.var_names) #.to_csv(code_dir + &quot;/output/init_centroids.csv&quot;)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adata</span></div>
+</div>
+
 </pre></div>
 
            </div>

@@ -58,6 +58,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#starling.starling.ST.forward"><code class="docutils literal notranslate"><span class="pre">ST.forward()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#starling.starling.ST.prepare_data"><code class="docutils literal notranslate"><span class="pre">ST.prepare_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#starling.starling.ST.result"><code class="docutils literal notranslate"><span class="pre">ST.result()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starling.starling.ST.train_and_fit"><code class="docutils literal notranslate"><span class="pre">ST.train_and_fit()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#starling.starling.ST.train_dataloader"><code class="docutils literal notranslate"><span class="pre">ST.train_dataloader()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#starling.starling.ST.training_step"><code class="docutils literal notranslate"><span class="pre">ST.training_step()</span></code></a></li>
 </ul>
@@ -101,14 +102,15 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>adata</strong> (<em>AnnData</em>) – The sample to be analyzed, with clusters and annotations from <code class="xref py py-func docutils literal notranslate"><span class="pre">starling.uility.init_clustering()</span></code></p></li>
-<li><p><strong>dist_option</strong> (<em>str</em><em>, </em><em>one</em><em> of </em><em>'T' for Student-T</em><em> (</em><em>df=2</em><em>) or </em><em>'N' for Normal</em><em> (</em><em>Gaussian</em><em>)</em><em>, </em><em>defaults to T</em>) – The distribution to use</p></li>
-<li><p><strong>singlet_prop</strong> (<em>float</em><em>, </em><em>defaults to 0.6</em>) – The proportion of anticipated segmentation error free cells</p></li>
-<li><p><strong>model_cell_size</strong> (<em>bool</em><em>, </em><em>defaults to True</em>) – Whether STARLING should incoporate cell size in the model</p></li>
-<li><p><strong>cell_size_col_name</strong> (<em>str</em><em>, </em><em>defaults to &quot;area&quot;</em>) – The column name in <code class="docutils literal notranslate"><span class="pre">AnnData</span></code> (anndata.obs)</p></li>
-<li><p><strong>model_zplane_overlap</strong> (<em>bool</em><em>, </em><em>defaults to True</em>) – If cell size is modelled, should STARLING model z-plane overlap</p></li>
-<li><p><strong>model_regularizer</strong> (<em>int</em><em>, </em><em>defaults to 1</em>) – Regularizier term impose on synethic doublet loss (BCE)</p></li>
-<li><p><strong>learning_rate</strong> (<em>float</em><em>, </em><em>defaults to 1e-3</em>) – Learning rate of ADAM optimizer for STARLING</p></li>
+<li><p><strong>adata</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code></span>) – The sample to be analyzed, with clusters and annotations from <code class="xref py py-func docutils literal notranslate"><span class="pre">starling.uility.init_clustering()</span></code></p></li>
+<li><p><strong>dist_option</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The distribution to use, one of ‘T’ for Student-T (df=2) or ‘N’ for Normal (Gaussian), defaults to T</p></li>
+<li><p><strong>singlet_prop</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – The proportion of anticipated segmentation error free cells</p></li>
+<li><p><strong>model_cell_size</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether STARLING should incoporate cell size in the model</p></li>
+<li><p><strong>cell_size_col_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The column name in <code class="docutils literal notranslate"><span class="pre">AnnData</span></code> (anndata.obs). Required only if <code class="docutils literal notranslate"><span class="pre">model_cell_size</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+otherwise ignored.</p></li>
+<li><p><strong>model_zplane_overlap</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If cell size is modelled, should STARLING model z-plane overlap</p></li>
+<li><p><strong>model_regularizer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Regularizer term impose on synethic doublet loss (BCE)</p></li>
+<li><p><strong>learning_rate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Learning rate of ADAM optimizer for STARLING</p></li>
 </ul>
 </dd>
 </dl>
@@ -117,11 +119,11 @@
 <span class="sig-name descname"><span class="pre">configure_optimizers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/starling.html#ST.configure_optimizers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.starling.ST.configure_optimizers" title="Link to this definition"></a></dt>
 <dd><p>Configure the Adam optimizer.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the optimizer</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Adam</span></code></span></p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>torch.optim.adam.Adam</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the optimizer</p>
 </dd>
 </dl>
 </dd></dl>
@@ -132,13 +134,13 @@
 <dd><p>The module’s forward pass</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>batch</strong> (<em>list</em>) – A list of tensors</p>
+<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>) – A list of tensors</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Negative log loss, Binary Cross-Entropy Loss, singlet probability</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple of type <code class="docutils literal notranslate"><span class="pre">pytorch.Tensor</span></code></p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Negative log loss, Binary Cross-Entropy Loss, singlet probability</p>
 </dd>
 </dl>
 </dd></dl>
@@ -148,11 +150,8 @@
 <span class="sig-name descname"><span class="pre">prepare_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/starling.html#ST.prepare_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.starling.ST.prepare_data" title="Link to this definition"></a></dt>
 <dd><p>Create training dataset and set model parameters</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -163,13 +162,144 @@
 <dd><p>Retrieve the results and add them to <code class="docutils literal notranslate"><span class="pre">self.adata</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>threshold</strong> (<em>float</em><em>, </em><em>defaults to .05</em>) – minimum threshold for singlet probability</p>
+<dd class="field-odd"><p><strong>threshold</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – minimum threshold for singlet probability</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code></span></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="starling.starling.ST.train_and_fit">
+<span class="sig-name descname"><span class="pre">train_and_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accelerator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbacks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fast_dev_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_train_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_val_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_test_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_predict_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overfit_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_check_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_val_every_n_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sanity_val_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_every_n_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_checkpointing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_model_summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accumulate_grad_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_clip_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_clip_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deterministic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">benchmark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_distributed_sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profiler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_anomaly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barebones</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sync_batchnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reload_dataloaders_every_n_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_root_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/starling.html#ST.train_and_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.starling.ST.train_and_fit" title="Link to this definition"></a></dt>
+<dd><p>Train the model using lightning’s trainer.
+Param annotations (with defaults altered as needed) taken from <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/_modules/lightning/pytorch/trainer/trainer.html#Trainer.__init__">https://lightning.ai/docs/pytorch/stable/_modules/lightning/pytorch/trainer/trainer.html#Trainer.__init__</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>accelerator</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Accelerator</span></code>]</span>) – Supports passing different accelerator types (“cpu”, “gpu”, “tpu”, “ipu”, “hpu”, “mps”, “auto”)
+as well as custom accelerator instances. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>.</p></li>
+<li><p><strong>strategy</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Strategy</span></code>]</span>) – Supports different training strategies with aliases as well custom strategies.
+Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>.</p></li>
+<li><p><strong>devices</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – The devices to use. Can be set to a positive number (int or str), a sequence of device indices
+(list or str), the value <code class="docutils literal notranslate"><span class="pre">-1</span></code> to indicate all available devices should be used, or <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> for
+automatic selection based on the chosen accelerator. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>.</p></li>
+<li><p><strong>num_nodes</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of GPU nodes for distributed training.
+Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><strong>precision</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">64</span></code>, <code class="docutils literal notranslate"><span class="pre">32</span></code>, <code class="docutils literal notranslate"><span class="pre">16</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'transformer-engine'</span></code>, <code class="docutils literal notranslate"><span class="pre">'transformer-engine-float16'</span></code>, <code class="docutils literal notranslate"><span class="pre">'16-true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'16-mixed'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bf16-true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bf16-mixed'</span></code>, <code class="docutils literal notranslate"><span class="pre">'32-true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'64-true'</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'64'</span></code>, <code class="docutils literal notranslate"><span class="pre">'32'</span></code>, <code class="docutils literal notranslate"><span class="pre">'16'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bf16'</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Double precision (64, ‘64’ or ‘64-true’), full precision (32, ‘32’ or ‘32-true’),
+16bit mixed precision (16, ‘16’, ‘16-mixed’) or bfloat16 mixed precision (‘bf16’, ‘bf16-mixed’).
+Can be used on CPU, GPU, TPUs, HPUs or IPUs.
+Defaults to <code class="docutils literal notranslate"><span class="pre">'32-true'</span></code>.</p></li>
+<li><p><strong>logger</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Logger (or iterable collection of loggers) for experiment tracking. A <code class="docutils literal notranslate"><span class="pre">True</span></code> value uses
+the default <code class="docutils literal notranslate"><span class="pre">TensorBoardLogger</span></code> if it is installed, otherwise <code class="docutils literal notranslate"><span class="pre">CSVLogger</span></code>.
+<code class="docutils literal notranslate"><span class="pre">False</span></code> will disable logging. If multiple loggers are provided, local files
+(checkpoints, profiler traces, etc.) are saved in the <code class="docutils literal notranslate"><span class="pre">log_dir</span></code> of the first logger.
+Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>callbacks</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Add a callback or list of callbacks.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>fast_dev_run</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – Runs n if set to <code class="docutils literal notranslate"><span class="pre">n</span></code> (int) else 1 if set to <code class="docutils literal notranslate"><span class="pre">True</span></code> batch(es)
+of train, val and test to find any bugs (:param ie: a sort of unit test).
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>max_epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Stop training once this number of epochs is reached. Disabled by default (None).
+If both max_epochs and max_steps are not specified, defaults to <code class="docutils literal notranslate"><span class="pre">max_epochs</span> <span class="pre">=</span> <span class="pre">100</span></code>.
+To enable infinite training, set <code class="docutils literal notranslate"><span class="pre">max_epochs</span> <span class="pre">=</span> <span class="pre">-1</span></code>.</p></li>
+<li><p><strong>min_epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Force training for at least these many epochs. Disabled by default (None).</p></li>
+<li><p><strong>max_steps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Stop training after this number of steps. Disabled by default (-1). If <code class="docutils literal notranslate"><span class="pre">max_steps</span> <span class="pre">=</span> <span class="pre">-1</span></code>
+and <code class="docutils literal notranslate"><span class="pre">max_epochs</span> <span class="pre">=</span> <span class="pre">None</span></code>, will default to <code class="docutils literal notranslate"><span class="pre">max_epochs</span> <span class="pre">=</span> <span class="pre">1000</span></code>. To enable infinite training, set
+<code class="docutils literal notranslate"><span class="pre">max_epochs</span></code> to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
+<li><p><strong>min_steps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Force training for at least these number of steps. Disabled by default (<code class="docutils literal notranslate"><span class="pre">None</span></code>).</p></li>
+<li><p><strong>max_time</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">timedelta</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Stop training after this amount of time has passed. Disabled by default (<code class="docutils literal notranslate"><span class="pre">None</span></code>).
+The time duration can be specified in the format DD:HH:MM:SS (days, hours, minutes seconds), as a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.timedelta</span></code>, or a dictionary with keys that will be passed to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.timedelta</span></code>.</p></li>
+<li><p><strong>limit_train_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – How much of training dataset to check (float = fraction, int = num_batches).
+Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p><strong>limit_val_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – How much of validation dataset to check (float = fraction, int = num_batches).
+Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p><strong>limit_test_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – How much of test dataset to check (float = fraction, int = num_batches).
+Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p><strong>limit_predict_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – How much of prediction dataset to check (float = fraction, int = num_batches).
+Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p><strong>overfit_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</span>) – Overfit a fraction of training/validation data (float) or a set number of batches (int).
+Defaults to <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p></li>
+<li><p><strong>val_check_interval</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – How often to check the validation set. Pass a <code class="docutils literal notranslate"><span class="pre">float</span></code> in the range [0.0, 1.0] to check
+after a fraction of the training epoch. Pass an <code class="docutils literal notranslate"><span class="pre">int</span></code> to check after a fixed number of training
+batches. An <code class="docutils literal notranslate"><span class="pre">int</span></code> value can only be higher than the number of training batches when
+<code class="docutils literal notranslate"><span class="pre">check_val_every_n_epoch=None</span></code>, which validates after every <code class="docutils literal notranslate"><span class="pre">N</span></code> training batches
+across epochs or during iteration-based training.
+Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p><strong>check_val_every_n_epoch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Perform a validation loop every after every <cite>N</cite> training epochs. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+validation will be done solely based on the number of training batches, requiring <code class="docutils literal notranslate"><span class="pre">val_check_interval</span></code>
+to be an integer value.
+Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><strong>num_sanity_val_steps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Sanity check runs n validation batches before starting the training routine.
+Set it to <cite>-1</cite> to run all batches in all validation dataloaders.
+Defaults to <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
+<li><p><strong>log_every_n_steps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – How often to log within steps.
+Defaults to <code class="docutils literal notranslate"><span class="pre">50</span></code>.</p></li>
+<li><p><strong>enable_checkpointing</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, enable checkpointing.
+It will configure a default ModelCheckpoint callback if there is no user-defined ModelCheckpoint in
+<cite>lightning.pytorch.trainer.trainer.Trainer.callbacks</cite>.
+Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>enable_progress_bar</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – Whether to enable to progress bar by default.
+Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>enable_model_summary</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – Whether to enable model summarization by default.
+Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>accumulate_grad_batches</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Accumulates gradients over k batches before stepping the optimizer.
+Defaults to 1.</p></li>
+<li><p><strong>gradient_clip_val</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – The value at which to clip gradients. Passing <code class="docutils literal notranslate"><span class="pre">gradient_clip_val=None</span></code> disables
+gradient clipping. If using Automatic Mixed Precision (AMP), the gradients will be unscaled before.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>gradient_clip_algorithm</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – The gradient clipping algorithm to use. Pass <code class="docutils literal notranslate"><span class="pre">gradient_clip_algorithm=&quot;value&quot;</span></code>
+to clip by value, and <code class="docutils literal notranslate"><span class="pre">gradient_clip_algorithm=&quot;norm&quot;</span></code> to clip by norm. By default it will
+be set to <code class="docutils literal notranslate"><span class="pre">&quot;norm&quot;</span></code>.</p></li>
+<li><p><strong>deterministic</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'warn'</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, sets whether PyTorch operations must use deterministic algorithms.
+Set to <code class="docutils literal notranslate"><span class="pre">&quot;warn&quot;</span></code> to use deterministic algorithms whenever possible, throwing warnings on operations
+that don’t support deterministic mode. If not set, defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>benchmark</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – The value (<code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>) to set <code class="docutils literal notranslate"><span class="pre">torch.backends.cudnn.benchmark</span></code> to.
+The value for <code class="docutils literal notranslate"><span class="pre">torch.backends.cudnn.benchmark</span></code> set in the current session will be used
+(<code class="docutils literal notranslate"><span class="pre">False</span></code> if not manually set). If <cite>deterministic</cite>
+is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, this will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>. Override to manually set a different value.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>inference_mode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether to use <cite>torch.inference_mode</cite> or <cite>torch.no_grad</cite> during
+evaluation (<code class="docutils literal notranslate"><span class="pre">validate</span></code>/<code class="docutils literal notranslate"><span class="pre">test</span></code>/<code class="docutils literal notranslate"><span class="pre">predict</span></code>).</p></li>
+<li><p><strong>use_distributed_sampler</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether to wrap the DataLoader’s sampler with
+<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.DistributedSampler</span></code>. If not specified this is toggled automatically for
+strategies that require it. By default, it will add <code class="docutils literal notranslate"><span class="pre">shuffle=True</span></code> for the train sampler and
+<code class="docutils literal notranslate"><span class="pre">shuffle=False</span></code> for validation/test/predict samplers. If you want to disable this logic, you can pass
+<code class="docutils literal notranslate"><span class="pre">False</span></code> and add your own distributed sampler in the dataloader hooks. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and a distributed
+sampler was already added, Lightning will not replace the existing one. For iterable-style datasets,
+we don’t do this automatically.</p></li>
+<li><p><strong>profiler</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Profiler</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – To profile individual steps during training and assist in identifying bottlenecks.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>detect_anomaly</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Enable anomaly detection for the autograd engine.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>barebones</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether to run in “barebones mode”, where all features that may impact raw speed are
+disabled. This is meant for analyzing the Trainer overhead and is discouraged during regular training
+runs.</p></li>
+<li><p><strong>plugins</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">PrecisionPlugin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ClusterEnvironment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CheckpointIO</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LayerSync</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">PrecisionPlugin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ClusterEnvironment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CheckpointIO</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">LayerSync</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Plugins allow modification of core behavior like ddp and amp, and enable custom lightning plugins.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>sync_batchnorm</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Synchronize batch norm layers between process groups/whole world.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>reload_dataloaders_every_n_epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Set to a positive integer to reload dataloaders every n epochs.
+Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p><strong>default_root_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Default path for logs and weights when no logger/ckpt_callback passed.
+Defaults to <code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>.
+Can be remote file paths such as <cite>s3://mybucket/path</cite> or ‘hdfs://path/’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>TypeError:</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">gradient_clip_val</span></code> is not an int or float.</p>
+</dd>
+<dt>MisconfigurationException:</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">gradient_clip_algorithm</span></code> is invalid.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -179,11 +309,11 @@
 <span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/starling/starling.html#ST.train_dataloader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starling.starling.ST.train_dataloader" title="Link to this definition"></a></dt>
 <dd><p>Create the training DataLoader</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the training DataLoader</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code></span></p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>torch.utils.data.DataLoader</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the training DataLoader</p>
 </dd>
 </dl>
 </dd></dl>
@@ -194,13 +324,13 @@
 <dd><p>Compute and return the training loss</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>batch</strong> (<em>list</em>) – A list of tensors of size m x n</p>
+<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>) – A list of tensors of size m x n</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Total loss</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>torch.Tensor, scalar</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total loss</p>
 </dd>
 </dl>
 </dd></dl>

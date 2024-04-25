@@ -11,7 +11,7 @@ It outputs:
 
 A **preprint** describing the method and introducing a novel benchmarking workflow is available: [Lee et al. (2024) _Segmentation error aware clustering for highly multiplexed imaging_](https://www.biorxiv.org/content/10.1101/2024.02.29.582827v1)
 
-A **tutorial** outlining basic usage is available [here](https://github.com/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb).
+A **tutorial** outlining basic usage is available [here][tutorial].
 
 ![Model](https://github.com/camlab-bioml/starling/raw/main/starling-schematic600x.png)
 

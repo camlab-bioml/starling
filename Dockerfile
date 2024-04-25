@@ -35,6 +35,6 @@ RUN python3 -m venv $VIRTUAL_ENV && \
 
 USER $USERNAME
 
-COPY . .
+COPY --chown=${USER_UID}:${USER_GID} . .
 
 RUN poetry install --with docs,dev

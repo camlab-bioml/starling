@@ -1,6 +1,6 @@
 from anndata import AnnData
 
-from starling.utility import init_clustering
+from starling.utility import init_clustering, validate_starling_arguments
 
 
 def assert_annotated(adata: AnnData, k):
@@ -30,3 +30,16 @@ def test_init_clustering_pg(simple_adata):
     k = 2
     initialized = init_clustering("PG", simple_adata, k)
     assert_annotated(initialized, k)
+
+
+def test_validation_passes_with_no_size(simple_adata):
+    validate_starling_arguments(
+        adata=simple_adata,
+        cell_size_col_name="nonexistent",
+        dist_option="T",
+        singlet_prop=0.5,
+        model_cell_size=False,
+        model_zplane_overlap=False,
+        model_regularizer=0.1,
+        learning_rate=1e-3,
+    )

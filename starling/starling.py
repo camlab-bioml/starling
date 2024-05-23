@@ -46,7 +46,7 @@ class ST(pl.LightningModule):
         model_cell_size: bool = True,
         cell_size_col_name: str = "area",
         model_zplane_overlap: bool = True,
-        model_regularizer: int = 1,
+        model_regularizer: float = 1.0,
         learning_rate: float = 1e-3,
     ):
         super().__init__()

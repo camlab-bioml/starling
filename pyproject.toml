@@ -1,14 +1,15 @@
 [tool.poetry]
-name = "starling"
+name = "biostarling"
+packages = [{ include = "starling" }]
 version = "0.1.0"
-description = "A short description of the package"
+description = "Segmentation error aware clustering single-cell spatial expression data"
 repository = "https://github.com/camlab-bioml/starling"
 authors = ["Jett (Yuju) Lee <yulee@lunenfeld.ca>"]
 readme = "README.md"
 keywords = ["imaging cytometry classifier single-cell"]
 classifiers = [
     "Intended Audience :: Science/Research",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
 ]
 license = "See License.txt"
 

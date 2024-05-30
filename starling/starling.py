@@ -160,8 +160,8 @@ class ST(pl.LightningModule):
             self.adata.uns["init_cell_size_variances"] = np.array(init_sv)
         else:
             # init_cell_size_centroids = None; init_cell_size_variances = None
-            self.adata.varm["init_cell_size_centroids"] = None
-            self.adata.varm["init_cell_size_variances"] = None
+            self.adata.uns["init_cell_size_centroids"] = None
+            self.adata.uns["init_cell_size_variances"] = None
             self.train_df = utility.ConcatDataset([self.X, tr_fy, tr_fl])
 
         # model_params = utility.model_paramters(self.init_e, self.init_v, self.init_s, self.init_sv)
@@ -397,9 +397,9 @@ class ST(pl.LightningModule):
         # else:
         c = self.model_params["log_mu"].detach().exp().cpu().numpy()
         # v = self.model_params['log_sigma'].cpu().detach().exp().cpu().numpy()
-        self.adata.varm[
-            "st_exp_centroids"
-        ] = c.T  # pd.DataFrame(c, columns=self.adata.var_names)
+        self.adata.varm["st_exp_centroids"] = (
+            c.T
+        )  # pd.DataFrame(c, columns=self.adata.var_names)
 
         if self.model_cell_size:
             self.adata.uns["st_cell_size_centroids"] = (

@@ -38,7 +38,7 @@ class ConcatDataset(Dataset):
 def init_clustering(
     initial_clustering_method: Literal["User", "KM", "GMM", "FS", "PG"],
     adata: AnnData,
-    k: Union[int, None],
+    k: Union[int, None] = None,
     labels: Optional[np.ndarray] = None,
 ) -> AnnData:
     """Compute initial cluster centroids, variances & labels
@@ -49,7 +49,8 @@ def init_clustering(
         ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).
     :param k: The number of clusters, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),
         ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method``
-        is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)
+        is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional), and can be ommited when
+        ``initial_clustering_method`` is "User", because user will be passing in their own labels.
     :param labels: optional, user-provided labels
 
     :raises: ValueError
@@ -65,6 +66,11 @@ def init_clustering(
     if initial_clustering_method in ["KM", "GMM", "FS"] and k is None:
         raise ValueError(
             "k cannot be ommitted for KMeans, FlowSOM, or Gaussian Mixture"
+        )
+
+    if initial_clustering_method == "User" and labels is None:
+        raise ValueError(
+            "labels must be provided when initial_clustering_method is set to 'User'"
         )
 
     if initial_clustering_method == "KM":
@@ -90,12 +96,13 @@ def init_clustering(
         else:
             init_l = labels
 
-        k = len(np.unique(init_l))
+        classes = np.unique(init_l)
+        k = len(classes)
         init_e = np.zeros((k, adata.X.shape[1]))
         init_ev = np.zeros((k, adata.X.shape[1]))
-        for c in range(k):
-            init_e[c, :] = adata.X[init_l == c].mean(0)
-            init_ev[c, :] = adata.X[init_l == c].var(0)
+        for i, c in enumerate(classes):
+            init_e[i, :] = adata.X[init_l == c].mean(0)
+            init_ev[i, :] = adata.X[init_l == c].var(0)
 
     elif initial_clustering_method == "FS":
         ## needs to output to csv first

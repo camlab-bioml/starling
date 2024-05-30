@@ -397,9 +397,9 @@ class ST(pl.LightningModule):
         # else:
         c = self.model_params["log_mu"].detach().exp().cpu().numpy()
         # v = self.model_params['log_sigma'].cpu().detach().exp().cpu().numpy()
-        self.adata.varm["st_exp_centroids"] = (
-            c.T
-        )  # pd.DataFrame(c, columns=self.adata.var_names)
+        self.adata.varm[
+            "st_exp_centroids"
+        ] = c.T  # pd.DataFrame(c, columns=self.adata.var_names)
 
         if self.model_cell_size:
             self.adata.uns["st_cell_size_centroids"] = (

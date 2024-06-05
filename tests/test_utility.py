@@ -1,3 +1,4 @@
+import numpy as np
 from anndata import AnnData
 
 from starling.utility import init_clustering, validate_starling_arguments
@@ -6,9 +7,11 @@ from starling.utility import init_clustering, validate_starling_arguments
 def assert_annotated(adata: AnnData, k):
     assert "init_exp_centroids" in adata.varm
     assert adata.varm["init_exp_centroids"].shape == (adata.X.shape[1], k)
+    assert not np.any(np.isnan(adata.varm["init_exp_centroids"]))
 
     assert "init_exp_centroids" in adata.varm
     assert adata.varm["init_exp_variances"].shape == (adata.X.shape[1], k)
+    assert not np.any(np.isnan(adata.varm["init_exp_variances"]))
 
     assert "init_label" in adata.obs
     assert adata.obs["init_label"].shape == (adata.X.shape[0],)
@@ -29,6 +32,25 @@ def test_init_clustering_gmm(simple_adata):
 def test_init_clustering_pg(simple_adata):
     k = 2
     initialized = init_clustering("PG", simple_adata, k)
+    assert_annotated(initialized, k)
+
+
+def test_init_clustering_user(simple_adata):
+    k = 3
+    initialized = init_clustering(
+        "User", simple_adata, labels=np.random.randint(k, size=32)
+    )
+    assert_annotated(initialized, k)
+
+
+def test_init_clustering_user_string(simple_adata):
+    k = 3
+    initialized = init_clustering(
+        "User",
+        simple_adata,
+        labels=np.random.choice(np.array(["a", "b", "c"]), size=32),
+    )
+
     assert_annotated(initialized, k)
 
 

@@ -35,6 +35,10 @@ RUN python3 -m venv $VIRTUAL_ENV && \
 
 USER $USERNAME
 
-COPY --chown=${USER_UID}:${USER_GID} . .
+# prevent full rebuilds every time code changes
+COPY --chown=${USER_UID}:${USER_GID} pyproject.toml poetry.lock README.md /code/
+COPY --chown=${USER_UID}:${USER_GID} starling/__init__.py /code/starling/__init__.py
 
 RUN poetry install --with docs,dev
+
+COPY . .

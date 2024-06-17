@@ -20,6 +20,7 @@ pytorch-lightning = "2.1.0"
 scanpy = "1.9.5"
 phenograph = "^1.5.7"
 flowsom = "^0.1.1"
+numpy = "^1.26"
 
 [tool.poetry.group.dev]
 optional = true

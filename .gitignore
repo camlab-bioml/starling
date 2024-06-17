@@ -1,9 +1,11 @@
 __pycache__
 .venv
+lightning_logs
 pyvenv.cfg
 **/log/**
 !**/log/.gitkeep
 docs/build/**
+dist
 !docs/build/.gitkeep
 model.pt
 .pytest_cache

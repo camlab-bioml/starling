@@ -1,6 +1,8 @@
-## SegmentaTion AwaRe cLusterING (STARLING)
+# SegmentaTion AwaRe cLusterING (STARLING)
 
 ![build](https://github.com/camlab-bioml/starling/actions/workflows/main.yml/badge.svg)
+![](https://img.shields.io/badge/Python-3.9-blue)
+
 
 STARLING is a probabilistic model for clustering cells measured with spatial expression assays (e.g. IMC, MIBI, etc...) while accounting for segmentation errors.
 
@@ -15,15 +17,25 @@ A **tutorial** outlining basic usage is available [here][tutorial].
 
 ![Model](https://github.com/camlab-bioml/starling/raw/main/starling-schematic600x.png)
 
+## Requirements
+
+Python3.9 is required to run starling. If your current version of python is not 3.9, we recommend using [pyenv](https://github.com/pyenv/pyenv) to install a later version alongside your current one. Alternately, you could use the Docker configuration described below.
+
 ## Installation
 
-_starling_ can be cloned and installed locally (typically <10 minutes) using access to the Github repository,
+### Install with pip
+
+`pip install biostarling` and then import the module `from starling import starling`
+
+### Building from source
+
+Starling can be cloned and installed locally (typically <10 minutes) via the Github repository,
 
 ```
 git clone https://github.com/camlab-bioml/starling.git && cd starling
 ```
 
-After cloning the repository, the next step is to install the required dependencies. There are two recommended methods:
+After cloning the repository, the next step is to install the required dependencies. There are three recommended methods:
 
 ### 1. Use `requirements.txt` and your own virtual environment:
 
@@ -54,11 +66,13 @@ deactivate
 Once poetry is installed, navigate to the `starling` directory and run `poetry install`. This will download the required packages into a virtual environment and install Starling in development mode. The location and state of the virtual environment may depend on your system. For more details, see [the documentation](https://python-poetry.org/docs/managing-environments/).
 
 
-A list of minimal required packages needed for _starling_ can be found in setup.py if creating a new virtual environment is not an option.
+### 3. Use Docker
+
+If you have Docker installed on your system, you can run `docker build -t starling .` from the project root in order to build the image locally. You can then open a shell within the image with a command like `docker run --rm -it starling bash`.
 
 ## Getting started
 
-Launch the interactive tutorial: [jupyter notebook][tutorial]
+With starling installed, please proceed to the [online documentation][docs] or launch the [interactive notebook tutorial][tutorial] to learn more about the package's features.
 
 ## Authors
 
@@ -70,3 +84,4 @@ Lunenfeld-Tanenbaum Research Institute & University of Toronto
 
 [tutorial]: https://colab.research.google.com/github/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb
 [license]: https://github.com/camlab-bioml/starling/blob/main/LICENSE
+[docs]: https://camlab-bioml.github.io/starling/

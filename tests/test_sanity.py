@@ -1,7 +1,6 @@
 from os.path import dirname, join
 
 import anndata as ad
-import numpy as np
 import pandas as pd
 from lightning_lite import seed_everything
 from pytorch_lightning.callbacks import EarlyStopping

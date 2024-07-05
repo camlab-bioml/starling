@@ -2,6 +2,7 @@
 
 ![build](https://github.com/camlab-bioml/starling/actions/workflows/main.yml/badge.svg)
 ![](https://img.shields.io/badge/Python-3.9-blue)
+![](https://img.shields.io/badge/Python-3.10-blue)
 
 
 STARLING is a probabilistic model for clustering cells measured with spatial expression assays (e.g. IMC, MIBI, etc...) while accounting for segmentation errors.
@@ -19,7 +20,7 @@ A **tutorial** outlining basic usage is available [here][tutorial].
 
 ## Requirements
 
-Python3.9 is required to run starling. If your current version of python is not 3.9, we recommend using [pyenv](https://github.com/pyenv/pyenv) to install a later version alongside your current one. Alternately, you could use the Docker configuration described below.
+Python 3.9 or 3.10 are required to run starling. If your current version of python is not one of these, we recommend using [pyenv](https://github.com/pyenv/pyenv) to install a compatible version alongside your current one. Alternately, you could use the Docker configuration described below.
 
 ## Installation
 

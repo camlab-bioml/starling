@@ -14,7 +14,7 @@ classifiers = [
 license = "See License.txt"
 
 [tool.poetry.dependencies]
-python = "~3.9"
+python = ">= 3.9, < 3.11"
 torch = "1.12.1"
 pytorch-lightning = "2.1.0"
 scanpy = "1.9.5"

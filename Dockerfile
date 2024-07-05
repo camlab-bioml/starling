@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 WORKDIR /code
 
@@ -41,4 +41,4 @@ COPY --chown=${USER_UID}:${USER_GID} starling/__init__.py /code/starling/__init_
 
 RUN poetry install --with docs,dev
 
-COPY . .
+COPY --chown=${USER_UID}:${USER_GID} . .

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "biostarling"
 packages = [{ include = "starling" }]
-version = "0.1.1"
+version = "0.1.2"
 description = "Segmentation error aware clustering single-cell spatial expression data"
 repository = "https://github.com/camlab-bioml/starling"
 authors = ["Jett (Yuju) Lee <yulee@lunenfeld.ca>"]
@@ -14,7 +14,7 @@ classifiers = [
 license = "See License.txt"
 
 [tool.poetry.dependencies]
-python = "~3.9"
+python = ">= 3.9, < 3.11"
 torch = "1.12.1"
 pytorch-lightning = "2.1.0"
 scanpy = "1.9.5"

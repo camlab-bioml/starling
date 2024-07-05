@@ -18,7 +18,7 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -85,8 +85,7 @@
 </div>
 <section id="segmentation-aware-clustering-starling">
 <h1>SegmentaTion AwaRe cLusterING (STARLING)<a class="headerlink" href="#segmentation-aware-clustering-starling" title="Link to this heading"></a></h1>
-<p><img alt="build" src="https://github.com/camlab-bioml/starling/actions/workflows/main.yml/badge.svg" />
-<img alt="" src="https://img.shields.io/badge/Python-3.9-blue" /></p>
+<p><img alt="build" src="https://github.com/camlab-bioml/starling/actions/workflows/main.yml/badge.svg" /></p>
 <p>STARLING is a probabilistic model for clustering cells measured with spatial expression assays (e.g. IMC, MIBI, etc…) while accounting for segmentation errors.</p>
 <p>It outputs:</p>
 <ol class="arabic simple">
@@ -97,26 +96,16 @@
 <p>A <strong>preprint</strong> describing the method and introducing a novel benchmarking workflow is available: <a class="reference external" href="https://www.biorxiv.org/content/10.1101/2024.02.29.582827v1">Lee et al. (2024) <em>Segmentation error aware clustering for highly multiplexed imaging</em></a></p>
 <p>A <strong>tutorial</strong> outlining basic usage is available <a class="reference external" href="https://colab.research.google.com/github/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb">here</a>.</p>
 <p><img alt="Model" src="https://github.com/camlab-bioml/starling/raw/main/starling-schematic600x.png" /></p>
-<section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
-<p>Python3.9 is required to run starling. If your current version of python is not 3.9, we recommend using <a class="reference external" href="https://github.com/pyenv/pyenv">pyenv</a> to install a later version alongside your current one. Alternately, you could use the Docker configuration described below.</p>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
-<section id="install-with-pip">
-<h3>Install with pip<a class="headerlink" href="#install-with-pip" title="Link to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">biostarling</span></code> and then import the module <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">starling</span> <span class="pre">import</span> <span class="pre">starling</span></code></p>
-</section>
-<section id="building-from-source">
-<h3>Building from source<a class="headerlink" href="#building-from-source" title="Link to this heading"></a></h3>
-<p>Starling can be cloned and installed locally (typically &lt;10 minutes) via the Github repository,</p>
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<p><em>starling</em> can be cloned and installed locally (typically &lt;10 minutes) using access to the Github repository,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">camlab</span><span class="o">-</span><span class="n">bioml</span><span class="o">/</span><span class="n">starling</span><span class="o">.</span><span class="n">git</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">starling</span>
 </pre></div>
 </div>
-<p>After cloning the repository, the next step is to install the required dependencies. There are three recommended methods:</p>
-</section>
+<p>After cloning the repository, the next step is to install the required dependencies. There are two recommended methods:</p>
 <section id="use-requirements-txt-and-your-own-virtual-environment">
-<h3>1. Use <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> and your own virtual environment:<a class="headerlink" href="#use-requirements-txt-and-your-own-virtual-environment" title="Link to this heading"></a></h3>
+<h2>1. Use <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> and your own virtual environment:<a class="headerlink" href="#use-requirements-txt-and-your-own-virtual-environment" title="Link to this heading"></a></h2>
 <p>We use virtualenvwrapper (4.8.4) to create and activated a standalone virtual environment for <em>starling</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenvwrapper</span><span class="o">==</span><span class="mf">4.8.4</span>
 <span class="n">mkvirtualenv</span> <span class="n">starling</span>
@@ -133,25 +122,21 @@
 </div>
 </section>
 <section id="use-poetry-and-pyproject-toml">
-<h3>2. Use Poetry and <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.<a class="headerlink" href="#use-poetry-and-pyproject-toml" title="Link to this heading"></a></h3>
+<h2>2. Use Poetry and <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.<a class="headerlink" href="#use-poetry-and-pyproject-toml" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://python-poetry.org/">Poetry</a> is a packaging and dependency management tool can simplify code development and deployment. If you do not have Poetry installed, you can find instructions <a class="reference external" href="https://python-poetry.org/docs/">here</a>.</p>
 <p>Once poetry is installed, navigate to the <code class="docutils literal notranslate"><span class="pre">starling</span></code> directory and run <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span></code>. This will download the required packages into a virtual environment and install Starling in development mode. The location and state of the virtual environment may depend on your system. For more details, see <a class="reference external" href="https://python-poetry.org/docs/managing-environments/">the documentation</a>.</p>
-</section>
-<section id="use-docker">
-<h3>3. Use Docker<a class="headerlink" href="#use-docker" title="Link to this heading"></a></h3>
-<p>If you have Docker installed on your system, you can run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">build</span> <span class="pre">-t</span> <span class="pre">starling</span> <span class="pre">.</span></code> from the project root in order to build the image locally. You can then open a shell within the image with a command like <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">--rm</span> <span class="pre">-it</span> <span class="pre">starling</span> <span class="pre">bash</span></code>.</p>
+<p>A list of minimal required packages needed for <em>starling</em> can be found in setup.py if creating a new virtual environment is not an option.</p>
 </section>
 </section>
 <section id="getting-started">
-<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<p>With starling installed, please proceed to the <a class="reference external" href="https://camlab-bioml.github.io/starling/">online documentation</a> or launch the <a class="reference external" href="https://colab.research.google.com/github/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb">interactive notebook tutorial</a> to learn more about the package’s features.</p>
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>Launch the interactive tutorial: <a class="reference external" href="https://colab.research.google.com/github/camlab-bioml/starling/blob/main/docs/source/tutorial/getting-started.ipynb">jupyter notebook</a></p>
 </section>
 <section id="authors">
-<h2>Authors<a class="headerlink" href="#authors" title="Link to this heading"></a></h2>
+<h1>Authors<a class="headerlink" href="#authors" title="Link to this heading"></a></h1>
 <p>This software is authored by: Jett (Yuju) Lee, Conor Klamann, Kieran R Campbell</p>
 <p>Lunenfeld-Tanenbaum Research Institute &amp; University of Toronto</p>
 <!-- github-only -->
-</section>
 </section>
 
 

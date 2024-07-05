@@ -17,7 +17,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -123,7 +123,7 @@
 <span class="k">def</span> <span class="nf">init_clustering</span><span class="p">(</span>
     <span class="n">initial_clustering_method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="s2">&quot;KM&quot;</span><span class="p">,</span> <span class="s2">&quot;GMM&quot;</span><span class="p">,</span> <span class="s2">&quot;FS&quot;</span><span class="p">,</span> <span class="s2">&quot;PG&quot;</span><span class="p">],</span>
     <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
-    <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnnData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute initial cluster centroids, variances &amp; labels</span>
@@ -134,7 +134,8 @@
 <span class="sd">        ``FS`` (FlowSOM), ``User`` (user-provided), or ``PG`` (PhenoGraph).</span>
 <span class="sd">    :param k: The number of clusters, must be ``n_components`` when ``initial_clustering_method`` is ``GMM`` (required),</span>
 <span class="sd">        ``k`` when ``initial_clustering_method`` is ``KM`` (required), ``k`` when ``initial_clustering_method``</span>
-<span class="sd">        is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional)</span>
+<span class="sd">        is ``FS`` (required), ``?`` when  ``initial_clustering_method`` is ``PG`` (optional), and can be ommited when</span>
+<span class="sd">        ``initial_clustering_method`` is &quot;User&quot;, because user will be passing in their own labels.</span>
 <span class="sd">    :param labels: optional, user-provided labels</span>
 
 <span class="sd">    :raises: ValueError</span>
@@ -150,6 +151,11 @@
     <span class="k">if</span> <span class="n">initial_clustering_method</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;KM&quot;</span><span class="p">,</span> <span class="s2">&quot;GMM&quot;</span><span class="p">,</span> <span class="s2">&quot;FS&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;k cannot be ommitted for KMeans, FlowSOM, or Gaussian Mixture&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;User&quot;</span> <span class="ow">and</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;labels must be provided when initial_clustering_method is set to &#39;User&#39;&quot;</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;KM&quot;</span><span class="p">:</span>
@@ -175,12 +181,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">init_l</span> <span class="o">=</span> <span class="n">labels</span>
 
-        <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">init_l</span><span class="p">))</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">init_l</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
         <span class="n">init_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="n">init_ev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-            <span class="n">init_e</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">init_l</span> <span class="o">==</span> <span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">init_ev</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">init_l</span> <span class="o">==</span> <span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">classes</span><span class="p">):</span>
+            <span class="n">init_e</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">init_l</span> <span class="o">==</span> <span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">init_ev</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">init_l</span> <span class="o">==</span> <span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;FS&quot;</span><span class="p">:</span>
         <span class="c1">## needs to output to csv first</span>

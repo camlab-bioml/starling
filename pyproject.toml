@@ -15,12 +15,12 @@ license = "See License.txt"
 
 [tool.poetry.dependencies]
 python = ">= 3.9, < 3.11"
-torch = "1.12.1"
-pytorch-lightning = "2.1.0"
-scanpy = "1.9.5"
 phenograph = "^1.5.7"
 flowsom = "^0.1.1"
 numpy = "^1.26"
+torch = "^2.4.0"
+pytorch-lightning = "^2.3.3"
+scanpy = "^1.10.2"
 
 [tool.poetry.group.dev]
 optional = true

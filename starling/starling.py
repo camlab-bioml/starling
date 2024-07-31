@@ -10,7 +10,7 @@ from lightning_fabric.utilities.types import _PATH
 from pytorch_lightning.accelerators.accelerator import Accelerator
 from pytorch_lightning.callbacks import Callback
 from pytorch_lightning.loggers import Logger
-from pytorch_lightning.plugins import PLUGIN_INPUT
+from pytorch_lightning.plugins import _PLUGIN_INPUT
 from pytorch_lightning.profilers import Profiler
 from pytorch_lightning.strategies.strategy import Strategy
 from pytorch_lightning.trainer.connectors.accelerator_connector import _LITERAL_WARN
@@ -218,7 +218,7 @@ class ST(pl.LightningModule):
         profiler: Optional[Union[Profiler, str]] = None,
         detect_anomaly: bool = False,
         barebones: bool = False,
-        plugins: Optional[Union[PLUGIN_INPUT, List[PLUGIN_INPUT]]] = None,
+        plugins: Optional[Union[_PLUGIN_INPUT, List[_PLUGIN_INPUT]]] = None,
         sync_batchnorm: bool = False,
         reload_dataloaders_every_n_epochs: int = 0,
         default_root_dir: Optional[_PATH] = None,

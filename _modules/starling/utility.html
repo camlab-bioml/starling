@@ -89,6 +89,8 @@
 <span class="kn">import</span> <span class="nn">scanpy.external</span> <span class="k">as</span> <span class="nn">sce</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
+<span class="c1"># patch outdated flowsom dependencies</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">as_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">to_numpy</span>
 <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span>
 <span class="kn">from</span> <span class="nn">flowsom</span> <span class="kn">import</span> <span class="n">flowsom</span>
 <span class="kn">from</span> <span class="nn">scanpy</span> <span class="kn">import</span> <span class="n">AnnData</span>
@@ -192,7 +194,7 @@
     <span class="k">elif</span> <span class="n">initial_clustering_method</span> <span class="o">==</span> <span class="s2">&quot;FS&quot;</span><span class="p">:</span>
         <span class="c1">## needs to output to csv first</span>
         <span class="c1"># ofn = OPATH + &quot;fs_&quot; + ONAME + &quot;.csv&quot;</span>
-        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;fs.csv&quot;</span><span class="p">)</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;fs.csv&quot;</span><span class="p">)</span>
         <span class="n">fsom</span> <span class="o">=</span> <span class="n">flowsom</span><span class="p">(</span><span class="s2">&quot;fs.csv&quot;</span><span class="p">,</span> <span class="n">if_fcs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">if_drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop_col</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Unnamed: 0&quot;</span><span class="p">])</span>
 
         <span class="n">fsom</span><span class="o">.</span><span class="n">som_mapping</span><span class="p">(</span>

@@ -2,14 +2,40 @@ name: Starling
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "release-0.1.4" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.9', '3.10', '3.11', '3.12'  ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Poetry
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+      uses: snok/install-poetry@v1
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'poetry'
+    - name: Install project
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: poetry install --with docs,dev --no-interaction
+    - uses: isort/isort-action@v1
+    - name: Black
+      run: |
+        poetry run black --check --verbose ./starling
+    - name: Pytest
+      run: |
+        poetry run pytest
 
+  docs:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Install Poetry
@@ -24,13 +50,6 @@ jobs:
     - name: Install project
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: poetry install --with docs,dev --no-interaction
-    - uses: isort/isort-action@v1
-    - name: Black
-      run: |
-        poetry run black --check --verbose ./starling
-    - name: Pytest
-      run: |
-        poetry run pytest
     - name: Build documentation
       run: |
           mkdir gh-pages

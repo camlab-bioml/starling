@@ -2,7 +2,7 @@ name: Starling
 
 on:
   push:
-    branches: [ "main", "release-0.1.4" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -45,7 +45,7 @@ jobs:
       uses: snok/install-poetry@v1
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.12'
         cache: 'poetry'
     - name: Install project
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'

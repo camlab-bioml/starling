@@ -3,6 +3,8 @@
 ![build](https://github.com/camlab-bioml/starling/actions/workflows/main.yml/badge.svg)
 ![](https://img.shields.io/badge/Python-3.9-blue)
 ![](https://img.shields.io/badge/Python-3.10-blue)
+![](https://img.shields.io/badge/Python-3.11-blue)
+![](https://img.shields.io/badge/Python-3.12-blue)
 
 
 STARLING is a probabilistic model for clustering cells measured with spatial expression assays (e.g. IMC, MIBI, etc...) while accounting for segmentation errors.

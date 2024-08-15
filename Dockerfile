@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 WORKDIR /code
 
@@ -25,7 +25,7 @@ ENV POETRY_HOME=/opt/poetry
 
 # install poetry into its own venv
 RUN python3 -m venv $POETRY_HOME && \
-    $POETRY_HOME/bin/pip install poetry==1.7.1
+    $POETRY_HOME/bin/pip install poetry==1.8.0
 
 ENV VIRTUAL_ENV=/poetry-env \
     PATH="/poetry-env/bin:$POETRY_HOME/bin:$PATH"
@@ -39,6 +39,6 @@ USER $USERNAME
 COPY --chown=${USER_UID}:${USER_GID} pyproject.toml poetry.lock README.md /code/
 COPY --chown=${USER_UID}:${USER_GID} starling/__init__.py /code/starling/__init__.py
 
-RUN poetry install --with docs,dev
+RUN poetry install --with docs,dev && poetry self add poetry-plugin-export
 
 COPY --chown=${USER_UID}:${USER_GID} . .

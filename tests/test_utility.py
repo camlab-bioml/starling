@@ -35,6 +35,12 @@ def test_init_clustering_pg(simple_adata):
     assert_annotated(initialized, k)
 
 
+def test_init_clustering_fs(simple_adata):
+    k = 2
+    initialized = init_clustering("FS", simple_adata, k)
+    assert_annotated(initialized, k)
+
+
 def test_init_clustering_user(simple_adata):
     k = 3
     initialized = init_clustering(

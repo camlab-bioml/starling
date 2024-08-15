@@ -7,9 +7,11 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        python-version: [ '3.9', '3.10', '3.11', '3.12'  ]
     steps:
     - uses: actions/checkout@v3
     - name: Install Poetry
@@ -19,7 +21,7 @@ jobs:
       uses: snok/install-poetry@v1
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: ${{ matrix.python-version }}
         cache: 'poetry'
     - name: Install project
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
@@ -31,6 +33,23 @@ jobs:
     - name: Pytest
       run: |
         poetry run pytest
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Poetry
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+      uses: snok/install-poetry@v1
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        cache: 'poetry'
+    - name: Install project
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: poetry install --with docs,dev --no-interaction
     - name: Build documentation
       run: |
           mkdir gh-pages

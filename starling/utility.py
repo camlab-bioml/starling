@@ -9,6 +9,8 @@ import pandas as pd
 import scanpy.external as sce
 import torch
 
+# patch outdated flowsom dependencies
+pd.DataFrame.as_matrix = pd.DataFrame.to_numpy
 collections.MutableMapping = abc.MutableMapping
 from flowsom import flowsom
 from scanpy import AnnData
@@ -107,7 +109,7 @@ def init_clustering(
     elif initial_clustering_method == "FS":
         ## needs to output to csv first
         # ofn = OPATH + "fs_" + ONAME + ".csv"
-        pd.DataFrame(X).to_csv("fs.csv")
+        pd.DataFrame(adata.X).to_csv("fs.csv")
         fsom = flowsom("fs.csv", if_fcs=False, if_drop=True, drop_col=["Unnamed: 0"])
 
         fsom.som_mapping(

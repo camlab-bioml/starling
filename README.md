@@ -22,7 +22,7 @@ A **tutorial** outlining basic usage is available [here][tutorial].
 
 ## Requirements
 
-Python 3.9 or 3.10 are required to run starling. If your current version of python is not one of these, we recommend using [pyenv](https://github.com/pyenv/pyenv) to install a compatible version alongside your current one. Alternately, you could use the Docker configuration described below.
+Python 3.9 or above is required to run starling. If your current version of python is not one of these, we recommend using [pyenv](https://github.com/pyenv/pyenv) to install a compatible version alongside your current one. Alternately, you could use the Docker configuration described below.
 
 ## Installation
 

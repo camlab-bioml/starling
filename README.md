@@ -14,7 +14,7 @@ It outputs:
 2. Assignments for every cell in the dataset to those clusters
 3. A segmentation error probability for each cell
 
-A **preprint** describing the method and introducing a novel benchmarking workflow is available: [Lee et al. (2024) _Segmentation error aware clustering for highly multiplexed imaging_](https://www.biorxiv.org/content/10.1101/2024.02.29.582827v1)
+The paper describing the method and introducing evaluation metrics and gold standard data is available: [Lee et al. Nature Communications (2025) _Segmentation aware probabilistic phenotyping of single-cell spatial protein expression data_](https://www.nature.com/articles/s41467-024-55214-w)
 
 A **tutorial** outlining basic usage is available [here][tutorial].
 
